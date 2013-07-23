@@ -8,4 +8,7 @@ class Venue {
 		true
 	}
 	
+	double distanceInKmTo(Coordinates coordiantes) {
+		0
+	}
 }
