@@ -84,7 +84,8 @@ class VenueFinderSpec extends Specification {
 	
 	static class VenuesMixin {
 		static List openVenues(int count) {
-			Venue venue = [isOpen: { dateTime -> dateTime == VenueFinderSpec.CURRENT_TIME }] as Venue
+			Venue venue = [isOpen: { dateTime -> dateTime == VenueFinderSpec.CURRENT_TIME },
+				distanceInKmTo: { coordinates -> 0 }] as Venue
 			[venue] * count
 		}
 		
