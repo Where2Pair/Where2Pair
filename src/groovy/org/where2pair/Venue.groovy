@@ -5,16 +5,7 @@ import org.joda.time.DateTime
 class Venue {
 
 	Coordinates location
-	WeeklyOpenTimes weeklyOpenTimes
-	
-	//How to model open hours? -> Perhaps a nice little library here would be useful
-	//Can we have a list of durations?
-	//Simple approach would be a list of Periods, where period contained start and end time in hours and minutes
-	//DailyOpenTimes would contain a list of OpenTimes
-	//WeeklyOpenTimes would map days to DailyOpenTimes
-	// -> weeklyOpenTimes.isOpen(dateTime)
-	// 	-> int day = dateTime.getDay()
-	//	-> dailyOpenTimes.isOpen(dateTime)
+	WeeklyOpenTimesSpec weeklyOpenTimes
 	
 	boolean isOpen(DateTime dateTime) {
 		weeklyOpenTimes.isOpen(dateTime)

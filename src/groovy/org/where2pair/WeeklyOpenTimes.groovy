@@ -4,8 +4,14 @@ import org.joda.time.DateTime
 
 class WeeklyOpenTimes {
 
+	Map weeklyOpeningTimes
+	
 	boolean isOpen(DateTime dateTime) {
-		false
+		int dayOfWeek = dateTime.getDayOfWeek()
+		int hourOfDay = dateTime.getHourOfDay()
+		int minuteOfHour = dateTime.getMinuteOfHour()
+		
+		weeklyOpeningTimes[dayOfWeek].isOpen(hourOfDay, minuteOfHour)
 	}
 	
 }
