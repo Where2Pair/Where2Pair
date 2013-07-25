@@ -19,7 +19,7 @@ class WeeklyOpenTimesSpec extends Specification {
 	def "should check daily opening times on correct day"() {
 		given:
 		Map weeklyOpeningTimes = weeklyOpeningTimes()
-		WeeklyOpenTimes weeklyOpenTimes = new WeeklyOpenTimes(weeklyOpeningTimes: weeklyOpeningTimes)
+		WeeklyOpenTimes weeklyOpenTimes = new WeeklyOpenTimes(weeklyOpeningTimes)
 		DateTime dateTime = DateTimeFormat.forPattern('yyyy-MM-dd').parseDateTime(date)
 		DailyOpeningTimes daysOpeningTimes = weeklyOpeningTimes[dayOfWeek]
 		
@@ -42,13 +42,13 @@ class WeeklyOpenTimesSpec extends Specification {
 	
 	private Map weeklyOpeningTimes() {
 		[
-			(MONDAY): Mock(DailyOpeningTimes),
-			(TUESDAY): Mock(DailyOpeningTimes),
-			(WEDNESDAY): Mock(DailyOpeningTimes),
-			(THURSDAY): Mock(DailyOpeningTimes),
-			(FRIDAY): Mock(DailyOpeningTimes),
-			(SATURDAY): Mock(DailyOpeningTimes),
-			(SUNDAY): Mock(DailyOpeningTimes)
+			(MONDAY): GroovyMock(DailyOpeningTimes),
+			(TUESDAY): GroovyMock(DailyOpeningTimes),
+			(WEDNESDAY): GroovyMock(DailyOpeningTimes),
+			(THURSDAY): GroovyMock(DailyOpeningTimes),
+			(FRIDAY): GroovyMock(DailyOpeningTimes),
+			(SATURDAY): GroovyMock(DailyOpeningTimes),
+			(SUNDAY): GroovyMock(DailyOpeningTimes)
 		]
 	}
 }

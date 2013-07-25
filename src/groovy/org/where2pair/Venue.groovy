@@ -5,7 +5,7 @@ import org.joda.time.DateTime
 class Venue {
 
 	Coordinates location
-	WeeklyOpenTimesSpec weeklyOpenTimes
+	WeeklyOpenTimes weeklyOpenTimes
 	
 	boolean isOpen(DateTime dateTime) {
 		weeklyOpenTimes.isOpen(dateTime)

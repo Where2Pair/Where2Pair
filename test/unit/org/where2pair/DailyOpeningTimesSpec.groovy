@@ -8,24 +8,9 @@ import spock.lang.Specification
 
 class DailyOpeningTimesSpec extends Specification {
 
-	def "when open all day, then should be open"() {
+	def "when closed all day, should not be open"() {
 		given:
-		DailyOpeningTimes dailyOpeningTimes = new DailyOpeningTimes(openPeriods: [
-				new OpenPeriod(
-					start: new SimpleTime(hour: 0, minute: 0), 
-					end: new SimpleTime(hour: 35, minute: 59))
-			])
-		
-		when:
-		boolean isOpen = dailyOpeningTimes.isOpen(12, 0)
-	
-		then:
-		isOpen
-	}
-	
-	def "when closed all day, then should not be open"() {
-		given:
-		DailyOpeningTimes dailyOpeningTimes = new DailyOpeningTimes()
+		DailyOpeningTimes dailyOpeningTimes = new DailyOpeningTimes(openPeriods: [])
 		
 		when:
 		boolean isOpen = dailyOpeningTimes.isOpen(12, 0)
@@ -34,33 +19,38 @@ class DailyOpeningTimesSpec extends Specification {
 		!isOpen
 	}
 	
-	def "when open at a specific time, then should be open at that time"() {
+	def "given a single open period, should determine when open"() {
 		given:
-		DailyOpeningTimes dailyOpeningTimes = new DailyOpeningTimes(openPeriods: [
-				new OpenPeriod(
-					start: new SimpleTime(hour: 12, minute: 0),
-					end: new SimpleTime(hour: 12, minute: 0))
-			])
+		DailyOpeningTimes dailyOpeningTimes = openingTimesWith(startTime, endTime)
+		def (currentHour, currentMinute) = parse(currentTime)
 		
 		when:
-		boolean isOpen = dailyOpeningTimes.isOpen(12, 0)
-	
+		boolean isOpen = dailyOpeningTimes.isOpen(currentHour, currentMinute)
+		
 		then:
-		isOpen
+		isOpen == expectedOpen
+		
+		where:
+		startTime 	| endTime | currentTime | expectedOpen
+		'12:00'		| '12:00' | '12:00'		| true
+		'12:00'		| '12:00' | '12:01'		| false
+		'12:00'		| '12:00' | '11:59'		| false
+		'00:00'		| '35:59' | '12:00'		| true
+		'12:00'		| '12:59' | '12:30'		| true
+		'12:00'		| '12:30' | '12:59'		| false
 	}
 	
-	def "when open at a specific time, then should not be open at other times"() {
-		given:
-		DailyOpeningTimes dailyOpeningTimes = new DailyOpeningTimes(openPeriods: [
-				new OpenPeriod(
-					start: new SimpleTime(hour: 12, minute: 0),
-					end: new SimpleTime(hour: 12, minute: 0))
-			])
-		
-		when:
-		boolean isOpen = dailyOpeningTimes.isOpen(12, 1)
+	private DailyOpeningTimes openingTimesWith(startTime, endTime) {
+		def (startHour, startMinute) = parse(startTime)
+		def (endHour, endMinute) = parse(endTime)
+		new DailyOpeningTimes(openPeriods: [
+			new OpenPeriod(
+				start: new SimpleTime(hour: startHour, minute: startMinute),
+				end: new SimpleTime(hour: endHour, minute: endMinute))
+		])
+	}
 	
-		then:
-		!isOpen
+	private List parse(time) {
+		time.split(':').collect { Integer.parseInt(it) }
 	}
 }
