@@ -18,37 +18,36 @@ class WeeklyOpenTimesSpec extends Specification {
 
 	def "should check daily opening times on correct day"() {
 		given:
-		Map weeklyOpeningTimes = weeklyOpeningTimes()
+		Map weeklyOpeningTimes = openOnlyOn(openDay, openTimestamp)
 		WeeklyOpenTimes weeklyOpenTimes = new WeeklyOpenTimes(weeklyOpeningTimes)
-		DateTime dateTime = DateTimeFormat.forPattern('yyyy-MM-dd').parseDateTime(date)
-		DailyOpeningTimes daysOpeningTimes = weeklyOpeningTimes[dayOfWeek]
+		DateTime dateTime = parse(openTimestamp)
 		
 		when:
-		weeklyOpenTimes.isOpen(dateTime)
+		boolean isOpen = weeklyOpenTimes.isOpen(dateTime)
 		
 		then:
-		1 * daysOpeningTimes.isOpen(dateTime.getHourOfDay(), dateTime.getMinuteOfHour())
+		isOpen
 		
 		where:
-		date 			| dayOfWeek
-		'2013-07-22'	| MONDAY
-		'2013-07-23'	| TUESDAY
-		'2013-07-24'	| WEDNESDAY
-		'2013-07-25'	| THURSDAY
-		'2013-07-26'	| FRIDAY
-		'2013-07-27'	| SATURDAY
-		'2013-07-28'	| SUNDAY
+		openTimestamp		| openDay
+		'2013-07-22 19:22'	| MONDAY
+		'2013-07-23 14:21'	| TUESDAY
+		'2013-07-24 00:00'	| WEDNESDAY
+		'2013-07-25 18:55'	| THURSDAY
+		'2013-07-26 09:40'	| FRIDAY
+		'2013-07-27 18:50'	| SATURDAY
+		'2013-07-28 22:39'	| SUNDAY
+		
 	}
 	
-	private Map weeklyOpeningTimes() {
-		[
-			(MONDAY): GroovyMock(DailyOpeningTimes),
-			(TUESDAY): GroovyMock(DailyOpeningTimes),
-			(WEDNESDAY): GroovyMock(DailyOpeningTimes),
-			(THURSDAY): GroovyMock(DailyOpeningTimes),
-			(FRIDAY): GroovyMock(DailyOpeningTimes),
-			(SATURDAY): GroovyMock(DailyOpeningTimes),
-			(SUNDAY): GroovyMock(DailyOpeningTimes)
-		]
+	private Map openOnlyOn(int openDay, String openTimestamp) {
+		DateTime openDateTime = parse(openTimestamp)
+		Map openingTimes = (MONDAY..SUNDAY).collectEntries { [it, [isOpen: false ]] }
+		openingTimes[openDay] = [isOpen: { hour, minute -> hour == openDateTime.getHourOfDay() && minute == openDateTime.getMinuteOfHour() }]
+		openingTimes
+	}
+	
+	private DateTime parse(dateTime) {
+		DateTimeFormat.forPattern('yyyy-MM-dd HH:mm').parseDateTime(dateTime)
 	}
 }
