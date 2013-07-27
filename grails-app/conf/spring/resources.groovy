@@ -1,16 +1,21 @@
-import net.sf.ehcache.util.SlewClock.TimeProvider
-
+import org.where2pair.TimeProvider
+import org.where2pair.VenueFinder
 import org.where2pair.grails.GrailsVenueDaoService
+import org.where2pair.grails.GrailsVenueRepository
 
-// Place your Spring DSL code here
+
 beans = {
 	
 	venueDaoService(GrailsVenueDaoService)
 	
-	//timeProvider(TimeProvider)
+	venueRepository(GrailsVenueRepository) {
+		grailsVenueDaoService = ref("venueDaoService")
+	}
 	
-//	venueFinder(VenueFinder) {
-//		venueRepository = ref("venueRepository")
-//		timeProvider = ref("timeProvider")
-//	}
+	timeProvider(TimeProvider)
+	
+	venueFinder(VenueFinder) {
+		venueRepository = ref("venueRepository")
+		timeProvider = ref("timeProvider")
+	}
 }
