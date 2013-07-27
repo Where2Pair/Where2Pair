@@ -14,16 +14,16 @@ import static org.joda.time.DateTimeConstants.FRIDAY
 import static org.joda.time.DateTimeConstants.SATURDAY
 import static org.joda.time.DateTimeConstants.SUNDAY
 
-class WeeklyOpenTimesSpec extends Specification {
+class WeeklyOpeningTimesSpec extends Specification {
 
 	def "should check daily opening times on correct day"() {
 		given:
-		Map weeklyOpeningTimes = openOnlyOn(openDay, openTimestamp)
-		WeeklyOpenTimes weeklyOpenTimes = new WeeklyOpenTimes(weeklyOpeningTimes: weeklyOpeningTimes)
+		Map weeklyOpeningTimesMap = openOnlyOn(openDay, openTimestamp)
+		WeeklyOpeningTimes weeklyOpeningTimes = new WeeklyOpeningTimes(weeklyOpeningTimes: weeklyOpeningTimesMap)
 		DateTime dateTime = parse(openTimestamp)
 		
 		when:
-		boolean isOpen = weeklyOpenTimes.isOpen(dateTime)
+		boolean isOpen = weeklyOpeningTimes.isOpen(dateTime)
 		
 		then:
 		isOpen
@@ -41,8 +41,8 @@ class WeeklyOpenTimesSpec extends Specification {
 	}
 	
 	private Map openOnlyOn(int openDay, String openTimestamp) {
-		DateTime openDateTime = parse(openTimestamp)
 		Map openingTimes = (MONDAY..SUNDAY).collectEntries { [it, [isOpen: false ]] }
+		DateTime openDateTime = parse(openTimestamp)
 		openingTimes[openDay] = [isOpen: { hour, minute -> hour == openDateTime.getHourOfDay() && minute == openDateTime.getMinuteOfHour() }]
 		openingTimes
 	}

@@ -1,10 +1,12 @@
 package org.where2pair
 
+import groovy.transform.EqualsAndHashCode;
 import groovy.transform.Immutable
 
+@EqualsAndHashCode
 class DailyOpeningTimes {
 
-	List openPeriods
+	List openPeriods = []
 	
 	boolean isOpen(int hour, int minute) {
 		if (openPeriods.isEmpty())

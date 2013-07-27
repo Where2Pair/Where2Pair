@@ -5,10 +5,10 @@ import org.joda.time.DateTime
 class Venue {
 
 	Coordinates location
-	WeeklyOpenTimes weeklyOpenTimes
+	WeeklyOpeningTimes weeklyOpeningTimes
 	
 	boolean isOpen(DateTime dateTime) {
-		weeklyOpenTimes.isOpen(dateTime)
+		weeklyOpeningTimes.isOpen(dateTime)
 	}
 	
 	double distanceInKmTo(Coordinates coordinates) {

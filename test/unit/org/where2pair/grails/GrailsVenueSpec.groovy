@@ -4,7 +4,7 @@ package org.where2pair.grails
 import grails.test.mixin.TestFor
 import spock.lang.Specification
 import spock.lang.Unroll;
-
+import static org.where2pair.grails.ConstraintsValidator.validateConstraints
 
 @TestFor(GrailsVenue)
 class GrailsVenueSpec extends Specification {
@@ -27,16 +27,5 @@ class GrailsVenueSpec extends Specification {
 		'latitude'	| -120.9763	| 'min'
 		'longitude'	| 115.85	| 'max'
 		'longitude'	| -31.97	| 'min'
-	}
-	
-	void validateConstraints(obj, field, error) {
-		def validated = obj.validate()
-		if (error && error != 'valid') {
-			assert !validated
-			assert obj.errors[field]
-			assert error == obj.errors[field]
-		} else {
-			assert !obj.errors[field]
-		}
 	}
 }
