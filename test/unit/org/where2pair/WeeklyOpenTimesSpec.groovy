@@ -19,7 +19,7 @@ class WeeklyOpenTimesSpec extends Specification {
 	def "should check daily opening times on correct day"() {
 		given:
 		Map weeklyOpeningTimes = openOnlyOn(openDay, openTimestamp)
-		WeeklyOpenTimes weeklyOpenTimes = new WeeklyOpenTimes(weeklyOpeningTimes)
+		WeeklyOpenTimes weeklyOpenTimes = new WeeklyOpenTimes(weeklyOpeningTimes: weeklyOpeningTimes)
 		DateTime dateTime = parse(openTimestamp)
 		
 		when:

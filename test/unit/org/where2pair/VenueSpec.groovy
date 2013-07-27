@@ -24,15 +24,15 @@ class VenueSpec extends Specification {
 		0				|	0				| 0					| 0					| 0	
 		51.713416		|	-1.406250		| 51.506552			| -0.11261			| 92.24
 		51.530800		|	-0.097933		| 51.520921			| -0.081625			| 1.57	
-		51.530800		|	-0.097933		| -33.868135			| 151.210327		| 16990.86	
+		51.530800		|	-0.097933		| -33.868135		| 151.210327		| 16990.86	
 	}
 	
 	def "should determine whether venue is open"() {
 		given:
 		DateTime dateTime = new DateTime()
-		WeeklyOpenTimesSpec weeklyOpenTimes = Mock()
-		Venue venue = new Venue(weeklyOpenTimes: weeklyOpenTimes)
+		WeeklyOpenTimes weeklyOpenTimes = Mock()
 		weeklyOpenTimes.isOpen(dateTime) >> expectedOpenStatus
+		Venue venue = new Venue(weeklyOpenTimes: weeklyOpenTimes)
 		
 		when:
 		boolean openStatus = venue.isOpen(dateTime)

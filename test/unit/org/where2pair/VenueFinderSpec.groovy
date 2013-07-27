@@ -1,7 +1,6 @@
 package org.where2pair
 
 import org.joda.time.DateTime
-
 import spock.lang.Specification
 
 class VenueFinderSpec extends Specification {

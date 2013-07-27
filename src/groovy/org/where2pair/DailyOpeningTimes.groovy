@@ -2,7 +2,6 @@ package org.where2pair
 
 import groovy.transform.Immutable
 
-@Immutable
 class DailyOpeningTimes {
 
 	List openPeriods

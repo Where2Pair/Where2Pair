@@ -4,7 +4,6 @@ import groovy.transform.Immutable
 
 import org.joda.time.DateTime
 
-@Immutable
 class WeeklyOpenTimes {
 
 	Map weeklyOpeningTimes
