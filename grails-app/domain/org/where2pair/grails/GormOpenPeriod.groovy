@@ -1,13 +1,19 @@
 package org.where2pair.grails
 
-class GrailsOpenPeriod {
+import groovy.transform.EqualsAndHashCode;
+import groovy.transform.ToString;
+
+@EqualsAndHashCode
+@ToString
+class GormOpenPeriod {
 
 	int day
 	int openHour
 	int openMinute
 	int closeHour
 	int closeMinute
-	static belongsTo = [venue: GrailsVenue]
+	
+	static belongsTo = GormVenue
 		
     static constraints = {
 		day range: 1..7

@@ -10,10 +10,17 @@ import static java.lang.Double.parseDouble
 class VenueController {
 
 	VenueFinder venueFinder
-	
+	GormVenueRepository gormVenueRepository
+		
     def show() { 
 		def (lat, lng) = params.'location1'.split(',').collect { parseDouble(it) }
 		List venues = venueFinder.findNearestTo(new Coordinates(lat: lat, lng: lng))
 		render venues as JSON
+	}
+	
+	def save() {
+		VenueDTO venueDTO = new VenueDTO(request.JSON)
+		gormVenueRepository.save(venueDTO)
+		render venueDTO as JSON
 	}
 }

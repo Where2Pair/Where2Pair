@@ -5,17 +5,17 @@ import spock.lang.Specification
 import spock.lang.Unroll;
 import static org.where2pair.grails.ConstraintsValidator.validateConstraints
 
-@TestFor(GrailsOpenPeriod)
-class GrailsOpenPeriodSpec extends Specification {
+@TestFor(GormOpenPeriod)
+class GormOpenPeriodSpec extends Specification {
 
 	def setup() {
-		mockForConstraintsTests(GrailsOpenPeriod)
+		mockForConstraintsTests(GormOpenPeriod)
 	}
 	
 	@Unroll
 	def "test open period constraints: checking #field for #error"() {
 		when:
-		def venue = new GrailsOpenPeriod(venue: new GrailsVenue(), "$field": val)
+		def venue = new GormOpenPeriod(venue: new GormVenue(), "$field": val)
 		
 		then:
 		validateConstraints(venue, field, error)

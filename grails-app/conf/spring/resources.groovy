@@ -1,15 +1,15 @@
 import org.where2pair.TimeProvider
 import org.where2pair.VenueFinder
-import org.where2pair.grails.GrailsVenueDaoService
-import org.where2pair.grails.GrailsVenueRepository
+import org.where2pair.grails.GormVenueDaoService
+import org.where2pair.grails.GormVenueRepository
 
 
 beans = {
 	
-	venueDaoService(GrailsVenueDaoService)
+	venueDaoService(GormVenueDaoService)
 	
-	venueRepository(GrailsVenueRepository) {
-		grailsVenueDaoService = ref("venueDaoService")
+	venueRepository(GormVenueRepository) {
+		gormVenueDaoService = ref("venueDaoService")
 	}
 	
 	timeProvider(TimeProvider)

@@ -4,11 +4,13 @@ import java.util.List;
 
 import org.where2pair.VenueRepository;
 
-class GrailsVenueDaoService {
+class GormVenueDaoService {
 
-	@Override
 	List getAll() {
-		GrailsVenue.list()
+		GormVenue.list()
 	}
 
+	void save(GormVenue venue) {
+		venue.save()
+	}	
 }

@@ -6,17 +6,17 @@ import spock.lang.Specification
 import spock.lang.Unroll;
 import static org.where2pair.grails.ConstraintsValidator.validateConstraints
 
-@TestFor(GrailsVenue)
-class GrailsVenueSpec extends Specification {
+@TestFor(GormVenue)
+class GormVenueSpec extends Specification {
 
 	def setup() {
-		mockForConstraintsTests(GrailsVenue)
+		mockForConstraintsTests(GormVenue)
 	}
 	
 	@Unroll
 	def "test venue coordinate constraints: checking #field for #error"() {
 		when:
-		def venue = new GrailsVenue("$field": val)
+		def venue = new GormVenue("$field": val)
 		
 		then:
 		validateConstraints(venue, field, error)

@@ -41,6 +41,7 @@ grails.project.dependency.resolution = {
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes e.g.
 		compile "joda-time:joda-time:2.2"
+		test "org.skyscreamer:jsonassert:1.2.0"
 		//test "org.objenesis:objenesis:1.3"
 		test "org.spockframework:spock-grails-support:0.7-groovy-2.0"
         // runtime 'mysql:mysql-connector-java:5.1.22'
