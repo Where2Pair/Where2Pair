@@ -11,21 +11,28 @@ class VenueController {
 
 	VenueFinder venueFinder
 	GormVenueRepository gormVenueRepository
+	VenueConverter venueConverter
 		
     def show() { 
 		List venues = gormVenueRepository.getAll()
-		render venues as JSON
+		List venueDTOs = asVenueDTOs(venues)
+		render venueDTOs as JSON
 	}
 	
 	def findNearest() {
 		def (lat, lng) = params.'location1'.split(',').collect { parseDouble(it) }
 		List venues = venueFinder.findNearestTo(new Coordinates(lat: lat, lng: lng))
-		render venues as JSON
+		List venueDTOs = asVenueDTOs(venues)
+		render venueDTOs as JSON
 	}
 	
 	def save() {
 		VenueDTO venueDTO = new VenueDTO(request.JSON)
 		gormVenueRepository.save(venueDTO)
 		render new JSON(venueDTO)
+	}
+	
+	private List asVenueDTOs(List venues) {
+		venueConverter.asVenueDTOs(venues)
 	}
 }

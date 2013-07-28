@@ -13,15 +13,7 @@ import org.where2pair.DailyOpeningTimes.SimpleTime
 
 class WeeklyOpeningTimesBuilder {
 
-	Map weeklyOpeningTimes = [
-		(MONDAY): new DailyOpeningTimes(),
-		(TUESDAY): new DailyOpeningTimes(),
-		(WEDNESDAY): new DailyOpeningTimes(),
-		(THURSDAY): new DailyOpeningTimes(),
-		(FRIDAY): new DailyOpeningTimes(),
-		(SATURDAY): new DailyOpeningTimes(),
-		(SUNDAY): new DailyOpeningTimes(),
-	]
+	Map weeklyOpeningTimes = (MONDAY..SUNDAY).collectEntries { [it, new DailyOpeningTimes() ] }
 	
 	void addOpenPeriod(DayOfWeek day, SimpleTime openTime, SimpleTime closeTime) {
 		DailyOpeningTimes dailyOpeningTimes = weeklyOpeningTimes[day]

@@ -56,22 +56,4 @@ class GormVenueRepository implements VenueRepository {
 			openPeriods: openPeriods
 		)
 	}
-	
-	private int mapDayStringToInt(String day) {
-		String lowercaseDay = day.toLowerCase()
-		if (lowercaseDay == "monday")
-			return 1
-		if (lowercaseDay == "tuesday")
-			return 2
-		if (lowercaseDay == "wednesday")
-			return 3
-		if (lowercaseDay == "thursday")
-			return 4
-		if (lowercaseDay == "friday")
-			return 5
-		if (lowercaseDay == "saturday")
-			return 6
-		if (lowercaseDay == "sunday")
-			return 7
-	}
 }
