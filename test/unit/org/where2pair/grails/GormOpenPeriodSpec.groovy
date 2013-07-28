@@ -22,8 +22,7 @@ class GormOpenPeriodSpec extends Specification {
 		
 		where:
 		field			| val		| error
-		'day'			| 0			| 'range'
-		'day'			| 8			| 'range'
+		'day'			| null		| 'nullable'
 		'openHour'		| -1		| 'range'
 		'openHour'		| 36		| 'range'
 		'openMinute'	| -1		| 'range'

@@ -1,12 +1,12 @@
 package org.where2pair
 
-import static org.joda.time.DateTimeConstants.FRIDAY
-import static org.joda.time.DateTimeConstants.MONDAY
-import static org.joda.time.DateTimeConstants.SATURDAY
-import static org.joda.time.DateTimeConstants.SUNDAY
-import static org.joda.time.DateTimeConstants.THURSDAY
-import static org.joda.time.DateTimeConstants.TUESDAY
-import static org.joda.time.DateTimeConstants.WEDNESDAY
+import static org.where2pair.DayOfWeek.FRIDAY
+import static org.where2pair.DayOfWeek.MONDAY
+import static org.where2pair.DayOfWeek.SATURDAY
+import static org.where2pair.DayOfWeek.SUNDAY
+import static org.where2pair.DayOfWeek.THURSDAY
+import static org.where2pair.DayOfWeek.TUESDAY
+import static org.where2pair.DayOfWeek.WEDNESDAY
 
 import org.where2pair.DailyOpeningTimes.OpenPeriod
 import org.where2pair.DailyOpeningTimes.SimpleTime
@@ -23,7 +23,7 @@ class WeeklyOpeningTimesBuilder {
 		(SUNDAY): new DailyOpeningTimes(),
 	]
 	
-	void addOpenPeriod(int day, SimpleTime openTime, SimpleTime closeTime) {
+	void addOpenPeriod(DayOfWeek day, SimpleTime openTime, SimpleTime closeTime) {
 		DailyOpeningTimes dailyOpeningTimes = weeklyOpeningTimes[day]
 		dailyOpeningTimes.openPeriods << new OpenPeriod(openTime, closeTime)
 	}

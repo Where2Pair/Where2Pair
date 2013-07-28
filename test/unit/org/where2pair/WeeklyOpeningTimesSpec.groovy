@@ -6,13 +6,13 @@ import org.joda.time.format.DateTimeFormatter
 import org.joda.time.format.DateTimeParser
 
 import spock.lang.Specification
-import static org.joda.time.DateTimeConstants.MONDAY
-import static org.joda.time.DateTimeConstants.TUESDAY
-import static org.joda.time.DateTimeConstants.WEDNESDAY
-import static org.joda.time.DateTimeConstants.THURSDAY
-import static org.joda.time.DateTimeConstants.FRIDAY
-import static org.joda.time.DateTimeConstants.SATURDAY
-import static org.joda.time.DateTimeConstants.SUNDAY
+import static org.where2pair.DayOfWeek.FRIDAY
+import static org.where2pair.DayOfWeek.MONDAY
+import static org.where2pair.DayOfWeek.SATURDAY
+import static org.where2pair.DayOfWeek.SUNDAY
+import static org.where2pair.DayOfWeek.THURSDAY
+import static org.where2pair.DayOfWeek.TUESDAY
+import static org.where2pair.DayOfWeek.WEDNESDAY
 
 class WeeklyOpeningTimesSpec extends Specification {
 
@@ -40,7 +40,7 @@ class WeeklyOpeningTimesSpec extends Specification {
 		
 	}
 	
-	private Map openOnlyOn(int openDay, String openTimestamp) {
+	private Map openOnlyOn(DayOfWeek openDay, String openTimestamp) {
 		Map openingTimes = (MONDAY..SUNDAY).collectEntries { [it, [isOpen: false ]] }
 		DateTime openDateTime = parse(openTimestamp)
 		openingTimes[openDay] = [isOpen: { hour, minute -> hour == openDateTime.getHourOfDay() && minute == openDateTime.getMinuteOfHour() }]

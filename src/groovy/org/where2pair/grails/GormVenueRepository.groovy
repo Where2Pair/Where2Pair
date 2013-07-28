@@ -1,6 +1,7 @@
 package org.where2pair.grails
 
 import org.where2pair.Coordinates
+import org.where2pair.DayOfWeek
 import org.where2pair.Venue
 import org.where2pair.VenueRepository
 import org.where2pair.WeeklyOpeningTimes
@@ -41,7 +42,7 @@ class GormVenueRepository implements VenueRepository {
 		
 		venueDTO.openHours.each { String day, List openPeriodsList ->
 			openPeriodsList.each {
-				openPeriods << new GormOpenPeriod(day: mapDayStringToInt(day),
+				openPeriods << new GormOpenPeriod(day: DayOfWeek.parseString(day),
 					 openHour: it.openHour,
 					 openMinute: it.openMinute,
 					 closeHour: it.closeHour,

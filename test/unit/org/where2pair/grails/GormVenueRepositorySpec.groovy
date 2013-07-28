@@ -1,7 +1,7 @@
 package org.where2pair.grails
 
-import static org.joda.time.DateTimeConstants.MONDAY
-import static org.joda.time.DateTimeConstants.TUESDAY
+import static org.where2pair.DayOfWeek.MONDAY
+import static org.where2pair.DayOfWeek.TUESDAY
 
 import org.where2pair.Coordinates
 import org.where2pair.DailyOpeningTimes
@@ -24,7 +24,7 @@ class GormVenueRepositorySpec extends Specification {
 		GormVenue grailsVenue = new GormVenue(
 			latitude: 1.0, 
 			longitude: 0.1,
-			openPeriods: [new GormOpenPeriod(day: 1, openHour: 12, closeHour:18)])
+			openPeriods: [new GormOpenPeriod(day: MONDAY, openHour: 12, closeHour:18)])
 		gormVenueDaoService.getAll() >> [grailsVenue]
 		
 		when:
@@ -51,8 +51,8 @@ class GormVenueRepositorySpec extends Specification {
 		GormVenue gormVenue = new GormVenue(
 			latitude: 1.0,
 			longitude: 0.1,
-			openPeriods: [new GormOpenPeriod(day: 1, openHour: 12, openMinute: 0, closeHour: 18, closeMinute: 30),
-				new GormOpenPeriod(day: 2, openHour: 8, openMinute: 0, closeHour: 11, closeMinute: 0)]
+			openPeriods: [new GormOpenPeriod(day: MONDAY, openHour: 12, openMinute: 0, closeHour: 18, closeMinute: 30),
+				new GormOpenPeriod(day: TUESDAY, openHour: 8, openMinute: 0, closeHour: 11, closeMinute: 0)]
 		)
 		
 		when:

@@ -81,16 +81,17 @@ class VenueFinderSpec extends Specification {
 			distanceInKmTo: { coordinates -> it }] as Venue
 	}
 	
+	@Category(Integer)
 	static class VenuesMixin {
-		static List openVenues(int count) {
+		List openVenues() {
 			Venue venue = [isOpen: { dateTime -> dateTime == VenueFinderSpec.CURRENT_TIME },
 				distanceInKmTo: { coordinates -> 0 }] as Venue
-			[venue] * count
+			[venue] * this
 		}
 		
-		static List closedVenues(int count) {
+		List closedVenues() {
 			Venue venue = [isOpen: { dateTime -> false }] as Venue
-			[venue] * count
+			[venue] * this
 		}
 	}
 }

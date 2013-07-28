@@ -1,5 +1,7 @@
 package org.where2pair.grails
 
+import static org.where2pair.DayOfWeek.MONDAY;
+
 import grails.plugin.spock.IntegrationSpec
 
 
@@ -21,7 +23,7 @@ class GormVenueDaoServiceSpec extends IntegrationSpec {
 	
 	def "should save associated open periods"() {
 		given:
-		GormOpenPeriod openPeriod = new GormOpenPeriod(day: 1, openHour: 12, closeHour: 24)
+		GormOpenPeriod openPeriod = new GormOpenPeriod(day: MONDAY, openHour: 12, closeHour: 24)
 		GormVenue venue = new GormVenue(openPeriods: [openPeriod])
 		gormVenueDaoService.save(venue)
 	

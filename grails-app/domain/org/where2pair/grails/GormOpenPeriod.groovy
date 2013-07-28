@@ -1,5 +1,7 @@
 package org.where2pair.grails
 
+import org.where2pair.DayOfWeek;
+
 import groovy.transform.EqualsAndHashCode;
 import groovy.transform.ToString;
 
@@ -7,7 +9,7 @@ import groovy.transform.ToString;
 @ToString
 class GormOpenPeriod {
 
-	int day
+	DayOfWeek day
 	int openHour
 	int openMinute
 	int closeHour
@@ -16,7 +18,7 @@ class GormOpenPeriod {
 	static belongsTo = GormVenue
 		
     static constraints = {
-		day range: 1..7
+		day enumType:"ordinal"
 		openHour range: 0..35
 		openMinute range: 0..59
 		closeHour range: 0..35
