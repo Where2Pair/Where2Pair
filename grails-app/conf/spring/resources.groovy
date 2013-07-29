@@ -1,3 +1,4 @@
+import org.where2pair.DistanceCalculator;
 import org.where2pair.TimeProvider
 import org.where2pair.VenueFinder
 import org.where2pair.grails.GormVenueDaoService
@@ -17,8 +18,11 @@ beans = {
 
 	timeProvider(TimeProvider)
 
+	distanceCalculator(DistanceCalculator)
+	
 	venueFinder(VenueFinder) {
 		venueRepository = ref("gormVenueRepository")
 		timeProvider = ref("timeProvider")
+		distanceCalculator = ref("distanceCalculator")
 	}
 }

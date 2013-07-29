@@ -9,7 +9,9 @@ class VenueFinderSpec extends Specification {
 	static final USER_LOCATION = new Coordinates(lat: 0.2, lng: 0.1)
 	VenueRepository venueRepository = Mock()
 	TimeProvider timeProvider = Mock()
-	VenueFinder venueFinder = new VenueFinder(venueRepository: venueRepository, timeProvider: timeProvider)
+	DistanceCalculator distanceCalculator = Mock()
+	VenueFinder venueFinder = new VenueFinder(venueRepository: venueRepository, 
+		timeProvider: timeProvider, distanceCalculator: distanceCalculator)
 	
 	def "should return at most 50 venues"() {
 		given:
@@ -55,28 +57,32 @@ class VenueFinderSpec extends Specification {
 		venues.size() == 10
 	}
 	
-	def "should return venues in ascending order by distance"() {
+	def "should return 50 closest venues, ordered ascending by distance"() {
 		given:
-		List venueDistances = [ 10, 3, 5, 2 ]
-		venueRepository.getAll() >> venueDistances.collect { openVenueWithDistance(it) }
+		List nearbyVenues = 50.openVenues()
+		venueRepository.getAll() >> 50.openVenues() + nearbyVenues
+		distanceCalculator.distanceInKmTo(_ as Venue, USER_LOCATION) >>> (99..0)
 		
 		when:
 		List venues = venueFinder.findNearestTo(USER_LOCATION)
 		
 		then:
-		venues.distanceInKm == [2, 3, 5, 10]
+		venues.venue == nearbyVenues.reverse()
 	}
 	
-	def "should return 50 closest venues"() {
+	def "should consider all coordinates when determining the distance"() {
 		given:
-		List nearbyVenues = 50.nearbyVenues()
-		venueRepository.getAll() >> 50.distantVenues() + nearbyVenues
+		List venues = 1.openVenues()
+		venueRepository.getAll() >> venues
+		Coordinates coords1 = new Coordinates(0.1, 0.2)
+		Coordinates coords2 = new Coordinates(0.2, 0.3)
+		Coordinates coords3 = new Coordinates(0.3, 0.4)
 		
 		when:
-		List venues = venueFinder.findNearestTo(USER_LOCATION)
+		venueFinder.findNearestTo(coords1, coords2, coords3)
 		
 		then:
-		venues.venue == nearbyVenues
+		1 * distanceCalculator.distanceInKmTo(venues[0], coords1, coords2, coords3)
 	}
 	
 	def setup() {
@@ -106,17 +112,6 @@ class VenueFinderSpec extends Specification {
 			venuesWithTemplate {
 				[isOpen: { dateTime -> false }] as Venue
 			}
-		}
-		
-		List distantVenues() {
-			venuesWithTemplate {
-				[isOpen: { dateTime -> dateTime == VenueFinderSpec.CURRENT_TIME },
-					distanceInKmTo: { coordinates -> 100 }] as Venue
-			}
-		}
-		
-		List nearbyVenues() {
-			openVenues()
 		}
 		
 		Closure venuesWithTemplate = { Closure c ->

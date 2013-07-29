@@ -1,6 +1,8 @@
 package org.where2pair.grails
 
 import grails.converters.JSON
+import grails.test.mixin.*
+
 import org.skyscreamer.jsonassert.JSONAssert
 import org.where2pair.Coordinates
 import org.where2pair.Venue

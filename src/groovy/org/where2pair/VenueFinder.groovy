@@ -4,8 +4,9 @@ class VenueFinder {
 
 	VenueRepository venueRepository
 	TimeProvider timeProvider
+	DistanceCalculator distanceCalculator
 	
-	List findNearestTo(Coordinates coordinates) {
+	List findNearestTo(Coordinates... coordinates) {
 		List openVenues = venueRepository.getAll().findAll { Venue venue -> 
 			venue.isOpen(timeProvider.currentTime) 
 		}
@@ -15,9 +16,9 @@ class VenueFinder {
 		restrictTo50Results(sortedVenues)
 	}
 
-	private List sortVenuesByDistance(List openVenues, Coordinates coordinates) {
+	private List sortVenuesByDistance(List openVenues, Coordinates... coordinates) {
 		List venuesWithDistance = openVenues.collect { Venue venue -> 
-			new VenueWithDistance(venue: venue, distanceInKm: venue.distanceInKmTo(coordinates))
+			new VenueWithDistance(venue: venue, distanceInKm: distanceCalculator.distanceInKmTo(venue, coordinates))
 		}
 		
 		venuesWithDistance.sort { VenueWithDistance venue -> 
