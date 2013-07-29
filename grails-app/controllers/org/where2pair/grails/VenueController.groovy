@@ -20,10 +20,23 @@ class VenueController {
 	}
 	
 	def findNearest() {
-		def (lat, lng) = params.'location1'.split(',').collect { parseDouble(it) }
-		List venues = venueFinder.findNearestTo(new Coordinates(lat: lat, lng: lng))
-		List venueWithDistanceDTOs = asVenueWithDistanceDTOs(venues)
-		render venueWithDistanceDTOs as JSON
+		List coordinates = parseCoordinatesFromRequest()
+		
+		if (coordinates.size() <= 1000) {
+			List venues = venueFinder.findNearestTo(*coordinates)
+			List venueWithDistanceDTOs = asVenueWithDistanceDTOs(venues)
+			render venueWithDistanceDTOs as JSON
+		} else {
+			response.status = 413
+			render "Only upto 1000 locations are supported at this time."
+		}
+	}
+	
+	private List parseCoordinatesFromRequest() {
+		params.findAll { it.key.startsWith('location') }.collect {
+			def (lat, lng) = it.value.split(',').collect { parseDouble(it) }
+			new Coordinates(lat, lng)
+		}
 	}
 	
 	def save() {

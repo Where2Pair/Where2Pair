@@ -17,6 +17,9 @@ import org.where2pair.DailyOpeningTimes.OpenPeriod
 class VenueConverter {
 
 	List asVenueDTOs(List venues) { 
+		if (!venues)
+			return []
+		
 		venues.collect { Venue venue ->
 			Map openHours = (MONDAY..SUNDAY).collectEntries { [dayToString(it), []] }
 
@@ -39,6 +42,9 @@ class VenueConverter {
 	}
 	
 	List asVenueWithDistanceDTOs(List venuesWithDistance) {
+		if (!venuesWithDistance)
+			return []
+		
 		List venues = venuesWithDistance.venue
 		List distances = venuesWithDistance.distanceInKm
 		List venueDTOs = asVenueDTOs(venues)

@@ -24,10 +24,10 @@ class VenueControllerSpec extends Specification {
 		request.method = 'GET'
 		gormVenueRepository.getAll() >> 100.venues()
 		List venueDTOs = toVenueDTO(100.venues())
-		
+
 		when:
 		controller.show()
-		
+
 		then:
 		response.text.equalToJsonOf(venueDTOs)
 		response.status == 200
@@ -39,13 +39,39 @@ class VenueControllerSpec extends Specification {
 		controller.params.'location1' = '1.0,0.1'
 		venueFinder.findNearestTo(new Coordinates(lat: 1.0, lng: 0.1)) >> 10.venuesWithDistance()
 		List venueDTOs = toVenueWithDistanceDTO(10.venuesWithDistance())
-		
+
 		when:
 		controller.findNearest()
 
 		then:
 		response.text.equalToJsonOf(venueDTOs)
 		response.status == 200
+	}
+
+	def "should support multiple supplied locations"() {
+		given:
+		request.method = 'GET'
+		(1..1000).each { controller.params."location$it" = '1.0,0.1'}
+		List expectedArgs = [new Coordinates(1.0,0.1)]* 1000
+
+		when:
+		controller.findNearest()
+
+		then:
+		1 * venueFinder.findNearestTo(expectedArgs)
+	}
+
+	def "should reject more than 1000 supplied locations"() {
+		given:
+		request.method = 'GET'
+		(1..1001).each { controller.params."location$it" = '1.0,0.1'}
+
+		when:
+		controller.findNearest()
+
+		then:
+		response.text == "Only upto 1000 locations are supported at this time."
+		response.status == 413
 	}
 
 	def "should save new venues"() {
@@ -81,11 +107,11 @@ class VenueControllerSpec extends Specification {
 	private def toVenueDTO(List venues) {
 		venueConverter.asVenueDTOs(venues)
 	}
-	
+
 	private def toVenueWithDistanceDTO(List venues) {
 		venueConverter.asVenueWithDistanceDTOs(venues)
 	}
-	
+
 	def setup() {
 		controller.venueFinder = venueFinder
 		controller.gormVenueRepository = gormVenueRepository
@@ -110,14 +136,18 @@ class VenueControllerSpec extends Specification {
 	@Category(Integer)
 	static class VenuesMixin {
 		List venues() {
-			(0..this).collect { new Venue(location: new Coordinates(1.0, 0.5),
-				weeklyOpeningTimes: new WeeklyOpeningTimesBuilder().build()) }
+			(0..this).collect {
+				new Venue(location: new Coordinates(1.0, 0.5),
+				weeklyOpeningTimes: new WeeklyOpeningTimesBuilder().build())
+			}
 		}
-		
+
 		List venuesWithDistance() {
-			(0..this).collect { new VenueWithDistance(venue: new Venue(location: new Coordinates(1.0, 0.5),
+			(0..this).collect {
+				new VenueWithDistance(venue: new Venue(location: new Coordinates(1.0, 0.5),
 				weeklyOpeningTimes: new WeeklyOpeningTimesBuilder().build()),
-				distanceInKm: 10.5) }
+				distanceInKm: 10.5)
+			}
 		}
 	}
 }
