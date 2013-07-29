@@ -34,9 +34,9 @@ class GormVenueRepositorySpec extends Specification {
 		venues.size() == 1
 		with (venues[0]) { Venue venue ->
 			venue.location == new Coordinates(lat: 1.0, lng: 0.1)
-			venue.weeklyOpeningTimes.weeklyOpeningTimes[MONDAY] ==
+			venue.weeklyOpeningTimes[MONDAY] ==
 				new DailyOpeningTimes(openPeriods: [new OpenPeriod(new SimpleTime(12, 0), new SimpleTime(18, 0))])
-			!venue.weeklyOpeningTimes.weeklyOpeningTimes[TUESDAY].openPeriods
+			!venue.weeklyOpeningTimes[TUESDAY].openPeriods
 		}
 	}
 	

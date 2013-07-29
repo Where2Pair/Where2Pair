@@ -23,7 +23,7 @@ class VenueConverter {
 		venues.collect { Venue venue ->
 			Map openHours = (MONDAY..SUNDAY).collectEntries { [dayToString(it), []] }
 
-			venue.weeklyOpeningTimes.weeklyOpeningTimes.each { DayOfWeek day, DailyOpeningTimes dailyOpeningTimes ->
+			venue.weeklyOpeningTimes.each { DayOfWeek day, DailyOpeningTimes dailyOpeningTimes ->
 				dailyOpeningTimes.openPeriods.each { OpenPeriod openPeriod ->
 					openHours[dayToString(day)] << [
 						openHour: openPeriod.start.hour, 
