@@ -64,7 +64,19 @@ class VenueFinderSpec extends Specification {
 		List venues = venueFinder.findNearestTo(USER_LOCATION)
 		
 		then:
-		venues.collect { it.distanceInKmTo(USER_LOCATION) } == [2, 3, 5, 10]
+		venues.distanceInKm == [2, 3, 5, 10]
+	}
+	
+	def "should return 50 closest venues"() {
+		given:
+		List nearbyVenues = 50.nearbyVenues()
+		venueRepository.getAll() >> 50.distantVenues() + nearbyVenues
+		
+		when:
+		List venues = venueFinder.findNearestTo(USER_LOCATION)
+		
+		then:
+		venues.venue == nearbyVenues
 	}
 	
 	def setup() {
@@ -84,14 +96,32 @@ class VenueFinderSpec extends Specification {
 	@Category(Integer)
 	static class VenuesMixin {
 		List openVenues() {
-			Venue venue = [isOpen: { dateTime -> dateTime == VenueFinderSpec.CURRENT_TIME },
-				distanceInKmTo: { coordinates -> 0 }] as Venue
-			[venue] * this
+			venuesWithTemplate {
+				[isOpen: { dateTime -> dateTime == VenueFinderSpec.CURRENT_TIME },
+					distanceInKmTo: { coordinates -> 0 }] as Venue
+			}
 		}
 		
 		List closedVenues() {
-			Venue venue = [isOpen: { dateTime -> false }] as Venue
-			[venue] * this
+			venuesWithTemplate {
+				[isOpen: { dateTime -> false }] as Venue
+			}
+		}
+		
+		List distantVenues() {
+			venuesWithTemplate {
+				[isOpen: { dateTime -> dateTime == VenueFinderSpec.CURRENT_TIME },
+					distanceInKmTo: { coordinates -> 100 }] as Venue
+			}
+		}
+		
+		List nearbyVenues() {
+			openVenues()
+		}
+		
+		Closure venuesWithTemplate = { Closure c ->
+			if (this == 0) return []
+			(0..(this - 1)).collect { c() }
 		}
 	}
 }

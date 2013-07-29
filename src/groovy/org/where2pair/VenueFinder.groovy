@@ -10,13 +10,19 @@ class VenueFinder {
 			venue.isOpen(timeProvider.currentTime) 
 		}
 		
-		List cappedVenueResults = restrictTo50Results(openVenues)
+		List sortedVenues = sortVenuesByDistance(openVenues, coordinates)
 		
-		sortVenuesIntoAscendingOrderByDistance(cappedVenueResults, coordinates)
+		restrictTo50Results(sortedVenues)
 	}
 
-	private List sortVenuesIntoAscendingOrderByDistance(List openVenues, Coordinates coordinates) {
-		openVenues.sort { Venue venue -> venue.distanceInKmTo(coordinates) }
+	private List sortVenuesByDistance(List openVenues, Coordinates coordinates) {
+		List venuesWithDistance = openVenues.collect { Venue venue -> 
+			new VenueWithDistance(venue: venue, distanceInKm: venue.distanceInKmTo(coordinates))
+		}
+		
+		venuesWithDistance.sort { VenueWithDistance venue -> 
+			venue.distanceInKm 
+		}
 	}
 
 	private List restrictTo50Results(List venues) {
