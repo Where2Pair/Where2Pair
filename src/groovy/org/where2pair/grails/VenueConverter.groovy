@@ -1,9 +1,5 @@
 package org.where2pair.grails
 
-import org.where2pair.DailyOpeningTimes
-import org.where2pair.DayOfWeek
-import org.where2pair.Venue
-import org.where2pair.DailyOpeningTimes.OpenPeriod
 import static org.where2pair.DayOfWeek.FRIDAY
 import static org.where2pair.DayOfWeek.MONDAY
 import static org.where2pair.DayOfWeek.SATURDAY
@@ -11,6 +7,12 @@ import static org.where2pair.DayOfWeek.SUNDAY
 import static org.where2pair.DayOfWeek.THURSDAY
 import static org.where2pair.DayOfWeek.TUESDAY
 import static org.where2pair.DayOfWeek.WEDNESDAY
+
+import org.where2pair.DailyOpeningTimes
+import org.where2pair.DayOfWeek
+import org.where2pair.Venue
+import org.where2pair.VenueWithDistance
+import org.where2pair.DailyOpeningTimes.OpenPeriod
 
 class VenueConverter {
 
@@ -33,6 +35,15 @@ class VenueConverter {
 				longitude: venue.location.lng,
 				openHours: openHours
 			)
+		}
+	}
+	
+	List asVenueWithDistanceDTOs(List venuesWithDistance) {
+		List venues = venuesWithDistance.venue
+		List distances = venuesWithDistance.distanceInKm
+		List venueDTOs = asVenueDTOs(venues)
+		[venueDTOs, distances].transpose().collect { VenueDTO venue, double distance -> 
+			new VenueWithDistanceDTO(venue: venue, distanceInKm: distance) 
 		}
 	}
 	

@@ -1,12 +1,11 @@
 package org.where2pair.grails
 
 import grails.converters.JSON
-import grails.test.mixin.*
-
 import org.skyscreamer.jsonassert.JSONAssert
 import org.where2pair.Coordinates
 import org.where2pair.Venue
 import org.where2pair.VenueFinder
+import org.where2pair.VenueWithDistance
 import org.where2pair.WeeklyOpeningTimesBuilder
 
 import spock.lang.Specification
@@ -36,8 +35,8 @@ class VenueControllerSpec extends Specification {
 		given:
 		request.method = 'GET'
 		controller.params.'location1' = '1.0,0.1'
-		venueFinder.findNearestTo(new Coordinates(lat: 1.0, lng: 0.1)) >> 10.venues()
-		List venueDTOs = toVenueDTO(10.venues())
+		venueFinder.findNearestTo(new Coordinates(lat: 1.0, lng: 0.1)) >> 10.venuesWithDistance()
+		List venueDTOs = toVenueWithDistanceDTO(10.venuesWithDistance())
 		
 		when:
 		controller.findNearest()
@@ -81,6 +80,10 @@ class VenueControllerSpec extends Specification {
 		venueConverter.asVenueDTOs(venues)
 	}
 	
+	private def toVenueWithDistanceDTO(List venues) {
+		venueConverter.asVenueWithDistanceDTOs(venues)
+	}
+	
 	def setup() {
 		controller.venueFinder = venueFinder
 		controller.gormVenueRepository = gormVenueRepository
@@ -107,6 +110,12 @@ class VenueControllerSpec extends Specification {
 		List venues() {
 			(0..this).collect { new Venue(location: new Coordinates(1.0, 0.5),
 				weeklyOpeningTimes: new WeeklyOpeningTimesBuilder().build()) }
+		}
+		
+		List venuesWithDistance() {
+			(0..this).collect { new VenueWithDistance(venue: new Venue(location: new Coordinates(1.0, 0.5),
+				weeklyOpeningTimes: new WeeklyOpeningTimesBuilder().build()),
+				distanceInKm: 10.5) }
 		}
 	}
 }

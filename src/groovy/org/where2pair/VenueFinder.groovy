@@ -26,10 +26,7 @@ class VenueFinder {
 	}
 
 	private List restrictTo50Results(List venues) {
-		if (venues.size() > 50)
-			return venues[0..49]
-		
-		venues
+		venues.size() > 50 ? venues[0..49] : venues
 	}
 	
 }

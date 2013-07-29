@@ -22,8 +22,8 @@ class VenueController {
 	def findNearest() {
 		def (lat, lng) = params.'location1'.split(',').collect { parseDouble(it) }
 		List venues = venueFinder.findNearestTo(new Coordinates(lat: lat, lng: lng))
-		List venueDTOs = asVenueDTOs(venues)
-		render venueDTOs as JSON
+		List venueWithDistanceDTOs = asVenueWithDistanceDTOs(venues)
+		render venueWithDistanceDTOs as JSON
 	}
 	
 	def save() {
@@ -34,5 +34,9 @@ class VenueController {
 	
 	private List asVenueDTOs(List venues) {
 		venueConverter.asVenueDTOs(venues)
+	}
+	
+	private List asVenueWithDistanceDTOs(List venues) {
+		venueConverter.asVenueWithDistanceDTOs(venues)
 	}
 }
