@@ -1,11 +1,5 @@
 package org.where2pair
 
-import org.joda.time.DateTime
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
-import org.joda.time.format.DateTimeParser
-
-import spock.lang.Specification
 import static org.where2pair.DayOfWeek.FRIDAY
 import static org.where2pair.DayOfWeek.MONDAY
 import static org.where2pair.DayOfWeek.SATURDAY
@@ -14,36 +8,41 @@ import static org.where2pair.DayOfWeek.THURSDAY
 import static org.where2pair.DayOfWeek.TUESDAY
 import static org.where2pair.DayOfWeek.WEDNESDAY
 
+import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
+import org.where2pair.DailyOpeningTimes.SimpleTime
+
+import spock.lang.Specification
+
 class WeeklyOpeningTimesSpec extends Specification {
 
-	def "should check daily opening times on correct day"() {
+	def "should check daily opening times with correct day, hour and minute"() {
 		given:
-		Map weeklyOpeningTimesMap = openOnlyOn(openDay, openTimestamp)
+		Map weeklyOpeningTimesMap = openOnlyBetween(openFrom, openUntil, openDay)
 		WeeklyOpeningTimes weeklyOpeningTimes = new WeeklyOpeningTimes(weeklyOpeningTimes: weeklyOpeningTimesMap)
-		DateTime dateTime = parse(openTimestamp)
+		OpenTimesCriteria openTimesCriteria = new OpenTimesCriteria(openFrom: openFrom, openUntil: openUntil, dayOfWeek: openDay)
 		
 		when:
-		boolean isOpen = weeklyOpeningTimes.isOpen(dateTime)
+		boolean isOpen = weeklyOpeningTimes.isOpen(openTimesCriteria)
 		
 		then:
 		isOpen
 		
 		where:
-		openTimestamp		| openDay
-		'2013-07-22 19:22'	| MONDAY
-		'2013-07-23 14:21'	| TUESDAY
-		'2013-07-24 00:00'	| WEDNESDAY
-		'2013-07-25 18:55'	| THURSDAY
-		'2013-07-26 09:40'	| FRIDAY
-		'2013-07-27 18:50'	| SATURDAY
-		'2013-07-28 22:39'	| SUNDAY
+		openFrom				| openUntil				| openDay
+		new SimpleTime(1, 2)	| new SimpleTime(2, 1)	| MONDAY
+		new SimpleTime(3, 4)	| new SimpleTime(4, 3)	| TUESDAY
+		new SimpleTime(5, 6)	| new SimpleTime(6, 5)	| WEDNESDAY
+		new SimpleTime(7, 8)	| new SimpleTime(8, 7)	| THURSDAY
+		new SimpleTime(9, 10)	| new SimpleTime(10, 9)	| FRIDAY
+		new SimpleTime(11,12)	| new SimpleTime(11,11)	| SATURDAY
+		new SimpleTime(14,13)	| new SimpleTime(11,13)	| SUNDAY
 		
 	}
 	
-	private Map openOnlyOn(DayOfWeek openDay, String openTimestamp) {
+	private Map openOnlyBetween(SimpleTime openFrom, SimpleTime openUntil, DayOfWeek openDay) {
 		Map openingTimes = (MONDAY..SUNDAY).collectEntries { [it, [isOpen: false ]] }
-		DateTime openDateTime = parse(openTimestamp)
-		openingTimes[openDay] = [isOpen: { hour, minute -> hour == openDateTime.getHourOfDay() && minute == openDateTime.getMinuteOfHour() }]
+		openingTimes[openDay] = [isOpen: { from, until -> from == openFrom && until == openUntil }]
 		openingTimes
 	}
 	

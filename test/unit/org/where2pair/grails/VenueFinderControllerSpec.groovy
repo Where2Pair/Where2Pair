@@ -1,29 +1,40 @@
 package org.where2pair.grails
 
+import static org.where2pair.DayOfWeek.FRIDAY
+import static org.where2pair.DayOfWeek.MONDAY
+import static org.where2pair.DayOfWeek.WEDNESDAY
+import static org.where2pair.DayOfWeek.THURSDAY
+import static org.where2pair.DayOfWeek.SUNDAY
 import grails.converters.JSON
 import grails.test.mixin.*
 
 import org.skyscreamer.jsonassert.JSONAssert
 import org.where2pair.Coordinates
+import org.where2pair.OpenTimesCriteria
+import org.where2pair.TimeProvider
 import org.where2pair.Venue
 import org.where2pair.VenueFinder
 import org.where2pair.VenueWithDistance
 import org.where2pair.WeeklyOpeningTimesBuilder
+import org.where2pair.DailyOpeningTimes.SimpleTime
 
 import spock.lang.Specification
+import spock.lang.Unroll
 
 @TestFor(VenueFinderController)
 class VenueFinderControllerSpec extends Specification {
 
+	static final TIME_NOW = new SimpleTime(1, 2)
+	static final TODAY = FRIDAY
 	VenueFinder venueFinder = Mock()
 	GormVenueRepository gormVenueRepository = Mock()
+	TimeProvider timeProvider = Mock()
 	VenueConverter venueConverter = new VenueConverter()
 
 	def "should display search results for given coordinates"() {
 		given:
-		request.method = 'GET'
 		controller.params.'location1' = '1.0,0.1'
-		venueFinder.findNearestTo(new Coordinates(1.0,0.1)) >> 10.venuesWithDistance()
+		venueFinder.findNearestTo(_,new Coordinates(1.0,0.1)) >> 10.venuesWithDistance()
 		List venueDTOs = toVenueWithDistanceDTO(10.venuesWithDistance())
 
 		when:
@@ -36,20 +47,18 @@ class VenueFinderControllerSpec extends Specification {
 
 	def "should support multiple supplied locations"() {
 		given:
-		request.method = 'GET'
 		(1..1000).each { controller.params."location$it" = '1.0,0.1'}
-		List expectedArgs = [new Coordinates(1.0,0.1)] * 1000
+		List expectedCoordArgs = [new Coordinates(1.0,0.1)] * 1000
 
 		when:
 		controller.findNearest()
 
 		then:
-		1 * venueFinder.findNearestTo(expectedArgs)
+		1 * venueFinder.findNearestTo(_,expectedCoordArgs)
 	}
 
 	def "should reject more than 1000 supplied locations"() {
 		given:
-		request.method = 'GET'
 		(1..1001).each { controller.params."location$it" = '1.0,0.1'}
 
 		when:
@@ -61,9 +70,6 @@ class VenueFinderControllerSpec extends Specification {
 	}
 
 	def "should reject 0 supplied locations"() {
-		given:
-		request.method = 'GET'
-
 		when:
 		controller.findNearest()
 
@@ -72,14 +78,48 @@ class VenueFinderControllerSpec extends Specification {
 		response.status == 413
 	}
 
+	@Unroll
+	def "given openFrom: #openFromParam openUntil: #openUntilParam openDay: #openDayParam should find venues open during correct time range"() {
+		given:
+		controller.params.'location1' = '1.0,0.1'
+		if (openFromParam != 'missing') controller.params.'openFrom' = openFromParam
+		if (openUntilParam != 'missing') controller.params.'openUntil' = openUntilParam
+		if (openDayParam != 'missing') controller.params.'openDay' = openDayParam
+		
+		when:
+		controller.findNearest()
+		
+		then:
+		1 * venueFinder.findNearestTo({ OpenTimesCriteria criteria ->
+			criteria.openFrom == expectedOpenFrom
+			criteria.openUntil == expectedOpenUntil
+			criteria.dayOfWeek == expectedOpenDay
+		}, _)
+		
+		where:
+		openFromParam 	| openUntilParam 	| openDayParam  | expectedOpenFrom 			| expectedOpenUntil 		| expectedOpenDay
+		'missing'		| 'missing'			| 'missing'		| TIME_NOW					| TIME_NOW					| TODAY
+		'13.30'			| 'missing'			| 'missing'		| new SimpleTime(13, 30)	| new SimpleTime(13, 30)	| TODAY
+		'missing'		| '13.30'			| 'missing'		| TIME_NOW					| new SimpleTime(13, 30)	| TODAY
+		'13.30'			| '18.45'			| 'missing'		| new SimpleTime(13, 30)	| new SimpleTime(18, 45)	| TODAY
+		'13.30'			| 'missing'			| 'monday'		| new SimpleTime(13, 30)	| new SimpleTime(13, 30)	| MONDAY
+		'missing'		| '18.45'			| 'wednesday'	| TIME_NOW					| new SimpleTime(18, 45)	| WEDNESDAY
+		'13.30'			| '18.45'			| 'thursday'	| new SimpleTime(13, 30)	| new SimpleTime(18, 45)	| THURSDAY
+		'missing'		| 'missing'			| 'sunday'		| new SimpleTime(0, 0)		| new SimpleTime(35, 59)	| SUNDAY
+	}
+	
 	private def toVenueWithDistanceDTO(List venues) {
 		venueConverter.asVenueWithDistanceDTOs(venues)
 	}
 
 	def setup() {
+		request.method = 'GET'
+		timeProvider.timeNow() >> TIME_NOW
+		timeProvider.today() >> TODAY
 		controller.venueFinder = venueFinder
 		controller.gormVenueRepository = gormVenueRepository
 		controller.venueConverter = venueConverter
+		controller.timeProvider = timeProvider
 		String.mixin(JSONMatcher)
 		Integer.mixin(VenuesMixin)
 	}

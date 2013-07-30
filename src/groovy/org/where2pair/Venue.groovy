@@ -7,8 +7,8 @@ class Venue {
 	Coordinates location
 	WeeklyOpeningTimes weeklyOpeningTimes
 	
-	boolean isOpen(DateTime dateTime) {
-		weeklyOpeningTimes.isOpen(dateTime)
+	boolean isOpen(OpenTimesCriteria openTimesCriteria) {
+		weeklyOpeningTimes.isOpen(openTimesCriteria)
 	}
 	
 	double distanceInKmTo(Coordinates coordinates) {

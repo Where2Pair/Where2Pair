@@ -7,7 +7,6 @@ import org.where2pair.grails.VenueConverter;
 
 
 beans = {
-
 	venueDaoService(GormVenueDaoService)
 
 	gormVenueRepository(GormVenueRepository) { 
@@ -22,7 +21,6 @@ beans = {
 	
 	venueFinder(VenueFinder) {
 		venueRepository = ref("gormVenueRepository")
-		timeProvider = ref("timeProvider")
 		distanceCalculator = ref("distanceCalculator")
 	}
 }

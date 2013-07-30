@@ -5,20 +5,19 @@ import spock.lang.Specification
 
 class VenueFinderSpec extends Specification {
 
-	static final CURRENT_TIME = new DateTime()
+	static final OPEN_TIMES_CRITERIA = new OpenTimesCriteria()
 	static final USER_LOCATION = new Coordinates(lat: 0.2, lng: 0.1)
 	VenueRepository venueRepository = Mock()
-	TimeProvider timeProvider = Mock()
 	DistanceCalculator distanceCalculator = Mock()
 	VenueFinder venueFinder = new VenueFinder(venueRepository: venueRepository, 
-		timeProvider: timeProvider, distanceCalculator: distanceCalculator)
+		distanceCalculator: distanceCalculator)
 	
 	def "should return at most 50 venues"() {
 		given:
 		venueRepository.getAll() >> 100.openVenues()
 		
 		when:
-		List venues = venueFinder.findNearestTo(USER_LOCATION)
+		List venues = venueFinder.findNearestTo(OPEN_TIMES_CRITERIA, USER_LOCATION)
 		
 		then:
 		venues.size() == 50
@@ -29,7 +28,7 @@ class VenueFinderSpec extends Specification {
 		venueRepository.getAll() >> 49.openVenues()
 		
 		when:
-		List venues = venueFinder.findNearestTo(USER_LOCATION)
+		List venues = venueFinder.findNearestTo(OPEN_TIMES_CRITERIA, USER_LOCATION)
 		
 		then:
 		venues.size() == 49
@@ -40,7 +39,7 @@ class VenueFinderSpec extends Specification {
 		venueRepository.getAll() >> 0.openVenues()
 		
 		when:
-		List venues = venueFinder.findNearestTo(USER_LOCATION)
+		List venues = venueFinder.findNearestTo(OPEN_TIMES_CRITERIA, USER_LOCATION)
 		
 		then:
 		venues.size() == 0
@@ -51,7 +50,7 @@ class VenueFinderSpec extends Specification {
 		venueRepository.getAll() >> 10.openVenues() + 5.closedVenues()
 		
 		when:
-		List venues = venueFinder.findNearestTo(USER_LOCATION)
+		List venues = venueFinder.findNearestTo(OPEN_TIMES_CRITERIA, USER_LOCATION)
 		
 		then:
 		venues.size() == 10
@@ -64,7 +63,7 @@ class VenueFinderSpec extends Specification {
 		distanceCalculator.distanceInKmTo(_ as Venue, USER_LOCATION) >>> (99..0)
 		
 		when:
-		List venues = venueFinder.findNearestTo(USER_LOCATION)
+		List venues = venueFinder.findNearestTo(OPEN_TIMES_CRITERIA, USER_LOCATION)
 		
 		then:
 		venues.venue == nearbyVenues.reverse()
@@ -79,7 +78,7 @@ class VenueFinderSpec extends Specification {
 		Coordinates coords3 = new Coordinates(0.3, 0.4)
 		
 		when:
-		venueFinder.findNearestTo(coords1, coords2, coords3)
+		venueFinder.findNearestTo(OPEN_TIMES_CRITERIA, coords1, coords2, coords3)
 		
 		then:
 		1 * distanceCalculator.distanceInKmTo(venues[0], coords1, coords2, coords3)
@@ -87,7 +86,6 @@ class VenueFinderSpec extends Specification {
 	
 	def setup() {
 		Integer.mixin(VenuesMixin)
-		timeProvider.currentTime >> CURRENT_TIME
 	}
 	
 	def cleanup() {
@@ -95,7 +93,7 @@ class VenueFinderSpec extends Specification {
 	}
 	
 	def openVenueWithDistance(it) {
-		Venue venue = [isOpen: { dateTime -> dateTime == CURRENT_TIME },
+		Venue venue = [isOpen: { openTimesCriteria -> openTimesCriteria == OPEN_TIMES_CRITERIA },
 			distanceInKmTo: { coordinates -> it }] as Venue
 	}
 	
@@ -103,7 +101,7 @@ class VenueFinderSpec extends Specification {
 	static class VenuesMixin {
 		List openVenues() {
 			venuesWithTemplate {
-				[isOpen: { dateTime -> dateTime == VenueFinderSpec.CURRENT_TIME },
+				[isOpen: { openTimesCriteria -> openTimesCriteria == VenueFinderSpec.OPEN_TIMES_CRITERIA },
 					distanceInKmTo: { coordinates -> 0 }] as Venue
 			}
 		}
@@ -114,7 +112,7 @@ class VenueFinderSpec extends Specification {
 			}
 		}
 		
-		Closure venuesWithTemplate = { Closure c ->
+		def venuesWithTemplate(Closure c) {
 			if (this == 0) return []
 			(0..(this - 1)).collect { c() }
 		}

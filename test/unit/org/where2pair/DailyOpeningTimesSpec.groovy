@@ -13,7 +13,7 @@ class DailyOpeningTimesSpec extends Specification {
 		DailyOpeningTimes dailyOpeningTimes = new DailyOpeningTimes(openPeriods: [])
 		
 		when:
-		boolean isOpen = dailyOpeningTimes.isOpen(12, 0)
+		boolean isOpen = dailyOpeningTimes.isOpen(new SimpleTime(0,0), new SimpleTime(35,59))
 	
 		then:
 		!isOpen
@@ -22,22 +22,39 @@ class DailyOpeningTimesSpec extends Specification {
 	def "given a single open period, should determine when open"() {
 		given:
 		DailyOpeningTimes dailyOpeningTimes = openingTimesWith(startTime, endTime)
-		def (currentHour, currentMinute) = parse(currentTime)
 		
 		when:
-		boolean isOpen = dailyOpeningTimes.isOpen(currentHour, currentMinute)
+		boolean isOpen = dailyOpeningTimes.isOpen(openFrom, openUntil)
 		
 		then:
 		isOpen == expectedOpen
 		
 		where:
-		startTime 	| endTime | currentTime | expectedOpen
-		'12:00'		| '12:00' | '12:00'		| true
-		'12:00'		| '12:00' | '12:01'		| false
-		'12:00'		| '12:00' | '11:59'		| false
-		'00:00'		| '35:59' | '12:00'		| true
-		'12:00'		| '12:59' | '12:30'		| true
-		'12:00'		| '12:30' | '12:59'		| false
+		startTime 	| endTime	| openFrom 				| openUntil 			| expectedOpen
+		'12:00'		| '12:00'	| new SimpleTime(12,0)	| new SimpleTime(12,0)	| true
+		'12:00'		| '12:00'	| new SimpleTime(12,1)	| new SimpleTime(12,1)	| false
+		'12:00'		| '12:00'	| new SimpleTime(11,59)	| new SimpleTime(11,59)	| false
+		'00:00'		| '35:59'	| new SimpleTime(12,0)	| new SimpleTime(18,0)	| true
+		'12:00'		| '12:59'	| new SimpleTime(12,0)	| new SimpleTime(12,59)	| true
+		'12:00'		| '12:30'	| new SimpleTime(12,15)	| new SimpleTime(12,31)	| false
+	}
+	
+	def "given multiple open times, should check each to see if there is an open time"() {
+		given:
+		DailyOpeningTimes dailyOpeningTimes = new DailyOpeningTimes(openPeriods: [
+			new OpenPeriod(
+				start: new SimpleTime(1,0),
+				end: new SimpleTime(2,0)),
+			new OpenPeriod(
+				start: new SimpleTime(12,0),
+				end: new SimpleTime(13,0))
+		])
+		
+		when:
+		boolean isOpen = dailyOpeningTimes.isOpen(new SimpleTime(12,0), new SimpleTime(13,0))
+		
+		then:
+		isOpen
 	}
 	
 	private DailyOpeningTimes openingTimesWith(startTime, endTime) {
@@ -45,8 +62,8 @@ class DailyOpeningTimesSpec extends Specification {
 		def (endHour, endMinute) = parse(endTime)
 		new DailyOpeningTimes(openPeriods: [
 			new OpenPeriod(
-				start: new SimpleTime(hour: startHour, minute: startMinute),
-				end: new SimpleTime(hour: endHour, minute: endMinute))
+				start: new SimpleTime(startHour, startMinute),
+				end: new SimpleTime(endHour, endMinute))
 		])
 	}
 	

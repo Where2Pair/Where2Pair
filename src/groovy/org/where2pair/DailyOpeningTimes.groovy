@@ -5,15 +5,10 @@ import groovy.transform.Immutable
 
 @EqualsAndHashCode
 class DailyOpeningTimes {
-
 	List openPeriods = []
 	
-	boolean isOpen(int hour, int minute) {
-		if (openPeriods.isEmpty())
-			return false
-			
-		OpenPeriod openPeriod = openPeriods[0]
-		openPeriod.isOpen(new SimpleTime(hour, minute))
+	boolean isOpen(SimpleTime openFrom, SimpleTime openUntil) {
+		openPeriods.find { it.isOpen(openFrom, openUntil) }
 	}
 	
 	@Immutable
@@ -21,8 +16,8 @@ class DailyOpeningTimes {
 		SimpleTime start
 		SimpleTime end
 		
-		boolean isOpen(SimpleTime time) {
-			time >= start && time <= end
+		boolean isOpen(SimpleTime openFrom, SimpleTime openUntil) {
+			openFrom >= start && openUntil <= end
 		}
 	}
 	

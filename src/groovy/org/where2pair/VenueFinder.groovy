@@ -1,14 +1,15 @@
 package org.where2pair
 
+import org.where2pair.DailyOpeningTimes.SimpleTime
+
 class VenueFinder {
 
 	VenueRepository venueRepository
-	TimeProvider timeProvider
 	DistanceCalculator distanceCalculator
 	
-	List findNearestTo(Coordinates... coordinates) {
+	List findNearestTo(OpenTimesCriteria openTimesCriteria, Coordinates... coordinates) {
 		List openVenues = venueRepository.getAll().findAll { Venue venue -> 
-			venue.isOpen(timeProvider.currentTime) 
+			venue.isOpen(openTimesCriteria) 
 		}
 		
 		List sortedVenues = sortVenuesByDistance(openVenues, coordinates)
