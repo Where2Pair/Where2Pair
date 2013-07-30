@@ -4,14 +4,14 @@ import org.joda.time.DateTime
 
 class Venue {
 
+    String name
 	Coordinates location
 	WeeklyOpeningTimes weeklyOpeningTimes
-    String name
 	
 	boolean isOpen(OpenTimesCriteria openTimesCriteria) {
 		weeklyOpeningTimes.isOpen(openTimesCriteria)
-	}
-	
+    }
+		
 	double distanceInKmTo(Coordinates coordinates) {
 		location.distanceInKmTo(coordinates)
 	}

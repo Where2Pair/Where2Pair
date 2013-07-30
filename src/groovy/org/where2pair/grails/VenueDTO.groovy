@@ -8,5 +8,6 @@ import groovy.transform.ToString;
 class VenueDTO {
 	double latitude
 	double longitude
+    String name
 	Map openHours
 }
