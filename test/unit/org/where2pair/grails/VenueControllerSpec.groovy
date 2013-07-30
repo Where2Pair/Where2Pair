@@ -15,7 +15,6 @@ import spock.lang.Specification
 @TestFor(VenueController)
 class VenueControllerSpec extends Specification {
 
-	VenueFinder venueFinder = Mock()
 	GormVenueRepository gormVenueRepository = Mock()
 	VenueConverter venueConverter = new VenueConverter()
 
@@ -32,50 +31,10 @@ class VenueControllerSpec extends Specification {
 		response.text.equalToJsonOf(venueDTOs)
 		response.status == 200
 	}
-
-	def "should display search results for given coordinates"() {
-		given:
-		request.method = 'GET'
-		controller.params.'location1' = '1.0,0.1'
-		venueFinder.findNearestTo(new Coordinates(lat: 1.0, lng: 0.1)) >> 10.venuesWithDistance()
-		List venueDTOs = toVenueWithDistanceDTO(10.venuesWithDistance())
-
-		when:
-		controller.findNearest()
-
-		then:
-		response.text.equalToJsonOf(venueDTOs)
-		response.status == 200
-	}
-
-	def "should support multiple supplied locations"() {
-		given:
-		request.method = 'GET'
-		(1..1000).each { controller.params."location$it" = '1.0,0.1'}
-		List expectedArgs = [new Coordinates(1.0,0.1)]* 1000
-
-		when:
-		controller.findNearest()
-
-		then:
-		1 * venueFinder.findNearestTo(expectedArgs)
-	}
-
-	def "should reject more than 1000 supplied locations"() {
-		given:
-		request.method = 'GET'
-		(1..1001).each { controller.params."location$it" = '1.0,0.1'}
-
-		when:
-		controller.findNearest()
-
-		then:
-		response.text == "Only upto 1000 locations are supported at this time."
-		response.status == 413
-	}
-
+	
 	def "should save new venues"() {
 		given:
+		request.method = 'POST'
 		VenueDTO venueDTO = new VenueDTO(
 				latitude: 1.0,
 				longitude: 0.1,
@@ -86,7 +45,6 @@ class VenueControllerSpec extends Specification {
 						[openHour: 8, openMinute: 0, closeHour: 11, closeMinute: 0]
 					]]
 				)
-		request.method = 'POST'
 		request.json = venueDTO
 
 		when:
@@ -98,22 +56,11 @@ class VenueControllerSpec extends Specification {
 		response.status == 200
 	}
 
-	def "test http actions"() {
-	}
-
-	def "should handle errors"() {
-	}
-
 	private def toVenueDTO(List venues) {
 		venueConverter.asVenueDTOs(venues)
 	}
 
-	private def toVenueWithDistanceDTO(List venues) {
-		venueConverter.asVenueWithDistanceDTOs(venues)
-	}
-
 	def setup() {
-		controller.venueFinder = venueFinder
 		controller.gormVenueRepository = gormVenueRepository
 		controller.venueConverter = venueConverter
 		String.mixin(JSONMatcher)
@@ -139,14 +86,6 @@ class VenueControllerSpec extends Specification {
 			(0..this).collect {
 				new Venue(location: new Coordinates(1.0, 0.5),
 				weeklyOpeningTimes: new WeeklyOpeningTimesBuilder().build())
-			}
-		}
-
-		List venuesWithDistance() {
-			(0..this).collect {
-				new VenueWithDistance(venue: new Venue(location: new Coordinates(1.0, 0.5),
-				weeklyOpeningTimes: new WeeklyOpeningTimesBuilder().build()),
-				distanceInKm: 10.5)
 			}
 		}
 	}
