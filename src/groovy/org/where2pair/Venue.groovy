@@ -6,6 +6,7 @@ class Venue {
 
 	Coordinates location
 	WeeklyOpeningTimes weeklyOpeningTimes
+    String name
 	
 	boolean isOpen(OpenTimesCriteria openTimesCriteria) {
 		weeklyOpeningTimes.isOpen(openTimesCriteria)
