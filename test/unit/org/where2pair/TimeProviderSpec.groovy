@@ -19,7 +19,7 @@ class TimeProviderSpec extends Specification {
 		long currentTime = timeProvider.currentDateTime.millis
 		
 		then:
-		currentTime closeTo(actualTime, 100)
+		currentTime closeTo(actualTime, 1000)
 	}
 	
 	def "should return current time as simple time"() {
