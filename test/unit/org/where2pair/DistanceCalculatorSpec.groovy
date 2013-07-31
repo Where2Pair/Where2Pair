@@ -1,6 +1,7 @@
 package org.where2pair
 
 import spock.lang.Specification
+import static spock.util.matcher.HamcrestMatchers.closeTo
 
 class DistanceCalculatorSpec extends Specification {
 
@@ -19,7 +20,7 @@ class DistanceCalculatorSpec extends Specification {
 		distance == 2.3
 	}
 	
-	def "given multiple coordinates then return max distance to all coordinates from venue"() {
+	def "given multiple coordinates then return average distance to all coordinates from venue"() {
 		given:
 		Coordinates coords1 = new Coordinates(0.1, 0.2)
 		Coordinates coords2 = new Coordinates(0.2, 0.3)
@@ -33,6 +34,6 @@ class DistanceCalculatorSpec extends Specification {
 		double distance = distanceCalculator.distanceInKmTo(venue, coords1, coords2, coords3)
 		
 		then:
-		distance == 5.9
+		distance closeTo((2.3 + 5.9 + 3.4)/3, 0.01)
 	}
 }
