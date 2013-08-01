@@ -10,7 +10,11 @@ import static org.where2pair.DayOfWeek.SUNDAY
 
 class VenueConverter {
 
-	List asVenueDTOs(List venues) { 
+    VenueDTO asVenueDto(Venue venue) {
+
+    }
+
+	List asVenueDtos(List venues) {
 		if (!venues)
 			return []
 		
@@ -42,7 +46,7 @@ class VenueConverter {
 		
 		List venues = venuesWithDistance.venue
 		List distances = venuesWithDistance.distanceInKm
-		List venueDTOs = asVenueDTOs(venues)
+		List venueDTOs = asVenueDtos(venues)
 		[venueDTOs, distances].transpose().collect { VenueDTO venue, double distance -> 
 			new VenueWithDistanceDTO(venue: venue, distanceInKm: distance) 
 		}

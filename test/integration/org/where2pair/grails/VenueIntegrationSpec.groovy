@@ -1,10 +1,13 @@
 package org.where2pair.grails
 
-import grails.plugin.spock.IntegrationSpec
+import grails.test.mixin.TestMixin
+import grails.test.mixin.web.ControllerUnitTestMixin
 import groovyx.net.http.ContentType
 import groovyx.net.http.RESTClient
+import spock.lang.Specification
 
-class VenueIntegrationSpec extends IntegrationSpec {
+@TestMixin(ControllerUnitTestMixin)
+class VenueIntegrationSpec extends Specification {
     public static final String VENUE_NAME = "my test venue"
 
     def "store and retrieve venue though the REST api"() {
@@ -17,18 +20,20 @@ class VenueIntegrationSpec extends IntegrationSpec {
         def retrievedJson = storeAndRetrieve(venueDTO)
 
         then:
-        retrievedJson.latitude == venueDTO.latitude
-        retrievedJson.longitude == venueDTO.longitude
+        retrievedJson.name == VENUE_NAME
     }
 
     private net.sf.json.JSON storeAndRetrieve(venueDTO) {
         def venueJson = new grails.converters.JSON(venueDTO)
         def where2pair = new RESTClient("http://localhost:8080")
 
-        where2pair.post(path: "Where2Pair/venue", body: venueJson.toString(), requestContentType: ContentType.JSON)
+        def venueJsonString = venueJson.toString(true)
+        def savedVenue = where2pair.post(path: "Where2Pair/venue", body: venueDTO, requestContentType: ContentType.JSON)
 
-        def resp = where2pair.get(path: "Where2Pair/venue/findNearest", query: "location1=" + venueDTO.latitude + ","
-                + venueDTO.longitude, requestContentType: ContentType.URLENCJSON)
+        def id = savedVenue.id;
+
+        def resp = where2pair.get(path: "Where2Pair/venue/$id", requestContentType: ContentType.URLENC)
+
         resp.data
     }
 }

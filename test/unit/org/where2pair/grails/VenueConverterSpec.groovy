@@ -3,7 +3,6 @@ package org.where2pair.grails
 import static org.where2pair.DayOfWeek.MONDAY
 import static org.where2pair.DayOfWeek.TUESDAY
 import org.where2pair.Coordinates
-import org.where2pair.DayOfWeek
 import org.where2pair.Venue
 import org.where2pair.VenueWithDistance
 import org.where2pair.WeeklyOpeningTimesBuilder
@@ -21,7 +20,7 @@ class VenueConverterSpec extends Specification {
 		VenueDTO expectedVenueDTO = createCorrespondingVenueDTO()
 		
 		when:
-		List venueDTOs = venueConverter.asVenueDTOs([venue])
+		List venueDTOs = venueConverter.asVenueDtos([venue])
 		
 		then:
 		venueDTOs == [expectedVenueDTO]

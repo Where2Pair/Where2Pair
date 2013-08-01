@@ -6,6 +6,7 @@ import groovy.transform.ToString;
 @EqualsAndHashCode
 @ToString
 class VenueDTO {
+    long id
 	double latitude
 	double longitude
     String name
