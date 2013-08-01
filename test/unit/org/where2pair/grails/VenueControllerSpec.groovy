@@ -33,6 +33,10 @@ class VenueControllerSpec extends Specification {
         response.text.equalToJsonOf(venueDto)
     }
 
+    def "should show 404 if venue not found"() {
+        //TODO
+    }
+
 	def "should show all venues"() {
 		given:
 		request.method = 'GET'
