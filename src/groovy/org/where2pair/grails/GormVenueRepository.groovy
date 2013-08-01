@@ -18,7 +18,7 @@ class GormVenueRepository implements VenueRepository {
 	}
 
     Venue get(long id) {
-
+		mapGormVenueToVenue(gormVenueDaoService.get(id))
     }
 
 	private Venue mapGormVenueToVenue(GormVenue venue) {
@@ -39,8 +39,8 @@ class GormVenueRepository implements VenueRepository {
 
 	long save(VenueDTO venueDTO) {
 		GormVenue gormVenue = mapVenueDTOToGormVenue(venueDTO)
-		gormVenueDaoService.save(gormVenue)
-        gormVenue.id
+		GormVenue storedGormVenue = gormVenueDaoService.save(gormVenue)
+		storedGormVenue.id
 	}	
 	
 	private GormVenue mapVenueDTOToGormVenue(VenueDTO venueDTO) {

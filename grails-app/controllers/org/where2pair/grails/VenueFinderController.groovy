@@ -23,8 +23,8 @@ class VenueFinderController {
 		if (coordinates.size() in 1..1000) {
 			OpenTimesCriteria openTimesCriteria = parseOpenTimesCriteriaFromRequest()
 			List venues = venueFinder.findNearestTo(openTimesCriteria, *coordinates)
-			List venueWithDistanceDTOs = asVenueWithDistanceDTOs(venues)
-			render venueWithDistanceDTOs as JSON
+			List venueWithDistanceDtos = asVenueWithDistanceDtos(venues)
+			render venueWithDistanceDtos as JSON
 		} else {
 			handleIllegalCoordinatesCount(coordinates)
 		}
@@ -53,8 +53,8 @@ class VenueFinderController {
 		}
 	}
 	
-	private List asVenueWithDistanceDTOs(List venues) {
-		venueConverter.asVenueWithDistanceDTOs(venues)
+	private List asVenueWithDistanceDtos(List venues) {
+		venueConverter.asVenueWithDistanceDtos(venues)
 	}
 	
 	private void handleIllegalCoordinatesCount(List coordinates) {

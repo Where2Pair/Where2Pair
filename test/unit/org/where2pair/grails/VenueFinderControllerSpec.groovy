@@ -109,7 +109,7 @@ class VenueFinderControllerSpec extends Specification {
 	}
 	
 	private def toVenueWithDistanceDTO(List venues) {
-		venueConverter.asVenueWithDistanceDTOs(venues)
+		venueConverter.asVenueWithDistanceDtos(venues)
 	}
 
 	def setup() {

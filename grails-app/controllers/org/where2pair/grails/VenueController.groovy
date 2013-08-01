@@ -8,7 +8,7 @@ class VenueController {
     GormVenueRepository gormVenueRepository
     VenueConverter venueConverter
 
-    def show(Long id) {
+    def show(long id) {
         Venue venue = gormVenueRepository.get(id)
         VenueDTO venueDto = venueConverter.asVenueDto(venue)
         render new JSON(venueDto)

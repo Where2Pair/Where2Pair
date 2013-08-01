@@ -11,6 +11,24 @@ import static org.where2pair.DayOfWeek.SUNDAY
 class VenueConverter {
 
     VenueDTO asVenueDto(Venue venue) {
+		Map openHours = (MONDAY..SUNDAY).collectEntries { [dayToString(it), []] }
+
+		venue.weeklyOpeningTimes.each { DayOfWeek day, DailyOpeningTimes dailyOpeningTimes ->
+			dailyOpeningTimes.openPeriods.each { OpenPeriod openPeriod ->
+				openHours[dayToString(day)] << [
+					openHour: openPeriod.start.hour,
+					openMinute: openPeriod.start.minute,
+					closeHour: openPeriod.end.hour,
+					closeMinute: openPeriod.end.minute]
+			}
+		}
+		
+		new VenueDTO(
+			name: venue.name,
+			latitude: venue.location.lat,
+			longitude: venue.location.lng,
+			openHours: openHours
+		)
 
     }
 
@@ -19,28 +37,11 @@ class VenueConverter {
 			return []
 		
 		venues.collect { Venue venue ->
-			Map openHours = (MONDAY..SUNDAY).collectEntries { [dayToString(it), []] }
-
-			venue.weeklyOpeningTimes.each { DayOfWeek day, DailyOpeningTimes dailyOpeningTimes ->
-				dailyOpeningTimes.openPeriods.each { OpenPeriod openPeriod ->
-					openHours[dayToString(day)] << [
-						openHour: openPeriod.start.hour, 
-						openMinute: openPeriod.start.minute,
-						closeHour: openPeriod.end.hour,
-						closeMinute: openPeriod.end.minute]
-				}
-			}
-			
-			new VenueDTO(
-                name: venue.name,
-				latitude: venue.location.lat,
-				longitude: venue.location.lng,
-				openHours: openHours
-			)
+			asVenueDto(venue)
 		}
 	}
 	
-	List asVenueWithDistanceDTOs(List venuesWithDistance) {
+	List asVenueWithDistanceDtos(List venuesWithDistance) {
 		if (!venuesWithDistance)
 			return []
 		

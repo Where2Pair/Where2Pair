@@ -6,11 +6,15 @@ import org.where2pair.VenueRepository;
 
 class GormVenueDaoService {
 
+	GormVenue get(long id) {
+		
+	}
+	
 	List getAll() {
 		GormVenue.list()
 	}
-
-	void save(GormVenue venue) {
+	
+	GormVenue save(GormVenue venue) {
 		venue.save()
 	}	
 }
