@@ -6,7 +6,6 @@ import groovyx.net.http.ContentType
 import groovyx.net.http.RESTClient
 import spock.lang.Specification
 
-@TestMixin(ControllerUnitTestMixin)
 class VenueIntegrationSpec extends Specification {
     public static final String VENUE_NAME = "my test venue"
 
@@ -14,7 +13,6 @@ class VenueIntegrationSpec extends Specification {
         given:
         VenueDTO venueDTO = new VenueDTO(name: VENUE_NAME, latitude: 1.0, longitude: 0.5,
                 openHours: ["monday": [[openHour: 12, openMinute: 0, closeHour: 18, closeMinute: 0]]])
-
 
         when:
         def retrievedJson = storeAndRetrieve(venueDTO)
@@ -25,14 +23,14 @@ class VenueIntegrationSpec extends Specification {
 
     private net.sf.json.JSON storeAndRetrieve(venueDTO) {
         def venueJson = new grails.converters.JSON(venueDTO)
-        def where2pair = new RESTClient("http://localhost:8080")
+        def where2pair = new RESTClient("http://localhost:8080/Where2Pair")
 
         def venueJsonString = venueJson.toString(true)
-        def savedVenue = where2pair.post(path: "Where2Pair/venue", body: venueDTO, requestContentType: ContentType.JSON)
+        def savedVenue = where2pair.post(path: "venue", body: venueDTO, requestContentType: ContentType.JSON)
 
         def id = savedVenue.id;
 
-        def resp = where2pair.get(path: "Where2Pair/venue/$id", requestContentType: ContentType.URLENC)
+        def resp = where2pair.get(path: "venue/$id", requestContentType: ContentType.URLENC)
 
         resp.data
     }

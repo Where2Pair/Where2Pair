@@ -43,7 +43,7 @@ grails.project.dependency.resolution = {
 		compile "joda-time:joda-time:2.2"
 		test "org.skyscreamer:jsonassert:1.2.0"
 		test "org.spockframework:spock-grails-support:0.7-groovy-2.0"
-        //test "org.codehaus.groovy.modules.http-builder:http-builder:0.5.2"
+        test "org.codehaus.groovy.modules.http-builder:http-builder:0.5.2"
         // runtime 'mysql:mysql-connector-java:5.1.22'
     }
 

@@ -7,7 +7,6 @@ import groovy.transform.ToString
 @ToString
 class GormVenue {
 
-	//long id
 	double latitude
 	double longitude
     String name
