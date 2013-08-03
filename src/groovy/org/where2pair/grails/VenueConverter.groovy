@@ -10,7 +10,7 @@ import static org.where2pair.DayOfWeek.SUNDAY
 
 class VenueConverter {
 
-    VenueDTO asVenueDto(Venue venue) {
+    VenueDto asVenueDto(Venue venue) {
 		Map openHours = (MONDAY..SUNDAY).collectEntries { [dayToString(it), []] }
 
 		venue.weeklyOpeningTimes.each { DayOfWeek day, DailyOpeningTimes dailyOpeningTimes ->
@@ -23,7 +23,7 @@ class VenueConverter {
 			}
 		}
 		
-		new VenueDTO(
+		new VenueDto(
 			name: venue.name,
 			latitude: venue.location.lat,
 			longitude: venue.location.lng,
@@ -47,9 +47,9 @@ class VenueConverter {
 		
 		List venues = venuesWithDistance.venue
 		List distances = venuesWithDistance.distanceInKm
-		List venueDTOs = asVenueDtos(venues)
-		[venueDTOs, distances].transpose().collect { VenueDTO venue, double distance -> 
-			new VenueWithDistanceDTO(venue: venue, distanceInKm: distance) 
+		List venueDtos = asVenueDtos(venues)
+		[venueDtos, distances].transpose().collect { VenueDto venue, double distance -> 
+			new VenueWithDistanceDto(venue: venue, distanceInKm: distance) 
 		}
 	}
 	

@@ -22,7 +22,7 @@ class VenueControllerSpec extends Specification {
         given:
         request.method = 'GET'
         Venue venue = new Venue(name: VENUE_NAME);
-        VenueDTO venueDto = new VenueDTO(name: VENUE_NAME)
+        VenueDto venueDto = new VenueDto(name: VENUE_NAME)
         gormVenueRepository.get(VENUE_ID) >> venue
         venueConverter.asVenueDto(venue) >> venueDto
 
@@ -41,22 +41,22 @@ class VenueControllerSpec extends Specification {
 		given:
 		request.method = 'GET'
         List venues = 100.venues()
-		List venueDTOs = 100.venueDtos()
+		List venueDtos = 100.venueDtos()
 		gormVenueRepository.getAll() >> venues
-        venueConverter.asVenueDtos(venues) >> venueDTOs
+        venueConverter.asVenueDtos(venues) >> venueDtos
 
 		when:
 		controller.showAll()
 
 		then:
-		response.text.equalToJsonOf(venueDTOs)
+		response.text.equalToJsonOf(venueDtos)
 		response.status == 200
 	}
 	
 	def "should save new venues"() {
 		given:
 		request.method = 'POST'
-		VenueDTO venueDTO = new VenueDTO(
+		VenueDto venueDto = new VenueDto(
 				latitude: 1.0,
 				longitude: 0.1,
                 name: 'name',
@@ -67,14 +67,14 @@ class VenueControllerSpec extends Specification {
 						[openHour: 8, openMinute: 0, closeHour: 11, closeMinute: 0]
 					]]
 				)
-		request.json = venueDTO
+		request.json = venueDto
 
 		when:
 		controller.save()
 
 		then:
-		1 * gormVenueRepository.save(venueDTO)
-		response.text.equalToJsonOf(venueDTO)
+		1 * gormVenueRepository.save(venueDto)
+		response.text.equalToJsonOf(venueDto)
 		response.status == 200
 	}
 
@@ -109,7 +109,7 @@ class VenueControllerSpec extends Specification {
 
         List venueDtos() {
             (0..this).collect {
-                new VenueDTO()
+                new VenueDto()
             }
         }
 	}

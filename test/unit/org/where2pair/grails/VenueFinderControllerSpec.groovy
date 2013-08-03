@@ -35,13 +35,13 @@ class VenueFinderControllerSpec extends Specification {
 		given:
 		controller.params.'location1' = '1.0,0.1'
 		venueFinder.findNearestTo(_,new Coordinates(1.0,0.1)) >> 10.venuesWithDistance()
-		List venueDTOs = toVenueWithDistanceDTO(10.venuesWithDistance())
+		List venueDtos = toVenueWithDistanceDTO(10.venuesWithDistance())
 
 		when:
 		controller.findNearest()
 
 		then:
-		response.text.equalToJsonOf(venueDTOs)
+		response.text.equalToJsonOf(venueDtos)
 		response.status == 200
 	}
 

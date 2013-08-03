@@ -17,10 +17,10 @@ class VenueConverterSpec extends Specification {
 	def "should convert Venue to VenueDto"() {
 		given:
 		Venue venue = createVenue()
-		VenueDTO expectedVenueDto = createCorrespondingVenueDto()
+		VenueDto expectedVenueDto = createCorrespondingVenueDto()
 		
 		when:
-		VenueDTO venueDto = venueConverter.asVenueDto(venue)
+		VenueDto venueDto = venueConverter.asVenueDto(venue)
 		
 		then:
 		venueDto == expectedVenueDto
@@ -29,21 +29,21 @@ class VenueConverterSpec extends Specification {
 	def "should convert Venues to VenueDtos"() {
 		given:
 		Venue venue = createVenue()
-		VenueDTO expectedVenueDTO = createCorrespondingVenueDto()
+		VenueDto expectedVenueDTO = createCorrespondingVenueDto()
 		
 		when:
-		List venueDTOs = venueConverter.asVenueDtos([venue])
+		List venueDtos = venueConverter.asVenueDtos([venue])
 		
 		then:
-		venueDTOs == [expectedVenueDTO]
+		venueDtos == [expectedVenueDTO]
 	}
 	
 	def "should convert VenueWithDistance to VenueWithDistanceDto"() {
 		given:
 		Venue venue = createVenue()
-		VenueDTO venueDto = createCorrespondingVenueDto()
+		VenueDto venueDto = createCorrespondingVenueDto()
 		VenueWithDistance venueWithDistance = new VenueWithDistance(venue: venue, distanceInKm: 10.5)
-		VenueWithDistanceDTO expectedVenueWithDistanceDTO = new VenueWithDistanceDTO(venue: venueDto, distanceInKm: 10.5)
+		VenueWithDistanceDto expectedVenueWithDistanceDTO = new VenueWithDistanceDto(venue: venueDto, distanceInKm: 10.5)
 		
 		when:
 		List venueWithDistanceDTOs = venueConverter.asVenueWithDistanceDtos([venueWithDistance])
@@ -62,8 +62,8 @@ class VenueConverterSpec extends Specification {
 		)
 	}
 	
-	private VenueDTO createCorrespondingVenueDto() {
-		new VenueDTO(
+	private VenueDto createCorrespondingVenueDto() {
+		new VenueDto(
 			latitude: 1.0,
 			longitude: 0.1,
 			openHours: [monday: [[openHour: 12, openMinute: 0, closeHour: 18, closeMinute: 30]],

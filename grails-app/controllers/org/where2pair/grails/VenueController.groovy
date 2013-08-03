@@ -10,24 +10,24 @@ class VenueController {
 
     def show(long id) {
         Venue venue = gormVenueRepository.get(id)
-        VenueDTO venueDto = venueConverter.asVenueDto(venue)
+        VenueDto venueDto = venueConverter.asVenueDto(venue)
         render new JSON(venueDto)
     }
 
     def showAll() {
         List venues = gormVenueRepository.getAll()
-        List venueDTOs = asVenueDTOs(venues)
-        render venueDTOs as JSON
+        List venueDtos = asVenueDtos(venues)
+        render venueDtos as JSON
     }
 
     def save() {
-        VenueDTO venueDTO = new VenueDTO(request.JSON)
-        long id = gormVenueRepository.save(venueDTO)
-        venueDTO.id = id
-        render new JSON(venueDTO)
+        VenueDto venueDto = new VenueDto(request.JSON)
+        long id = gormVenueRepository.save(venueDto)
+        venueDto.id = id
+        render new JSON(venueDto)
     }
 
-    private List asVenueDTOs(List venues) {
+    private List asVenueDtos(List venues) {
         venueConverter.asVenueDtos(venues)
     }
 

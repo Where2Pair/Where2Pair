@@ -65,7 +65,7 @@ class GormVenueRepositorySpec extends Specification {
 
 	def "should map objects and save through dao"() {
 		given:
-		VenueDTO venueDto = new VenueDTO(
+		VenueDto venueDto = new VenueDto(
 				name: "my venue",
 				latitude: 1.0,
 				longitude: 0.1,

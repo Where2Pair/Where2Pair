@@ -5,7 +5,7 @@ import groovy.transform.ToString;
 
 @EqualsAndHashCode
 @ToString
-class VenueWithDistanceDTO {
-	VenueDTO venue
+class VenueWithDistanceDto {
+	VenueDto venue
 	double distanceInKm
 }
