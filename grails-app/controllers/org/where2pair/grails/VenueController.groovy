@@ -10,8 +10,14 @@ class VenueController {
 
     def show(long id) {
         Venue venue = gormVenueRepository.get(id)
-        VenueDto venueDto = venueConverter.asVenueDto(venue)
-        render new JSON(venueDto)
+		
+		if (venue) {
+	        VenueDto venueDto = venueConverter.asVenueDto(venue)
+	        render new JSON(venueDto)
+		} else {
+			response.status = 404
+			render "Venue with id $id could not be found"
+		}
     }
 
     def showAll() {

@@ -34,7 +34,16 @@ class VenueControllerSpec extends Specification {
     }
 
     def "should show 404 if venue not found"() {
-        //TODO
+        request.method = 'GET'
+        Venue venue = new Venue(name: VENUE_NAME);
+        gormVenueRepository.get(VENUE_ID) >> null
+
+        when:
+        controller.show(VENUE_ID)
+
+        then:
+        response.status == 404
+		response.text == "Venue with id $VENUE_ID could not be found"
     }
 
 	def "should show all venues"() {
