@@ -1,7 +1,8 @@
 class UrlMappings {
 
 	static mappings = {
-		"/venue/findNearest"(controller: "venueFinder", action: "findNearest")
+		"/venues/nearest"(controller: "venueFinder", action: "findNearest")
+		"/venues"(controller: "venue", action: "showAll")
 		"/venue/$id?"(resource: "venue")
 
 		"/"(view:"/index")

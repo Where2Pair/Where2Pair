@@ -5,8 +5,10 @@ import groovy.transform.ToString;
 
 @EqualsAndHashCode
 @ToString
-class VenueDTO {
+class VenueDto {
+    long id
 	double latitude
 	double longitude
+    String name
 	Map openHours
 }

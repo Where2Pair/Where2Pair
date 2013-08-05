@@ -1,16 +1,16 @@
 package org.where2pair.grails
 
-import java.util.List;
-
-import org.where2pair.VenueRepository;
-
 class GormVenueDaoService {
 
+	GormVenue get(long id) {
+        GormVenue.get(id)
+	}
+	
 	List getAll() {
 		GormVenue.list()
 	}
-
-	void save(GormVenue venue) {
+	
+	GormVenue save(GormVenue venue) {
 		venue.save()
 	}	
 }

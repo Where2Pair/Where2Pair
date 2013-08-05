@@ -9,6 +9,7 @@ class GormVenue {
 
 	double latitude
 	double longitude
+    String name
 	Set openPeriods
 	
 	static hasMany = [openPeriods: GormOpenPeriod]

@@ -17,6 +17,10 @@ class GormVenueRepository implements VenueRepository {
 		gormVenueDaoService.getAll().collect { mapGormVenueToVenue(it) }
 	}
 
+    Venue get(long id) {
+		mapGormVenueToVenue(gormVenueDaoService.get(id))
+    }
+
 	private Venue mapGormVenueToVenue(GormVenue venue) {
 		WeeklyOpeningTimesBuilder weeklyOpeningTimesBuilder = new WeeklyOpeningTimesBuilder()
 
@@ -28,19 +32,22 @@ class GormVenueRepository implements VenueRepository {
 
 		WeeklyOpeningTimes weeklyOpeningTimes = weeklyOpeningTimesBuilder.build()
 		new Venue(
+                id: venue.id,
+                name: venue.name,
 				location: new Coordinates(lat: venue.latitude, lng: venue.longitude),
 				weeklyOpeningTimes: weeklyOpeningTimes)
 	}
 
-	void save(VenueDTO venueDTO) {
-		GormVenue gormVenue = mapVenueDTOToGormVenue(venueDTO)
-		gormVenueDaoService.save(gormVenue)
+	long save(VenueDto venueDto) {
+		GormVenue gormVenue = mapVenueDTOToGormVenue(venueDto)
+		GormVenue storedGormVenue = gormVenueDaoService.save(gormVenue)
+		storedGormVenue.id
 	}	
 	
-	private GormVenue mapVenueDTOToGormVenue(VenueDTO venueDTO) {
+	private GormVenue mapVenueDTOToGormVenue(VenueDto venueDto) {
 		Set openPeriods = []
 		
-		venueDTO.openHours.each { String day, List openPeriodsList ->
+		venueDto.openHours.each { String day, List openPeriodsList ->
 			openPeriodsList.each {
 				openPeriods << new GormOpenPeriod(day: DayOfWeek.parseString(day),
 					 openHour: it.openHour,
@@ -51,8 +58,9 @@ class GormVenueRepository implements VenueRepository {
 		}
 		
 		new GormVenue(
-			latitude: venueDTO.latitude,
-			longitude: venueDTO.longitude,
+            name: venueDto.name,
+			latitude: venueDto.latitude,
+			longitude: venueDto.longitude,
 			openPeriods: openPeriods
 		)
 	}
