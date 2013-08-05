@@ -44,6 +44,7 @@ grails.project.dependency.resolution = {
 		test "org.skyscreamer:jsonassert:1.2.0"
 		test "org.spockframework:spock-grails-support:0.7-groovy-2.0"
         test "org.codehaus.groovy.modules.http-builder:http-builder:0.5.2"
+		runtime 'postgresql:postgresql:9.1-901-1.jdbc4'
         // runtime 'mysql:mysql-connector-java:5.1.22'
     }
 
