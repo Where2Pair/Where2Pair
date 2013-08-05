@@ -32,6 +32,7 @@ class GormVenueRepository implements VenueRepository {
 
 		WeeklyOpeningTimes weeklyOpeningTimes = weeklyOpeningTimesBuilder.build()
 		new Venue(
+                id: venue.id,
                 name: venue.name,
 				location: new Coordinates(lat: venue.latitude, lng: venue.longitude),
 				weeklyOpeningTimes: weeklyOpeningTimes)

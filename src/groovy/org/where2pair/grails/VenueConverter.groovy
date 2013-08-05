@@ -24,6 +24,7 @@ class VenueConverter {
 		}
 		
 		new VenueDto(
+            id: venue.id,
 			name: venue.name,
 			latitude: venue.location.lat,
 			longitude: venue.location.lng,

@@ -29,12 +29,14 @@ class GormVenueRepositorySpec extends Specification {
 				openPeriods: [
 					new GormOpenPeriod(day: MONDAY, openHour: 12, closeHour:18)
 				])
+        gormVenue.id = id
 		gormVenueDaoService.get(id) >> gormVenue
 
 		when:
 		Venue venue = gormVenueRepository.get(id)
 
 		then:
+        venue.id == id
 		venue.name == gormVenue.name
 	}
 
@@ -46,6 +48,7 @@ class GormVenueRepositorySpec extends Specification {
 				openPeriods: [
 					new GormOpenPeriod(day: MONDAY, openHour: 12, closeHour:18)
 				])
+        gormVenue.id = 11L
 		gormVenueDaoService.getAll() >> [gormVenue]
 
 		when:

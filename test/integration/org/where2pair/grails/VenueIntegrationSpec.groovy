@@ -21,11 +21,9 @@ class VenueIntegrationSpec extends Specification {
     }
 
     private JSON storeAndRetrieve(venueDto) {
-        def venueJson = new grails.converters.JSON(venueDto)
-        def where2pair = new RESTClient("http://localhost:8080/Where2Pair")
+        def where2pair = new RESTClient("http://localhost:8080")
 
-        def venueJsonString = venueJson.toString(true)
-        JSON savedVenue = where2pair.post(path: "venue", body: venueDto, requestContentType: ContentType.JSON)
-        where2pair.get(path: "venue/${savedVenue.id}", requestContentType: ContentType.URLENC)
+        JSON savedVenue = where2pair.post(path: "Where2Pair/venue", body: venueDto, requestContentType: ContentType.JSON).data
+        where2pair.get(path: "Where2Pair/venue/${savedVenue.id}", requestContentType: ContentType.URLENC).data
     }
 }

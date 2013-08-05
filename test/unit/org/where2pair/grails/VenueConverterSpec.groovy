@@ -13,8 +13,9 @@ import spock.lang.Specification
 class VenueConverterSpec extends Specification {
 
 	VenueConverter venueConverter = new VenueConverter()
-	
-	def "should convert Venue to VenueDto"() {
+    final static long VENUE_ID = 11
+
+    def "should convert Venue to VenueDto"() {
 		given:
 		Venue venue = createVenue()
 		VenueDto expectedVenueDto = createCorrespondingVenueDto()
@@ -57,6 +58,7 @@ class VenueConverterSpec extends Specification {
 		builder.addOpenPeriod(MONDAY, new SimpleTime(12, 0), new SimpleTime(18, 30))
 		builder.addOpenPeriod(TUESDAY, new SimpleTime(8, 0), new SimpleTime(11, 0))
 		new Venue(
+            id: VENUE_ID,
 			location: new Coordinates(1.0, 0.1),
 			weeklyOpeningTimes: builder.build()
 		)
@@ -64,6 +66,7 @@ class VenueConverterSpec extends Specification {
 	
 	private VenueDto createCorrespondingVenueDto() {
 		new VenueDto(
+            id: VENUE_ID,
 			latitude: 1.0,
 			longitude: 0.1,
 			openHours: [monday: [[openHour: 12, openMinute: 0, closeHour: 18, closeMinute: 30]],
