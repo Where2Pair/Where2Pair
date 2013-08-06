@@ -23,9 +23,9 @@ class GormVenueSpec extends Specification {
 		
 		where:
 		field		| val		| error
-		'latitude'	| 41.26		| 'max'
-		'latitude'	| -120.9763	| 'min'
-		'longitude'	| 115.85	| 'max'
-		'longitude'	| -31.97	| 'min'
+		'latitude'	| 90.1		| 'max'
+		'latitude'	| -90.1		| 'min'
+		'longitude'	| 180.1		| 'max'
+		'longitude'	| -180.1	| 'min'
 	}
 }

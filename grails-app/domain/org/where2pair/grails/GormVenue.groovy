@@ -15,8 +15,8 @@ class GormVenue {
 	static hasMany = [openPeriods: GormOpenPeriod]
 	
     static constraints = {
-		latitude min: -120.9762d, max: 41.25d
-		longitude min: -31.96d, max: 115.84d
+		latitude min: -90d, max: 90d
+		longitude min: -180d, max: 180d
     }
 	
 	static mapping = {
