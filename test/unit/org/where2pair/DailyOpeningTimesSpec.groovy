@@ -31,7 +31,8 @@ class DailyOpeningTimesSpec extends Specification {
 		
 		where:
 		startTime 	| endTime	| openFrom 				| openUntil 			| expectedOpen
-		'12:00'		| '12:00'	| new SimpleTime(12,0)	| new SimpleTime(12,0)	| true
+		'12:00'		| '12:00'	| new SimpleTime(12,0)	| new SimpleTime(12,0)	| false
+		'12:00'		| '12:01'	| new SimpleTime(12,0)	| new SimpleTime(12,1)	| true
 		'12:00'		| '12:00'	| new SimpleTime(12,1)	| new SimpleTime(12,1)	| false
 		'12:00'		| '12:00'	| new SimpleTime(11,59)	| new SimpleTime(11,59)	| false
 		'00:00'		| '35:59'	| new SimpleTime(12,0)	| new SimpleTime(18,0)	| true

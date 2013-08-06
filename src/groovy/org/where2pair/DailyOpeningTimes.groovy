@@ -17,7 +17,7 @@ class DailyOpeningTimes {
 		SimpleTime end
 		
 		boolean isOpen(SimpleTime openFrom, SimpleTime openUntil) {
-			openFrom >= start && openUntil <= end
+			openFrom >= start && openFrom < end && openUntil <= end
 		}
 	}
 	
