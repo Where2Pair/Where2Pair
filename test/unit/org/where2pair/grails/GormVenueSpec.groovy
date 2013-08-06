@@ -13,6 +13,17 @@ class GormVenueSpec extends Specification {
 		mockForConstraintsTests(GormVenue)
 	}
 	
+	def "test properties that can be null"() {
+		given:
+		def venue = new GormVenue(name: 'name')
+		
+		when:
+		boolean validated = venue.validate()
+		
+		then:
+		validated
+	}
+	
 	@Unroll
 	def "test venue coordinate constraints: checking #field for #error"() {
 		when:
@@ -23,6 +34,8 @@ class GormVenueSpec extends Specification {
 		
 		where:
 		field		| val		| error
+		'name'		| null		| 'nullable'
+		'name'		| ''		| 'blank'
 		'latitude'	| 90.1		| 'max'
 		'latitude'	| -90.1		| 'min'
 		'longitude'	| 180.1		| 'max'
