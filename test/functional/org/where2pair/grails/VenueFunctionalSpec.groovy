@@ -3,13 +3,11 @@ package org.where2pair.grails
 import groovyx.net.http.ContentType
 import groovyx.net.http.RESTClient
 import net.sf.json.JSON
-import spock.lang.Ignore;
 import spock.lang.Specification
 
-class VenueIntegrationSpec extends Specification {
+class VenueFunctionalSpec extends Specification {
     public static final String VENUE_NAME = "my test venue"
 
-	@Ignore
     def "store and retrieve venue though the REST api"() {
         given:
         VenueDto venueDto = new VenueDto(name: VENUE_NAME, latitude: 1.0, longitude: 0.5,
