@@ -1,6 +1,7 @@
 package org.where2pair.grails
 
 import grails.converters.JSON
+import org.springframework.security.access.annotation.Secured
 import org.where2pair.Venue
 
 class VenueController {
@@ -20,6 +21,7 @@ class VenueController {
 		}
     }
 
+    @Secured(['ROLE_ADMIN'])
     def showAll() {
         List venues = gormVenueRepository.getAll()
         List venuesJson = venueConverter.asVenuesJson(venues)

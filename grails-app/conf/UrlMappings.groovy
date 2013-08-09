@@ -6,6 +6,7 @@ class UrlMappings {
 		"/venue/$id?"(resource: "venue")
 
 		"/"(view:"/index")
+        "/login/auth"(controller: "login", action: "auth")
 		"500"(view:'/error')
 	}
 }

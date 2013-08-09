@@ -1,3 +1,7 @@
+import org.where2pair.grails.GormRole
+import org.where2pair.grails.GormUser
+import org.where2pair.grails.GormUserGormRole
+
 import static org.where2pair.DayOfWeek.MONDAY
 import static org.where2pair.DayOfWeek.SUNDAY
 import org.where2pair.grails.GormVenue
@@ -26,6 +30,14 @@ class BootStrap {
 				}
 			}
 		}
+
+        def adminRole = new GormRole(authority: 'ROLE_ADMIN').save(flush: true)
+        def userRole = new GormRole(authority: 'ROLE_USER').save(flush: true)
+
+        def testUser = new GormUser(username: 'testUser', enabled: true, password: 'password')
+        testUser.save(flush: true)
+
+        GormUserGormRole.create testUser, adminRole, true
 	}
     
 	def destroy = {
