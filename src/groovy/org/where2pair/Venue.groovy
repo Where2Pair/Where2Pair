@@ -4,7 +4,9 @@ class Venue {
     long id
     String name
 	Coordinates location
+	Address address
 	WeeklyOpeningTimes weeklyOpeningTimes
+	Set features
 	
 	boolean isOpen(OpenTimesCriteria openTimesCriteria) {
 		weeklyOpeningTimes.isOpen(openTimesCriteria)

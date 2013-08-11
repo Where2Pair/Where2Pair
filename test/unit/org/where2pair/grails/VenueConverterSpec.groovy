@@ -2,6 +2,9 @@ package org.where2pair.grails
 
 import static org.where2pair.DayOfWeek.MONDAY
 import static org.where2pair.DayOfWeek.TUESDAY
+import grails.test.mixin.*
+
+import org.where2pair.Address
 import org.where2pair.Coordinates
 import org.where2pair.Venue
 import org.where2pair.VenueWithDistance
@@ -60,7 +63,16 @@ class VenueConverterSpec extends Specification {
 		new Venue(
             id: VENUE_ID,
 			location: new Coordinates(1.0, 0.1),
-			weeklyOpeningTimes: builder.build()
+			address: new Address(
+				addressLine1: 'addressLine1',
+				addressLine2: 'addressLine2',
+				addressLine3: 'addressLine3',
+				city: 'city',
+				postcode: 'postcode',
+				phoneNumber: '01234567890'
+			),
+			weeklyOpeningTimes: builder.build(),
+			features: ['wifi', 'mobile payments']
 		)
 	}
 	
@@ -69,13 +81,20 @@ class VenueConverterSpec extends Specification {
             id: VENUE_ID,
 			latitude: 1.0,
 			longitude: 0.1,
+			addressLine1: 'addressLine1',
+			addressLine2: 'addressLine2',
+			addressLine3: 'addressLine3',
+			city: 'city',
+			postcode: 'postcode',
+			phoneNumber: '01234567890',
 			openHours: [monday: [[openHour: 12, openMinute: 0, closeHour: 18, closeMinute: 30]],
 						tuesday: [[openHour: 8, openMinute: 0, closeHour: 11, closeMinute: 0]],
 						wednesday: [],
 						thursday: [],
 						friday: [],
 						saturday: [],
-						sunday: []] as LinkedHashMap
+						sunday: []] as LinkedHashMap,
+			features: ['wifi', 'mobile payments'] as HashSet
 		)
 	}
 }

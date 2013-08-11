@@ -13,15 +13,15 @@ import spock.lang.Specification
 @TestFor(VenueController)
 class VenueControllerSpec extends Specification {
 
-    public static final long VENUE_ID = 1L
-    public static final String VENUE_NAME = "venue name"
+	static final String VENUE_NAME = 'my venue'
+    static final long VENUE_ID = 1L
     GormVenueRepository gormVenueRepository = Mock()
 	VenueConverter venueConverter = Mock()
 
     def "should show the specified venue"() {
         given:
         request.method = 'GET'
-        Venue venue = new Venue(name: VENUE_NAME);
+        Venue venue = new Venue(name: VENUE_NAME)
         VenueDto venueDto = new VenueDto(name: VENUE_NAME)
         gormVenueRepository.get(VENUE_ID) >> venue
         venueConverter.asVenueDto(venue) >> venueDto
@@ -35,7 +35,7 @@ class VenueControllerSpec extends Specification {
 
     def "should show 404 if venue not found"() {
         request.method = 'GET'
-        Venue venue = new Venue(name: VENUE_NAME);
+        Venue venue = new Venue(name: VENUE_NAME)
         gormVenueRepository.get(VENUE_ID) >> null
 
         when:
@@ -66,15 +66,22 @@ class VenueControllerSpec extends Specification {
 		given:
 		request.method = 'POST'
 		VenueDto venueDto = new VenueDto(
+				name: 'name',
 				latitude: 1.0,
 				longitude: 0.1,
-                name: 'name',
+				addressLine1: 'addressLine1',
+				addressLine2: 'addressLine2',
+				addressLine3: 'addressLine3',
+				city: 'city',
+				postcode: 'postcode',
+				phoneNumber: '01234567890',
 				openHours: [monday: [
 						[openHour: 12, openMinute: 0, closeHour: 18, closeMinute: 30]
 					],
 					tuesday: [
 						[openHour: 8, openMinute: 0, closeHour: 11, closeMinute: 0]
-					]]
+					]],
+				features: ['wifi', 'mobile payments']
 				)
 		request.json = venueDto
 

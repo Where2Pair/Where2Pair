@@ -10,8 +10,13 @@ class VenueFunctionalSpec extends Specification {
 
     def "store and retrieve venue though the REST api"() {
         given:
-        VenueDto venueDto = new VenueDto(name: VENUE_NAME, latitude: 1.0, longitude: 0.5,
-                openHours: ["monday": [[openHour: 12, openMinute: 0, closeHour: 18, closeMinute: 0]]])
+        VenueDto venueDto = new VenueDto(name: VENUE_NAME, 
+			latitude: 1.0, 
+			longitude: 0.5,
+            openHours: ["monday": [[openHour: 12, openMinute: 0, closeHour: 18, closeMinute: 0]]],
+			addressLine1: 'addressLine1',
+			city: 'city',
+			postcode: 'postcode')
 
         when:
         JSON retrievedVenue = storeAndRetrieve(venueDto)

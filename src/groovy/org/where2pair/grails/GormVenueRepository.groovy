@@ -1,5 +1,6 @@
 package org.where2pair.grails
 
+import org.where2pair.Address
 import org.where2pair.Coordinates
 import org.where2pair.DayOfWeek
 import org.where2pair.Venue
@@ -35,7 +36,16 @@ class GormVenueRepository implements VenueRepository {
                 id: venue.id,
                 name: venue.name,
 				location: new Coordinates(lat: venue.latitude, lng: venue.longitude),
-				weeklyOpeningTimes: weeklyOpeningTimes)
+				address: new Address(
+					addressLine1: venue.addressLine1,
+					addressLine2: venue.addressLine2,
+					addressLine3: venue.addressLine3,
+					city: venue.city,
+					postcode: venue.postcode,
+					phoneNumber: venue.phoneNumber
+				),
+				weeklyOpeningTimes: weeklyOpeningTimes,
+				features: venue.features.collect())
 	}
 
 	long save(VenueDto venueDto) {
@@ -61,7 +71,14 @@ class GormVenueRepository implements VenueRepository {
             name: venueDto.name,
 			latitude: venueDto.latitude,
 			longitude: venueDto.longitude,
-			openPeriods: openPeriods
+			addressLine1: venueDto.addressLine1,
+			addressLine2: venueDto.addressLine2,
+			addressLine3: venueDto.addressLine3,
+			city: venueDto.city,
+			postcode: venueDto.postcode,
+			phoneNumber: venueDto.phoneNumber,
+			openPeriods: openPeriods,
+			features: venueDto.features.collect()
 		)
 	}
 }

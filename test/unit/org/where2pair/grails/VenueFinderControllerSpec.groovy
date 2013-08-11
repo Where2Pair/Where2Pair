@@ -2,13 +2,14 @@ package org.where2pair.grails
 
 import static org.where2pair.DayOfWeek.FRIDAY
 import static org.where2pair.DayOfWeek.MONDAY
-import static org.where2pair.DayOfWeek.WEDNESDAY
-import static org.where2pair.DayOfWeek.THURSDAY
 import static org.where2pair.DayOfWeek.SUNDAY
+import static org.where2pair.DayOfWeek.THURSDAY
+import static org.where2pair.DayOfWeek.WEDNESDAY
 import grails.converters.JSON
 import grails.test.mixin.*
 
 import org.skyscreamer.jsonassert.JSONAssert
+import org.where2pair.Address
 import org.where2pair.Coordinates
 import org.where2pair.OpenTimesCriteria
 import org.where2pair.TimeProvider
@@ -141,8 +142,10 @@ class VenueFinderControllerSpec extends Specification {
 	static class VenuesMixin {
 		List venuesWithDistance() {
 			(0..this).collect {
-				new VenueWithDistance(venue: new Venue(location: new Coordinates(1.0, 0.5),
-				weeklyOpeningTimes: new WeeklyOpeningTimesBuilder().build()),
+				new VenueWithDistance(venue: new Venue(
+					location: new Coordinates(1.0, 0.5),
+					weeklyOpeningTimes: new WeeklyOpeningTimesBuilder().build(), 
+					address: new Address()),
 				distanceInKm: 10.5)
 			}
 		}

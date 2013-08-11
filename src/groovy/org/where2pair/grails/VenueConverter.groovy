@@ -28,7 +28,14 @@ class VenueConverter {
 			name: venue.name,
 			latitude: venue.location.lat,
 			longitude: venue.location.lng,
-			openHours: openHours
+			addressLine1: venue.address.addressLine1,
+			addressLine2: venue.address.addressLine2,
+			addressLine3: venue.address.addressLine3,
+			city: venue.address.city,
+			postcode: venue.address.postcode,
+			phoneNumber: venue.address.phoneNumber,
+			openHours: openHours,
+			features: venue.features.collect()
 		)
 
     }

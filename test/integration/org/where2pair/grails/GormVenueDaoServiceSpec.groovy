@@ -2,19 +2,18 @@ package org.where2pair.grails
 
 import org.where2pair.Venue
 
-import static org.where2pair.DayOfWeek.MONDAY;
+import static org.where2pair.DayOfWeek.MONDAY
+import static org.where2pair.grails.GormVenueBuilder.aGormVenue
 
 import grails.plugin.spock.IntegrationSpec
 
-
 class GormVenueDaoServiceSpec extends IntegrationSpec {
 
-    static final String VENUE_NAME = "a venue"
     GormVenueDaoService gormVenueDaoService = new GormVenueDaoService()
 
     def "retrieves venue by id"() {
         given:
-        GormVenue venue = new GormVenue(name: VENUE_NAME)
+        GormVenue venue = aGormVenue()
         GormVenue savedVenue = gormVenueDaoService.save(venue)
 
         when:
@@ -39,7 +38,8 @@ class GormVenueDaoServiceSpec extends IntegrationSpec {
 	def "saves associated open periods"() {
 		given:
 		GormOpenPeriod openPeriod = new GormOpenPeriod(day: MONDAY, openHour: 12, closeHour: 24)
-		GormVenue venue = new GormVenue(name: VENUE_NAME, openPeriods: [openPeriod])
+		GormVenue venue = aGormVenue()
+		venue.openPeriods = [openPeriod]
 		gormVenueDaoService.save(venue)
 	
 		when:
@@ -65,7 +65,7 @@ class GormVenueDaoServiceSpec extends IntegrationSpec {
 	@Category(Integer)
 	static class VenuesMixin {
 		List venues() {
-			(0..this).collect { new GormVenue(name: GormVenueDaoServiceSpec.VENUE_NAME) }
+			(0..this).collect { aGormVenue() }
 		}
 	}
 }
