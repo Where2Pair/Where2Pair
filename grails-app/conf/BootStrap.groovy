@@ -38,6 +38,7 @@ class BootStrap {
         testUser.save(flush: true)
 
         GormUserGormRole.create testUser, adminRole, true
+        GormUserGormRole.create testUser, userRole, true
 	}
     
 	def destroy = {

@@ -64,13 +64,6 @@ grails.hibernate.cache.queries = false
 environments {
     development {
         grails.logging.jul.usebridge = true
-
-        grails.plugins.springsecurity.mock.active = true
-        grails.plugins.springsecurity.mock.fullName = "Test User"
-        grails.plugins.springsecurity.mock.email = ""
-        grails.plugins.springsecurity.mock.username =  "testUser"
-        grails.plugins.springsecurity.mock.roles = [ 'ROLE_USER', 'ROLE_ADMIN']
-        grails.plugins.springsecurity.ipRestrictions = [ '/**': ['127.0.0.0/8', '::1/128'] ]
     }
 
     production {
