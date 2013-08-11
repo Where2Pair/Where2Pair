@@ -64,7 +64,10 @@ grails.project.dependency.resolution = {
 
         compile ':cache:1.0.1'
 
-        compile ":functional-spock:0.6"
+        compile(":functional-spock:0.6") {
+			exclude "spock-0.6"
+			exclude "spock-grails-support"
+		}
 		
 		test(":spock:0.7") {
 			exclude "spock-grails-support"
