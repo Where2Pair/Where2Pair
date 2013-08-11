@@ -20,7 +20,6 @@ class VenueController {
 		}
     }
 
-    @Secured(['ROLE_ADMIN'])
     def showAll() {
         List venues = gormVenueRepository.getAll()
         List venuesJson = venueConverter.asVenuesJson(venues)
