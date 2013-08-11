@@ -3,7 +3,7 @@ package org.where2pair.grails
 import org.where2pair.Venue
 
 import static org.where2pair.DayOfWeek.MONDAY
-import static org.where2pair.grails.GormVenueBuilder.aGormVenue
+import static org.where2pair.grails.GormVenueBuilderForIntegration.aGormVenue
 
 import grails.plugin.spock.IntegrationSpec
 
