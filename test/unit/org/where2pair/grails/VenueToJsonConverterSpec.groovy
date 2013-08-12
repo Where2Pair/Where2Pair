@@ -2,7 +2,6 @@ package org.where2pair.grails
 
 import static org.where2pair.DayOfWeek.MONDAY
 import static org.where2pair.DayOfWeek.TUESDAY
-import grails.test.mixin.*
 
 import org.where2pair.Address
 import org.where2pair.Coordinates
@@ -13,47 +12,46 @@ import org.where2pair.DailyOpeningTimes.SimpleTime
 
 import spock.lang.Specification
 
-class VenueConverterSpec extends Specification {
+class VenueToJsonConverterSpec extends Specification {
 
-	VenueConverter venueConverter = new VenueConverter()
-    final static long VENUE_ID = 11
+	VenueToJsonConverter venueConverter = new VenueToJsonConverter()
 
-    def "should convert Venue to VenueDto"() {
+    def "should convert Venue to map"() {
 		given:
 		Venue venue = createVenue()
-		VenueDto expectedVenueDto = createCorrespondingVenueDto()
+		Map expectedVenueMap = createCorrespondingVenueMap()
 		
 		when:
-		VenueDto venueDto = venueConverter.asVenueDto(venue)
+		Map venueMap = venueConverter.asVenueJson(venue)
 		
 		then:
-		venueDto == expectedVenueDto
+		venueMap == expectedVenueMap
 	}
 	
-	def "should convert Venues to VenueDtos"() {
+	def "should convert Venues to map"() {
 		given:
 		Venue venue = createVenue()
-		VenueDto expectedVenueDTO = createCorrespondingVenueDto()
+		Map expectedVenueMap = createCorrespondingVenueMap()
 		
 		when:
-		List venueDtos = venueConverter.asVenueDtos([venue])
+		List venueMap = venueConverter.asVenuesJson([venue])
 		
 		then:
-		venueDtos == [expectedVenueDTO]
+		venueMap == [expectedVenueMap]
 	}
 	
-	def "should convert VenueWithDistance to VenueWithDistanceDto"() {
+	def "should convert VenueWithDistance to map"() {
 		given:
 		Venue venue = createVenue()
-		VenueDto venueDto = createCorrespondingVenueDto()
+		Map expectedVenueWithDistanceMap = createCorrespondingVenueMap()
 		VenueWithDistance venueWithDistance = new VenueWithDistance(venue: venue, distanceInKm: 10.5)
-		VenueWithDistanceDto expectedVenueWithDistanceDTO = new VenueWithDistanceDto(venue: venueDto, distanceInKm: 10.5)
+		expectedVenueWithDistanceMap.distanceInKm = 10.5
 		
 		when:
-		List venueWithDistanceDTOs = venueConverter.asVenueWithDistanceDtos([venueWithDistance])
+		List venuesWithDistanceMap = venueConverter.asVenuesWithDistanceJson([venueWithDistance])
 		
 		then:
-		venueWithDistanceDTOs == [expectedVenueWithDistanceDTO]
+		venuesWithDistanceMap == [expectedVenueWithDistanceMap]
 	}
 	
 	private Venue createVenue() {
@@ -61,7 +59,8 @@ class VenueConverterSpec extends Specification {
 		builder.addOpenPeriod(MONDAY, new SimpleTime(12, 0), new SimpleTime(18, 30))
 		builder.addOpenPeriod(TUESDAY, new SimpleTime(8, 0), new SimpleTime(11, 0))
 		new Venue(
-            id: VENUE_ID,
+            id: 99,
+			name: 'venue name',
 			location: new Coordinates(1.0, 0.1),
 			address: new Address(
 				addressLine1: 'addressLine1',
@@ -76,17 +75,20 @@ class VenueConverterSpec extends Specification {
 		)
 	}
 	
-	private VenueDto createCorrespondingVenueDto() {
-		new VenueDto(
-            id: VENUE_ID,
+	private Map createCorrespondingVenueMap() {
+		[
+			id: 99,
+			name: 'venue name',
 			latitude: 1.0,
 			longitude: 0.1,
-			addressLine1: 'addressLine1',
-			addressLine2: 'addressLine2',
-			addressLine3: 'addressLine3',
-			city: 'city',
-			postcode: 'postcode',
-			phoneNumber: '01234567890',
+			address: [
+				addressLine1: 'addressLine1',
+				addressLine2: 'addressLine2',
+				addressLine3: 'addressLine3',
+				city: 'city',
+				postcode: 'postcode',
+				phoneNumber: '01234567890'
+			],
 			openHours: [monday: [[openHour: 12, openMinute: 0, closeHour: 18, closeMinute: 30]],
 						tuesday: [[openHour: 8, openMinute: 0, closeHour: 11, closeMinute: 0]],
 						wednesday: [],
@@ -94,7 +96,7 @@ class VenueConverterSpec extends Specification {
 						friday: [],
 						saturday: [],
 						sunday: []] as LinkedHashMap,
-			features: ['wifi', 'mobile payments'] as HashSet
-		)
+			features: ['wifi', 'mobile payments']
+		]
 	}
 }

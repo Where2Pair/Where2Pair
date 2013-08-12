@@ -30,7 +30,7 @@ class VenueFinderControllerSpec extends Specification {
 	VenueFinder venueFinder = Mock()
 	GormVenueRepository gormVenueRepository = Mock()
 	TimeProvider timeProvider = Mock()
-	VenueConverter venueConverter = new VenueConverter()
+	VenueToJsonConverter venueConverter = new VenueToJsonConverter()
 
 	def "should display search results for given coordinates"() {
 		given:
@@ -110,7 +110,7 @@ class VenueFinderControllerSpec extends Specification {
 	}
 	
 	private def toVenueWithDistanceDTO(List venues) {
-		venueConverter.asVenueWithDistanceDtos(venues)
+		venueConverter.asVenuesWithDistanceJson(venues)
 	}
 
 	def setup() {

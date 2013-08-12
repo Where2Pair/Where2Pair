@@ -14,7 +14,7 @@ class VenueFinderController {
 
 	VenueFinder venueFinder
 	GormVenueRepository gormVenueRepository
-	VenueConverter venueConverter
+	VenueToJsonConverter venueConverter
 	TimeProvider timeProvider
 	
 	def findNearest() {
@@ -23,8 +23,8 @@ class VenueFinderController {
 		if (coordinates.size() in 1..1000) {
 			OpenTimesCriteria openTimesCriteria = parseOpenTimesCriteriaFromRequest()
 			List venues = venueFinder.findNearestTo(openTimesCriteria, *coordinates)
-			List venueWithDistanceDtos = asVenueWithDistanceDtos(venues)
-			render venueWithDistanceDtos as JSON
+			List venuesWithDistanceJson = venueConverter.asVenuesWithDistanceJson(venues)
+			render venuesWithDistanceJson as JSON
 		} else {
 			handleIllegalCoordinatesCount(coordinates)
 		}
@@ -51,10 +51,6 @@ class VenueFinderController {
 			def (lat, lng) = it.value.split(',').collect { parseDouble(it) }
 			new Coordinates(lat, lng)
 		}
-	}
-	
-	private List asVenueWithDistanceDtos(List venues) {
-		venueConverter.asVenueWithDistanceDtos(venues)
 	}
 	
 	private void handleIllegalCoordinatesCount(List coordinates) {

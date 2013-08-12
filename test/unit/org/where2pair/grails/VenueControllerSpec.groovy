@@ -16,21 +16,21 @@ class VenueControllerSpec extends Specification {
 	static final String VENUE_NAME = 'my venue'
     static final long VENUE_ID = 1L
     GormVenueRepository gormVenueRepository = Mock()
-	VenueConverter venueConverter = Mock()
+	VenueToJsonConverter venueConverter = Mock()
 
     def "should show the specified venue"() {
         given:
         request.method = 'GET'
         Venue venue = new Venue(name: VENUE_NAME)
-        VenueDto venueDto = new VenueDto(name: VENUE_NAME)
+        Map venueJson = [name: VENUE_NAME]
         gormVenueRepository.get(VENUE_ID) >> venue
-        venueConverter.asVenueDto(venue) >> venueDto
+        venueConverter.asVenueJson(venue) >> venueJson
 
         when:
         controller.show(VENUE_ID)
 
         then:
-        response.text.equalToJsonOf(venueDto)
+        response.text.equalToJsonOf(venueJson)
     }
 
     def "should show 404 if venue not found"() {
@@ -50,15 +50,15 @@ class VenueControllerSpec extends Specification {
 		given:
 		request.method = 'GET'
         List venues = 100.venues()
-		List venueDtos = 100.venueDtos()
+		List venuesJson = 100.venuesJson()
 		gormVenueRepository.getAll() >> venues
-        venueConverter.asVenueDtos(venues) >> venueDtos
+        venueConverter.asVenuesJson(venues) >> venuesJson
 
 		when:
 		controller.showAll()
 
 		then:
-		response.text.equalToJsonOf(venueDtos)
+		response.text.equalToJsonOf(venuesJson)
 		response.status == 200
 	}
 	
@@ -123,9 +123,9 @@ class VenueControllerSpec extends Specification {
 			}
 		}
 
-        List venueDtos() {
+        List venuesJson() {
             (0..this).collect {
-                new VenueDto()
+                [:]
             }
         }
 	}

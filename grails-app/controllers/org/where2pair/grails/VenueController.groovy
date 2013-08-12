@@ -6,14 +6,14 @@ import org.where2pair.Venue
 class VenueController {
 
     GormVenueRepository gormVenueRepository
-    VenueConverter venueConverter
+    VenueToJsonConverter venueConverter
 
     def show(long id) {
         Venue venue = gormVenueRepository.get(id)
 		
 		if (venue) {
-	        VenueDto venueDto = venueConverter.asVenueDto(venue)
-	        render new JSON(venueDto)
+	        Map venueJson = venueConverter.asVenueJson(venue)
+	        render venueJson as JSON
 		} else {
 			response.status = 404
 			render "Venue with id $id could not be found"
@@ -22,8 +22,8 @@ class VenueController {
 
     def showAll() {
         List venues = gormVenueRepository.getAll()
-        List venueDtos = asVenueDtos(venues)
-        render venueDtos as JSON
+        List venuesJson = venueConverter.asVenuesJson(venues)
+        render venuesJson as JSON
     }
 
     def save() {
@@ -31,10 +31,6 @@ class VenueController {
         long id = gormVenueRepository.save(venueDto)
         venueDto.id = id
         render new JSON(venueDto)
-    }
-
-    private List asVenueDtos(List venues) {
-        venueConverter.asVenueDtos(venues)
     }
 
 }
