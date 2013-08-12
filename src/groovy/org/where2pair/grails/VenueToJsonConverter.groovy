@@ -26,16 +26,16 @@ class VenueToJsonConverter {
 		
 		[
             id: venue.id,
-			name: venue.name,
+			name: venue.name ?: '',
 			latitude: venue.location.lat,
 			longitude: venue.location.lng,
 			address: [
-				addressLine1: venue.address.addressLine1,
-				addressLine2: venue.address.addressLine2,
-				addressLine3: venue.address.addressLine3,
-				city: venue.address.city,
-				postcode: venue.address.postcode,
-				phoneNumber: venue.address.phoneNumber
+				addressLine1: venue.address.addressLine1 ?: '',
+				addressLine2: venue.address.addressLine2 ?: '',
+				addressLine3: venue.address.addressLine3 ?: '',
+				city: venue.address.city ?: '',
+				postcode: venue.address.postcode ?: '',
+				phoneNumber: venue.address.phoneNumber ?: ''
 			],
 			openHours: openHours,
 			features: venue.features.collect()
@@ -60,8 +60,7 @@ class VenueToJsonConverter {
 		List distances = venuesWithDistance.distanceInKm
 		List venueDtos = asVenuesJson(venues)
 		[venueDtos, distances].transpose().collect { Map venueJson, double distance -> 
-			venueJson.distanceInKm = distance
-			venueJson
+			[distanceInKm: distance, venue: venueJson]
 		}
 	}
 	

@@ -2,11 +2,13 @@ package org.where2pair.grails
 
 import static org.where2pair.DayOfWeek.MONDAY
 import static org.where2pair.DayOfWeek.TUESDAY
+import grails.test.mixin.*
 
 import org.where2pair.Address
 import org.where2pair.Coordinates
 import org.where2pair.Venue
 import org.where2pair.VenueWithDistance
+import org.where2pair.WeeklyOpeningTimes
 import org.where2pair.WeeklyOpeningTimesBuilder
 import org.where2pair.DailyOpeningTimes.SimpleTime
 
@@ -43,15 +45,36 @@ class VenueToJsonConverterSpec extends Specification {
 	def "should convert VenueWithDistance to map"() {
 		given:
 		Venue venue = createVenue()
-		Map expectedVenueWithDistanceMap = createCorrespondingVenueMap()
 		VenueWithDistance venueWithDistance = new VenueWithDistance(venue: venue, distanceInKm: 10.5)
-		expectedVenueWithDistanceMap.distanceInKm = 10.5
+		Map expectedVenueWithDistanceMap = [
+			distanceInKm: 10.5,
+			venue: createCorrespondingVenueMap()]
 		
 		when:
 		List venuesWithDistanceMap = venueConverter.asVenuesWithDistanceJson([venueWithDistance])
 		
 		then:
 		venuesWithDistanceMap == [expectedVenueWithDistanceMap]
+	}
+	
+	def "should render null string values as empty strings"() {
+		given:
+		Venue venue = new Venue(
+			address: new Address(),
+			weeklyOpeningTimes: new WeeklyOpeningTimes(),
+			location: new Coordinates(0, 0))
+		
+		when:
+		Map venueMap = venueConverter.asVenueJson(venue)
+		
+		then:
+		venueMap.name == ""
+		venueMap.address.addressLine1 == ""
+		venueMap.address.addressLine2 == ""
+		venueMap.address.addressLine3 == ""
+		venueMap.address.city == ""
+		venueMap.address.postcode == ""
+		venueMap.address.phoneNumber == ""
 	}
 	
 	private Venue createVenue() {
