@@ -4,7 +4,8 @@ import static java.lang.Double.parseDouble
 import grails.converters.JSON
 
 import org.where2pair.Coordinates
-import org.where2pair.DayOfWeek;
+import org.where2pair.DayOfWeek
+import org.where2pair.FeaturesCriteria
 import org.where2pair.OpenTimesCriteria
 import org.where2pair.TimeProvider
 import org.where2pair.VenueFinder
@@ -22,11 +23,19 @@ class VenueFinderController {
 		
 		if (coordinates.size() in 1..1000) {
 			OpenTimesCriteria openTimesCriteria = parseOpenTimesCriteriaFromRequest()
-			List venues = venueFinder.findNearestTo(openTimesCriteria, *coordinates)
+			FeaturesCriteria featuresCriteria = parseFeaturesCriteriaFromRequest()
+			List venues = venueFinder.findNearestTo(openTimesCriteria, featuresCriteria, *coordinates)
 			List venuesWithDistanceJson = venueConverter.asVenuesWithDistanceJson(venues)
 			render venuesWithDistanceJson as JSON
 		} else {
 			handleIllegalCoordinatesCount(coordinates)
+		}
+	}
+	
+	private List parseCoordinatesFromRequest() {
+		params.findAll { it.key.startsWith('location') }.collect {
+			def (lat, lng) = it.value.split(',').collect { parseDouble(it) }
+			new Coordinates(lat, lng)
 		}
 	}
 	
@@ -46,11 +55,9 @@ class VenueFinderController {
 		return new SimpleTime(hour as Integer, minute as Integer)
 	}
 	
-	private List parseCoordinatesFromRequest() {
-		params.findAll { it.key.startsWith('location') }.collect {
-			def (lat, lng) = it.value.split(',').collect { parseDouble(it) }
-			new Coordinates(lat, lng)
-		}
+	private FeaturesCriteria parseFeaturesCriteriaFromRequest() {
+		Set requestedFeatures = params.withFeatures ? params.withFeatures.split(',') : []
+		new FeaturesCriteria(requestedFeatures: requestedFeatures)
 	}
 	
 	private void handleIllegalCoordinatesCount(List coordinates) {

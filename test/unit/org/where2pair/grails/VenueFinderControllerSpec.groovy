@@ -11,6 +11,7 @@ import grails.test.mixin.*
 import org.skyscreamer.jsonassert.JSONAssert
 import org.where2pair.Address
 import org.where2pair.Coordinates
+import org.where2pair.FeaturesCriteria;
 import org.where2pair.OpenTimesCriteria
 import org.where2pair.TimeProvider
 import org.where2pair.Venue
@@ -35,7 +36,7 @@ class VenueFinderControllerSpec extends Specification {
 	def "should display search results for given coordinates"() {
 		given:
 		controller.params.'location1' = '1.0,0.1'
-		venueFinder.findNearestTo(_,new Coordinates(1.0,0.1)) >> 10.venuesWithDistance()
+		venueFinder.findNearestTo(_,_,new Coordinates(1.0,0.1)) >> 10.venuesWithDistance()
 		List venuesJson = toVenuesWithDistanceJson(10.venuesWithDistance())
 
 		when:
@@ -55,7 +56,7 @@ class VenueFinderControllerSpec extends Specification {
 		controller.findNearest()
 
 		then:
-		1 * venueFinder.findNearestTo(_,expectedCoordArgs)
+		1 * venueFinder.findNearestTo(_,_,expectedCoordArgs)
 	}
 
 	def "should reject more than 1000 supplied locations"() {
@@ -95,7 +96,7 @@ class VenueFinderControllerSpec extends Specification {
 			criteria.openFrom == expectedOpenFrom
 			criteria.openUntil == expectedOpenUntil
 			criteria.dayOfWeek == expectedOpenDay
-		}, _)
+		}, _, _)
 		
 		where:
 		openFromParam 	| openUntilParam 	| openDayParam  | expectedOpenFrom 			| expectedOpenUntil 		| expectedOpenDay
@@ -108,7 +109,21 @@ class VenueFinderControllerSpec extends Specification {
 		'13.30'			| '18.45'			| 'thursday'	| new SimpleTime(13, 30)	| new SimpleTime(18, 45)	| THURSDAY
 		'missing'		| 'missing'			| 'sunday'		| new SimpleTime(0, 0)		| new SimpleTime(35, 59)	| SUNDAY
 	}
-	
+
+	def "parses features from request and uses them to find venues"() {
+		given:
+		controller.params.'location1' = '1.0,0.1'
+		controller.params.'withFeatures' = 'wifi,baby_changing'
+		
+		when:
+		controller.findNearest()
+		
+		then:
+		1 * venueFinder.findNearestTo(_, { FeaturesCriteria criteria ->
+			criteria.requestedFeatures == ['wifi', 'baby_changing'] as HashSet
+		}, _)
+	}
+		
 	private def toVenuesWithDistanceJson(List venues) {
 		venueConverter.asVenuesWithDistanceJson(venues)
 	}
