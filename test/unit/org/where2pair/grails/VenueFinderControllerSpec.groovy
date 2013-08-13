@@ -36,13 +36,13 @@ class VenueFinderControllerSpec extends Specification {
 		given:
 		controller.params.'location1' = '1.0,0.1'
 		venueFinder.findNearestTo(_,new Coordinates(1.0,0.1)) >> 10.venuesWithDistance()
-		List venueDtos = toVenueWithDistanceDTO(10.venuesWithDistance())
+		List venuesJson = toVenuesWithDistanceJson(10.venuesWithDistance())
 
 		when:
 		controller.findNearest()
 
 		then:
-		response.text.equalToJsonOf(venueDtos)
+		response.text.equalToJsonOf(venuesJson)
 		response.status == 200
 	}
 
@@ -109,7 +109,7 @@ class VenueFinderControllerSpec extends Specification {
 		'missing'		| 'missing'			| 'sunday'		| new SimpleTime(0, 0)		| new SimpleTime(35, 59)	| SUNDAY
 	}
 	
-	private def toVenueWithDistanceDTO(List venues) {
+	private def toVenuesWithDistanceJson(List venues) {
 		venueConverter.asVenuesWithDistanceJson(venues)
 	}
 

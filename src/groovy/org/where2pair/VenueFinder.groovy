@@ -7,12 +7,16 @@ class VenueFinder {
 	VenueRepository venueRepository
 	DistanceCalculator distanceCalculator
 	
-	List findNearestTo(OpenTimesCriteria openTimesCriteria, Coordinates... coordinates) {
+	List findNearestTo(OpenTimesCriteria openTimesCriteria, FeaturesCriteria featuresCriteria, Coordinates... coordinates) {
 		List openVenues = venueRepository.getAll().findAll { Venue venue -> 
 			venue.isOpen(openTimesCriteria) 
 		}
 		
-		List sortedVenues = sortVenuesByDistance(openVenues, coordinates)
+		List venuesWithFeatures = openVenues.findAll { Venue venue ->
+			venue.hasFeatures(featuresCriteria)
+		}
+		
+		List sortedVenues = sortVenuesByDistance(venuesWithFeatures, coordinates)
 		
 		restrictTo50Results(sortedVenues)
 	}

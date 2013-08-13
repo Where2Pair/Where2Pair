@@ -12,6 +12,10 @@ class Venue {
 		weeklyOpeningTimes.isOpen(openTimesCriteria)
     }
 		
+	boolean hasFeatures(FeaturesCriteria featuresCriteria) {
+		featuresCriteria.requestedFeatures.every { it in features }
+	}
+	
 	double distanceInKmTo(Coordinates coordinates) {
 		location.distanceInKmTo(coordinates)
 	}

@@ -7,7 +7,7 @@ import static spock.util.matcher.HamcrestMatchers.closeTo
 
 class VenueSpec extends Specification {
 
-	def "should determine distance to supplied coordinates"() {
+	def "determines distance to supplied coordinates"() {
 		given:
 		Venue venue = new Venue(location: new Coordinates(lat: venueLatitude, lng: venueLongitude))
 		Coordinates coordinates = new Coordinates(lat: targetLatitude, lng: targetLongitude)
@@ -26,7 +26,7 @@ class VenueSpec extends Specification {
 		51.530800		|	-0.097933		| -33.868135		| 151.210327		| 16990.86	
 	}
 	
-	def "should determine whether venue is open"() {
+	def "determines whether venue is open"() {
 		given:
 		OpenTimesCriteria openTimesCriteria = new OpenTimesCriteria()
 		WeeklyOpeningTimes weeklyOpenTimes = Mock()
@@ -43,4 +43,21 @@ class VenueSpec extends Specification {
 		expectedOpenStatus << [true, false]
 	}
 	
+	def "determines whether venue has features"() {
+		given:
+		Venue venue = new Venue(features: features.split(','))
+		FeaturesCriteria featuresCriteria = new FeaturesCriteria(requestedFeatures: requestedFeatures.split(','))
+		
+		when:
+		boolean hasFeatures = venue.hasFeatures(featuresCriteria)
+		
+		then:
+		hasFeatures == expectedResult
+		
+		where:
+		features 	| requestedFeatures | expectedResult
+		'a,b,c'		| 'a,b'				| true
+		'a,b,c'		| 'd'				| false
+		''			| ''				| true
+	}
 }
