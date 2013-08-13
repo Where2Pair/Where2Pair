@@ -13,7 +13,9 @@ class Venue {
     }
 		
 	boolean hasFeatures(FeaturesCriteria featuresCriteria) {
-		featuresCriteria.requestedFeatures.every { it in features }
+		Set upperCaseAvailableFeatures = features.collect { it.toUpperCase() }
+		Set upperCaseRequestedFeatures = featuresCriteria.requestedFeatures.collect { it.toUpperCase() }
+		upperCaseRequestedFeatures.every { it in upperCaseAvailableFeatures }
 	}
 	
 	double distanceInKmTo(Coordinates coordinates) {

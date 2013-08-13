@@ -59,5 +59,6 @@ class VenueSpec extends Specification {
 		'a,b,c'		| 'a,b'				| true
 		'a,b,c'		| 'd'				| false
 		''			| ''				| true
+		'a,B,c'		| 'A,b,C'			| true
 	}
 }
