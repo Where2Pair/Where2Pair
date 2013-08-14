@@ -32,13 +32,11 @@ class BootStrap {
 		}
 
         def adminRole = new GormRole(authority: 'ROLE_ADMIN').save(flush: true)
-        def userRole = new GormRole(authority: 'ROLE_USER').save(flush: true)
-
         def testUser = new GormUser(username: 'testUser', enabled: true, password: 'password')
         testUser.save(flush: true)
 
-        GormUserGormRole.create testUser, adminRole, true
-        GormUserGormRole.create testUser, userRole, true
+        GormUserGormRole gormUserGormRole = GormUserGormRole.create testUser, adminRole, true
+        gormUserGormRole.save(flush: true)
 	}
     
 	def destroy = {
