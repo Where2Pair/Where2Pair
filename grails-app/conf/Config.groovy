@@ -65,6 +65,7 @@ environments {
     development {
         grails.logging.jul.usebridge = true
     }
+
     production {
         grails.logging.jul.usebridge = false
         // TODO: grails.serverURL = "http://www.changeme.com"
@@ -91,3 +92,10 @@ log4j = {
            'org.hibernate',
            'net.sf.ehcache.hibernate'
 }
+
+// Added by the Spring Security Core plugin:
+grails.plugins.springsecurity.useBasicAuth = true
+grails.plugins.springsecurity.basic.realmName = "Where 2 Pair"
+grails.plugins.springsecurity.userLookup.userDomainClassName = 'org.where2pair.grails.GormUser'
+grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'org.where2pair.grails.GormUserGormRole'
+grails.plugins.springsecurity.authority.className = 'org.where2pair.grails.GormRole'

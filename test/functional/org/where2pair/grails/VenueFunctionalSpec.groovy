@@ -27,8 +27,12 @@ class VenueFunctionalSpec extends Specification {
 
     private JSON storeAndRetrieve(venueDto) {
         def where2pair = new RESTClient("http://localhost:8080")
+        where2pair.auth.basic("testUser", "password")
 
-        JSON savedVenue = where2pair.post(path: "Where2Pair/venue", body: venueDto, requestContentType: ContentType.JSON).data
+        def response = where2pair.post(path: "Where2Pair/venue", body: venueDto, requestContentType: ContentType.JSON)
+        assert response.status == 200
+
+        JSON savedVenue = response.data
         where2pair.get(path: "Where2Pair/venue/${savedVenue.id}", requestContentType: ContentType.URLENC).data
     }
 }
