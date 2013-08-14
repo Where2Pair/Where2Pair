@@ -68,7 +68,9 @@ grails.project.dependency.resolution = {
 			exclude "spock-0.6"
 			exclude "spock-grails-support"
 		}
-		
+
+        compile ':spring-security-core:1.2.7.3'
+
 		test(":spock:0.7") {
 			exclude "spock-grails-support"
 		}

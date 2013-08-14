@@ -1,10 +1,10 @@
 package org.where2pair.grails
 
 import grails.converters.JSON
+import org.springframework.security.access.annotation.Secured
 import org.where2pair.Venue
 
 class VenueController {
-
     GormVenueRepository gormVenueRepository
     VenueToJsonConverter venueConverter
 
@@ -26,6 +26,7 @@ class VenueController {
         render venuesJson as JSON
     }
 
+    @Secured(['ROLE_ADMIN'])
     def save() {
         VenueDto venueDto = new VenueDto(request.JSON)
         long id = gormVenueRepository.save(venueDto)
