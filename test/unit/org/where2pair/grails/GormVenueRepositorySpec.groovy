@@ -3,7 +3,6 @@ package org.where2pair.grails
 import static org.where2pair.DayOfWeek.MONDAY
 import static org.where2pair.DayOfWeek.TUESDAY
 import static org.where2pair.grails.GormVenueBuilder.aGormVenue
-import grails.test.mixin.*
 
 import org.where2pair.Address
 import org.where2pair.Coordinates
@@ -121,5 +120,62 @@ class GormVenueRepositorySpec extends Specification {
 
 		then:
 		savedId == 10
+	}
+	
+	def "finds a Venue by name and coordinates from dao"() {
+		given:
+		long id = 1L
+		GormVenue gormVenue = aGormVenue()
+		gormVenue.id = id
+		gormVenueDaoService.findByNameAndCoordinates('name', new Coordinates(1.0, 0.1)) >> gormVenue
+
+		when:
+		Venue venue = gormVenueRepository.findByNameAndCoordinates('name', new Coordinates(1.0, 0.1))
+
+		then:
+		venue.id == id
+		venue.name == gormVenue.name
+	}
+	
+	def "updates and existing Venue"() {
+		given:
+		WeeklyOpeningTimesBuilder builder = new WeeklyOpeningTimesBuilder()
+		builder.addOpenPeriod(MONDAY, new SimpleTime(12, 0), new SimpleTime(18, 30))
+		Venue venue = new Venue(
+			id: 99,
+			name: 'my venue',
+			location: new Coordinates(1.0, 0.1),
+			address: new Address(
+				addressLine1: 'addressLine1',
+				addressLine2: 'addressLine2',
+				addressLine3: 'addressLine3',
+				city: 'city',
+				postcode: 'postcode',
+				phoneNumber: '01234567890'
+			),
+			weeklyOpeningTimes: builder.build(),
+			features: ['wifi', 'mobile payments']
+		)
+		GormVenue existingGormVenue = new GormVenue()
+		gormVenueDaoService.get(99) >> existingGormVenue
+		
+		when:
+		gormVenueRepository.update(venue)
+		
+		then:
+		1 * gormVenueDaoService.save({
+			it == existingGormVenue
+			it.name = 'my venue'
+			it.latitude = 1.0
+			it.longitude = 0.1
+			it.addressLine1 = 'addressLine1'
+			it.addressLine2 = 'addressLine2'
+			it.addressLine3 = 'addressLine3'
+			it.city = 'city'
+			it.postcode = 'postcode'
+			it.phoneNumber = 'phoneNumber'
+			it.openPeriods = [new GormOpenPeriod(day: MONDAY, openHour: 12, openMinute: 0, closeHour: 18, closeMinute: 30)]
+			it.features = ['wifi', 'mobile payments']
+		})
 	}
 }

@@ -13,16 +13,16 @@ import org.where2pair.DailyOpeningTimes.SimpleTime
 class GormVenueRepository implements VenueRepository {
 
 	GormVenueDaoService gormVenueDaoService
-	
+
 	@Override
 	List getAll() {
 		gormVenueDaoService.getAll().collect { mapGormVenueToVenue(it) }
 	}
 
 	@Override
-    Venue get(long id) {
+	Venue get(long id) {
 		mapGormVenueToVenue(gormVenueDaoService.get(id))
-    }
+	}
 
 	private Venue mapGormVenueToVenue(GormVenue venue) {
 		WeeklyOpeningTimesBuilder weeklyOpeningTimesBuilder = new WeeklyOpeningTimesBuilder()
@@ -35,16 +35,16 @@ class GormVenueRepository implements VenueRepository {
 
 		WeeklyOpeningTimes weeklyOpeningTimes = weeklyOpeningTimesBuilder.build()
 		new Venue(
-                id: venue.id,
-                name: venue.name,
+				id: venue.id,
+				name: venue.name,
 				location: new Coordinates(lat: venue.latitude, lng: venue.longitude),
 				address: new Address(
-					addressLine1: venue.addressLine1,
-					addressLine2: venue.addressLine2,
-					addressLine3: venue.addressLine3,
-					city: venue.city,
-					postcode: venue.postcode,
-					phoneNumber: venue.phoneNumber
+				addressLine1: venue.addressLine1,
+				addressLine2: venue.addressLine2,
+				addressLine3: venue.addressLine3,
+				city: venue.city,
+				postcode: venue.postcode,
+				phoneNumber: venue.phoneNumber
 				),
 				weeklyOpeningTimes: weeklyOpeningTimes,
 				features: venue.features.collect())
@@ -52,36 +52,49 @@ class GormVenueRepository implements VenueRepository {
 
 	@Override
 	long save(Venue venue) {
-		GormVenue gormVenue = mapVenueToGormVenue(venue)
+		GormVenue gormVenue = mapVenuePropertiesToGormVenue(venue, new GormVenue())
 		GormVenue storedGormVenue = gormVenueDaoService.save(gormVenue)
 		storedGormVenue.id
-	}	
-	
-	private GormVenue mapVenueToGormVenue(Venue venue) {
+	}
+
+	private GormVenue mapVenuePropertiesToGormVenue(Venue venue, GormVenue gormVenue) {
 		Set openPeriods = []
-		
+
 		venue.weeklyOpeningTimes.each { DayOfWeek day, DailyOpeningTimes dailyOpeningTimes ->
 			dailyOpeningTimes.openPeriods.each {
 				openPeriods << new GormOpenPeriod(day: day,
-					 openHour: it.start.hour,
-					 openMinute: it.start.minute,
-					 closeHour: it.end.hour,
-					 closeMinute: it.end.minute)
+				openHour: it.start.hour,
+				openMinute: it.start.minute,
+				closeHour: it.end.hour,
+				closeMinute: it.end.minute)
 			}
 		}
+
+		gormVenue.name = venue.name
+		gormVenue.latitude = venue.location.lat
+		gormVenue.longitude = venue.location.lng
+		gormVenue.addressLine1 = venue.address.addressLine1
+		gormVenue.addressLine2 = venue.address.addressLine2
+		gormVenue.addressLine3 = venue.address.addressLine3
+		gormVenue.city = venue.address.city
+		gormVenue.postcode = venue.address.postcode
+		gormVenue.phoneNumber = venue.address.phoneNumber
+		gormVenue.openPeriods = openPeriods
+		gormVenue.features = venue.features.collect()
 		
-		new GormVenue(
-            name: venue.name,
-			latitude: venue.location.lat,
-			longitude: venue.location.lng,
-			addressLine1: venue.address.addressLine1,
-			addressLine2: venue.address.addressLine2,
-			addressLine3: venue.address.addressLine3,
-			city: venue.address.city,
-			postcode: venue.address.postcode,
-			phoneNumber: venue.address.phoneNumber,
-			openPeriods: openPeriods,
-			features: venue.features.collect()
-		)
+		gormVenue
+	}
+
+	@Override
+	public Venue findByNameAndCoordinates(String name, Coordinates coordinates) {
+		GormVenue gormVenue = gormVenueDaoService.findByNameAndCoordinates(name, coordinates)
+		mapGormVenueToVenue(gormVenue)
+	}
+
+	@Override
+	public void update(Venue venue) {
+		GormVenue existingGormVenue = gormVenueDaoService.get(venue.id)
+		GormVenue updatedGormVenue = mapVenuePropertiesToGormVenue(venue, existingGormVenue)
+		gormVenueDaoService.save(updatedGormVenue)
 	}
 }

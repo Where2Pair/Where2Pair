@@ -1,5 +1,7 @@
 package org.where2pair.grails
 
+import org.where2pair.Coordinates
+
 class GormVenueDaoService {
 
 	GormVenue get(long id) {
@@ -13,4 +15,8 @@ class GormVenueDaoService {
 	GormVenue save(GormVenue venue) {
 		venue.save()
 	}	
+	
+	GormVenue findByNameAndCoordinates(String name, Coordinates coordinates) {
+		
+	}
 }
