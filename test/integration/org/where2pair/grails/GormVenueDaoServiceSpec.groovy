@@ -1,11 +1,10 @@
 package org.where2pair.grails
 
-import org.where2pair.Venue
-
 import static org.where2pair.DayOfWeek.MONDAY
 import static org.where2pair.grails.GormVenueBuilderForIntegration.aGormVenue
-
 import grails.plugin.spock.IntegrationSpec
+
+import org.where2pair.Coordinates
 
 class GormVenueDaoServiceSpec extends IntegrationSpec {
 
@@ -50,8 +49,21 @@ class GormVenueDaoServiceSpec extends IntegrationSpec {
 		fetchedVenue.openPeriods == [openPeriod] as Set
 	}
 	
-	def "test validation errors"() {
+	def "finds by name and coordinates"() {
+		given:
+		GormVenue matchingVenue = aGormVenue()
+		GormVenue anotherVenue = aGormVenue()
+		matchingVenue.name = 'existing venue'
+		matchingVenue.latitude = 0.123
+		matchingVenue.longitude = 0.321
+		gormVenueDaoService.save(matchingVenue)
+		gormVenueDaoService.save(anotherVenue)
 		
+		when:
+		GormVenue foundVenue = gormVenueDaoService.findByNameAndCoordinates('existing venue', new Coordinates(0.123, 0.321))
+	
+		then:
+		foundVenue == matchingVenue	
 	}
 	
 	def setupSpec() {

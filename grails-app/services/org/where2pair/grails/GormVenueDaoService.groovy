@@ -17,6 +17,6 @@ class GormVenueDaoService {
 	}	
 	
 	GormVenue findByNameAndCoordinates(String name, Coordinates coordinates) {
-		
+		GormVenue.findByNameAndLatitudeAndLongitude(name, coordinates.lat, coordinates.lng)
 	}
 }
