@@ -5,9 +5,11 @@ import grails.converters.JSON
 import org.springframework.security.access.annotation.Secured
 import org.where2pair.Venue
 import org.where2pair.VenueRepository
+import org.where2pair.VenueWriter
 
 class VenueController {
     VenueRepository venueRepository
+	VenueWriter venueWriter
     VenueJsonMarshaller venueJsonMarshaller
 
     def show(long id) {
@@ -32,7 +34,7 @@ class VenueController {
     def save() {
 		Map json = request.JSON
 		Venue venue = venueJsonMarshaller.asVenue(json)
-        json.id = venueRepository.save(venue)
+        json.id = venueWriter.save(venue)
         render json as JSON
     }
 

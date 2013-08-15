@@ -11,11 +11,13 @@ class VenueWriterSpec extends Specification {
 		given:
 		Venue venue = new Venue(name: 'name', location: new Coordinates(1.0, 0.1))
 		venueRepository.findByNameAndCoordinates('name', new Coordinates(1.0, 0.1)) >> null
+		venueRepository.save(venue) >> 99
 		
 		when:
-		venueWriter.save(venue)
+		long id = venueWriter.save(venue)
 		
 		then:
+		id == 99
 		1 * venueRepository.save(venue)
 	}
 	
@@ -26,9 +28,10 @@ class VenueWriterSpec extends Specification {
 		venueRepository.findByNameAndCoordinates('name', new Coordinates(1.0, 0.1)) >> matchingVenue
 		
 		when:
-		venueWriter.save(venue)
+		long id = venueWriter.save(venue)
 		
 		then:
+		id == 99
 		1 * venueRepository.update({ it == venue && it.id == 99 })
 	}
 }

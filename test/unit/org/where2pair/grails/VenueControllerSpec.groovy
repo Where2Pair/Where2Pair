@@ -7,6 +7,7 @@ import org.skyscreamer.jsonassert.JSONAssert
 import org.where2pair.Coordinates
 import org.where2pair.Venue
 import org.where2pair.VenueRepository;
+import org.where2pair.VenueWriter;
 import org.where2pair.WeeklyOpeningTimesBuilder
 
 import spock.lang.Specification
@@ -17,6 +18,7 @@ class VenueControllerSpec extends Specification {
 	static final String VENUE_NAME = 'my venue'
     static final long VENUE_ID = 1L
     VenueRepository venueRepository = Mock()
+	VenueWriter venueWriter = Mock()
 	VenueJsonMarshaller venueJsonMarshaller = Mock()
 
     def "should show the specified venue"() {
@@ -87,7 +89,7 @@ class VenueControllerSpec extends Specification {
 		request.json = venueJson
 		Venue venue = new Venue()
 		venueJsonMarshaller.asVenue(venueJson) >> venue
-		venueRepository.save(venue) >> 99
+		venueWriter.save(venue) >> 99
 		
 		when:
 		controller.save()
@@ -99,6 +101,7 @@ class VenueControllerSpec extends Specification {
 
 	def setup() {
 		controller.venueRepository = venueRepository
+		controller.venueWriter = venueWriter
 		controller.venueJsonMarshaller = venueJsonMarshaller
 		String.mixin(JSONMatcher)
 		Integer.mixin(VenuesMixin)
