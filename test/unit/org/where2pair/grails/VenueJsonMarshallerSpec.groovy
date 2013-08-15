@@ -14,35 +14,35 @@ import org.where2pair.DailyOpeningTimes.SimpleTime
 
 import spock.lang.Specification
 
-class VenueToJsonConverterSpec extends Specification {
+class VenueJsonMarshallerSpec extends Specification {
 
-	VenueToJsonConverter venueConverter = new VenueToJsonConverter()
+	VenueJsonMarshaller venueJsonMarshaller = new VenueJsonMarshaller()
 
-    def "should convert Venue to map"() {
+    def "converts Venue to map"() {
 		given:
 		Venue venue = createVenue()
 		Map expectedVenueMap = createCorrespondingVenueMap()
 		
 		when:
-		Map venueMap = venueConverter.asVenueJson(venue)
+		Map venueMap = venueJsonMarshaller.asVenueJson(venue)
 		
 		then:
 		venueMap == expectedVenueMap
 	}
 	
-	def "should convert Venues to map"() {
+	def "converts Venues to map"() {
 		given:
 		Venue venue = createVenue()
 		Map expectedVenueMap = createCorrespondingVenueMap()
 		
 		when:
-		List venueMap = venueConverter.asVenuesJson([venue])
+		List venueMap = venueJsonMarshaller.asVenuesJson([venue])
 		
 		then:
 		venueMap == [expectedVenueMap]
 	}
 	
-	def "should convert VenueWithDistance to map"() {
+	def "converts VenueWithDistance to map"() {
 		given:
 		Venue venue = createVenue()
 		VenueWithDistance venueWithDistance = new VenueWithDistance(venue: venue, distanceInKm: 10.5)
@@ -51,13 +51,13 @@ class VenueToJsonConverterSpec extends Specification {
 			venue: createCorrespondingVenueMap()]
 		
 		when:
-		List venuesWithDistanceMap = venueConverter.asVenuesWithDistanceJson([venueWithDistance])
+		List venuesWithDistanceMap = venueJsonMarshaller.asVenuesWithDistanceJson([venueWithDistance])
 		
 		then:
 		venuesWithDistanceMap == [expectedVenueWithDistanceMap]
 	}
 	
-	def "should render null string values as empty strings"() {
+	def "renders null string values as empty strings"() {
 		given:
 		Venue venue = new Venue(
 			address: new Address(),
@@ -65,7 +65,7 @@ class VenueToJsonConverterSpec extends Specification {
 			location: new Coordinates(0, 0))
 		
 		when:
-		Map venueMap = venueConverter.asVenueJson(venue)
+		Map venueMap = venueJsonMarshaller.asVenueJson(venue)
 		
 		then:
 		venueMap.name == ""
@@ -75,6 +75,18 @@ class VenueToJsonConverterSpec extends Specification {
 		venueMap.address.city == ""
 		venueMap.address.postcode == ""
 		venueMap.address.phoneNumber == ""
+	}
+	
+	def "converts map to Venue"() {
+		given:
+		Map venueJson = createCorrespondingVenueMap()
+		Venue expectedVenue = createVenue()
+		
+		when:
+		Venue venue = venueJsonMarshaller.asVenue(venueJson)
+	
+		then:
+		venue == expectedVenue
 	}
 	
 	private Venue createVenue() {

@@ -2,14 +2,18 @@ package org.where2pair.grails
 
 import static org.where2pair.DayOfWeek.MONDAY
 import static org.where2pair.DayOfWeek.SUNDAY
-import grails.converters.JSON
 
+import org.where2pair.Address
+import org.where2pair.Coordinates
 import org.where2pair.DailyOpeningTimes
 import org.where2pair.DayOfWeek
 import org.where2pair.Venue
+import org.where2pair.WeeklyOpeningTimes;
+import org.where2pair.WeeklyOpeningTimesBuilder
 import org.where2pair.DailyOpeningTimes.OpenPeriod
+import org.where2pair.DailyOpeningTimes.SimpleTime
 
-class VenueToJsonConverter {
+class VenueJsonMarshaller {
 
     Map asVenueJson(Venue venue) {
 		Map openHours = (MONDAY..SUNDAY).collectEntries { [dayToString(it), []] }
@@ -66,5 +70,20 @@ class VenueToJsonConverter {
 	
 	private String dayToString(DayOfWeek day) {
 		day.toString().toLowerCase()
+	}
+	
+	Venue asVenue(Map json) {
+		WeeklyOpeningTimesBuilder builder = new WeeklyOpeningTimesBuilder()
+		json.openHours.each { day, dailyOpenHours ->
+			dailyOpenHours.each {
+				builder.addOpenPeriod(DayOfWeek.parseString(day), new SimpleTime(it.openHour, it.openMinute), new SimpleTime(it.closeHour, it.closeMinute))
+			}
+		}
+		new Venue(id: json.id,
+			name: json.name,
+			location: new Coordinates(json.latitude, json.longitude),
+			address: new Address(json.address),
+			weeklyOpeningTimes: builder.build(),
+			features: json.features)
 	}
 }

@@ -11,11 +11,12 @@ import grails.test.mixin.*
 import org.skyscreamer.jsonassert.JSONAssert
 import org.where2pair.Address
 import org.where2pair.Coordinates
-import org.where2pair.FeaturesCriteria;
+import org.where2pair.FeaturesCriteria
 import org.where2pair.OpenTimesCriteria
 import org.where2pair.TimeProvider
 import org.where2pair.Venue
 import org.where2pair.VenueFinder
+import org.where2pair.VenueRepository
 import org.where2pair.VenueWithDistance
 import org.where2pair.WeeklyOpeningTimesBuilder
 import org.where2pair.DailyOpeningTimes.SimpleTime
@@ -29,10 +30,10 @@ class VenueFinderControllerSpec extends Specification {
 	static final TIME_NOW = new SimpleTime(1, 2)
 	static final TODAY = FRIDAY
 	VenueFinder venueFinder = Mock()
-	GormVenueRepository gormVenueRepository = Mock()
+	VenueRepository venueRepository = Mock()
 	TimeProvider timeProvider = Mock()
-	VenueToJsonConverter venueConverter = new VenueToJsonConverter()
-
+	VenueJsonMarshaller venueJsonMarshaller = new VenueJsonMarshaller()
+	
 	def "should display search results for given coordinates"() {
 		given:
 		controller.params.'location1' = '1.0,0.1'
@@ -125,7 +126,7 @@ class VenueFinderControllerSpec extends Specification {
 	}
 		
 	private def toVenuesWithDistanceJson(List venues) {
-		venueConverter.asVenuesWithDistanceJson(venues)
+		venueJsonMarshaller.asVenuesWithDistanceJson(venues)
 	}
 
 	def setup() {
@@ -133,8 +134,8 @@ class VenueFinderControllerSpec extends Specification {
 		timeProvider.timeNow() >> TIME_NOW
 		timeProvider.today() >> TODAY
 		controller.venueFinder = venueFinder
-		controller.gormVenueRepository = gormVenueRepository
-		controller.venueConverter = venueConverter
+		controller.venueRepository = venueRepository
+		controller.venueJsonMarshaller = venueJsonMarshaller
 		controller.timeProvider = timeProvider
 		String.mixin(JSONMatcher)
 		Integer.mixin(VenuesMixin)

@@ -3,11 +3,13 @@ package org.where2pair.grails
 import static org.where2pair.DayOfWeek.MONDAY
 import static org.where2pair.DayOfWeek.TUESDAY
 import static org.where2pair.grails.GormVenueBuilder.aGormVenue
+import grails.test.mixin.*
 
 import org.where2pair.Address
 import org.where2pair.Coordinates
 import org.where2pair.DailyOpeningTimes
 import org.where2pair.Venue
+import org.where2pair.WeeklyOpeningTimesBuilder
 import org.where2pair.DailyOpeningTimes.OpenPeriod
 import org.where2pair.DailyOpeningTimes.SimpleTime
 
@@ -21,7 +23,7 @@ class GormVenueRepositorySpec extends Specification {
 		gormVenueDaoService: gormVenueDaoService
 	)
 	
-	def "should load all GormVenues through dao and map to Venues"() {
+	def "loads all GormVenues through dao and map to Venues"() {
 		given:
 		GormVenue gormVenue = new GormVenue(
 				latitude: 1.0,
@@ -61,7 +63,7 @@ class GormVenueRepositorySpec extends Specification {
 		venues[0].features == ['wifi', 'mobile payments'] as HashSet
 	}
 
-	def "should load a GormVenue through dao and map to Venue"() {
+	def "loads a GormVenue through dao and map to Venue"() {
 		given:
 		long id = 1L
 		GormVenue gormVenue = aGormVenue()
@@ -76,21 +78,24 @@ class GormVenueRepositorySpec extends Specification {
 		venue.name == gormVenue.name
 	}
 
-	def "should map objects and save through dao"() {
+	def "maps Venues and saves through dao"() {
 		given:
-		VenueDto venueDto = new VenueDto(
-				name: 'my venue',
-				latitude: 1.0,
-				longitude: 0.1,
+		WeeklyOpeningTimesBuilder builder = new WeeklyOpeningTimesBuilder()
+		builder.addOpenPeriod(MONDAY, new SimpleTime(12, 0), new SimpleTime(18, 30))
+		builder.addOpenPeriod(TUESDAY, new SimpleTime(8, 0), new SimpleTime(11, 0))
+		Venue venue = new Venue(
+			name: 'my venue',
+			location: new Coordinates(1.0, 0.1),
+			address: new Address(
 				addressLine1: 'addressLine1',
 				addressLine2: 'addressLine2',
 				addressLine3: 'addressLine3',
 				city: 'city',
 				postcode: 'postcode',
-				phoneNumber: '01234567890',
-				openHours: [monday: [[openHour: 12, openMinute: 0, closeHour: 18, closeMinute: 30]],
-					tuesday: [[openHour: 8, openMinute: 0, closeHour: 11, closeMinute: 0]]],
-				features: ['wifi', 'mobile payments']
+				phoneNumber: '01234567890'
+			),
+			weeklyOpeningTimes: builder.build(),
+			features: ['wifi', 'mobile payments']
 		)
 		GormVenue gormVenue = new GormVenue(
 				name: 'my venue',
@@ -112,7 +117,7 @@ class GormVenueRepositorySpec extends Specification {
 		gormVenueDaoService.save(gormVenue) >> storedGormVenue
 
 		when:
-		long savedId = gormVenueRepository.save(venueDto)
+		long savedId = gormVenueRepository.save(venue)
 
 		then:
 		savedId == 10

@@ -9,13 +9,14 @@ import org.where2pair.FeaturesCriteria
 import org.where2pair.OpenTimesCriteria
 import org.where2pair.TimeProvider
 import org.where2pair.VenueFinder
+import org.where2pair.VenueRepository
 import org.where2pair.DailyOpeningTimes.SimpleTime
 
 class VenueFinderController {
 
 	VenueFinder venueFinder
-	GormVenueRepository gormVenueRepository
-	VenueToJsonConverter venueConverter
+	VenueRepository venueRepository
+	VenueJsonMarshaller venueJsonMarshaller
 	TimeProvider timeProvider
 	
 	def findNearest() {

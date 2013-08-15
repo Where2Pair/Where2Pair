@@ -3,17 +3,17 @@ import org.where2pair.TimeProvider
 import org.where2pair.VenueFinder
 import org.where2pair.grails.GormVenueDaoService
 import org.where2pair.grails.GormVenueRepository
-import org.where2pair.grails.VenueToJsonConverter;
+import org.where2pair.grails.VenueJsonMarshaller;
 
 
 beans = {
 	venueDaoService(GormVenueDaoService)
 
-	gormVenueRepository(GormVenueRepository) { 
+	venueRepository(GormVenueRepository) { 
 		gormVenueDaoService = ref("venueDaoService") 
 	}
 	
-	venueConverter(VenueToJsonConverter)
+	venueConverter(VenueJsonMarshaller)
 
 	timeProvider(TimeProvider)
 

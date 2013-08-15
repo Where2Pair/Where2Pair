@@ -1,5 +1,10 @@
 package org.where2pair
 
+import groovy.transform.EqualsAndHashCode;
+import groovy.transform.ToString;
+
+@EqualsAndHashCode
+@ToString
 class Venue {
     long id
     String name

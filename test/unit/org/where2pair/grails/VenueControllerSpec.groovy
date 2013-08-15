@@ -6,6 +6,7 @@ import grails.test.mixin.*
 import org.skyscreamer.jsonassert.JSONAssert
 import org.where2pair.Coordinates
 import org.where2pair.Venue
+import org.where2pair.VenueRepository;
 import org.where2pair.WeeklyOpeningTimesBuilder
 
 import spock.lang.Specification
@@ -15,16 +16,16 @@ class VenueControllerSpec extends Specification {
 
 	static final String VENUE_NAME = 'my venue'
     static final long VENUE_ID = 1L
-    GormVenueRepository gormVenueRepository = Mock()
-	VenueToJsonConverter venueConverter = Mock()
+    VenueRepository venueRepository = Mock()
+	VenueJsonMarshaller venueJsonMarshaller = Mock()
 
     def "should show the specified venue"() {
         given:
         request.method = 'GET'
         Venue venue = new Venue(name: VENUE_NAME)
         Map venueJson = [name: VENUE_NAME]
-        gormVenueRepository.get(VENUE_ID) >> venue
-        venueConverter.asVenueJson(venue) >> venueJson
+        venueRepository.get(VENUE_ID) >> venue
+        venueJsonMarshaller.asVenueJson(venue) >> venueJson
 
         when:
         controller.show(VENUE_ID)
@@ -36,7 +37,7 @@ class VenueControllerSpec extends Specification {
     def "should show 404 if venue not found"() {
         request.method = 'GET'
         Venue venue = new Venue(name: VENUE_NAME)
-        gormVenueRepository.get(VENUE_ID) >> null
+        venueRepository.get(VENUE_ID) >> null
 
         when:
         controller.show(VENUE_ID)
@@ -51,8 +52,8 @@ class VenueControllerSpec extends Specification {
 		request.method = 'GET'
         List venues = 100.venues()
 		List venuesJson = 100.venuesJson()
-		gormVenueRepository.getAll() >> venues
-        venueConverter.asVenuesJson(venues) >> venuesJson
+		venueRepository.getAll() >> venues
+        venueJsonMarshaller.asVenuesJson(venues) >> venuesJson
 
 		when:
 		controller.showAll()
@@ -65,7 +66,7 @@ class VenueControllerSpec extends Specification {
 	def "should save new venues"() {
 		given:
 		request.method = 'POST'
-		VenueDto venueDto = new VenueDto(
+		Map venueJson = [
 				name: 'name',
 				latitude: 1.0,
 				longitude: 0.1,
@@ -82,21 +83,23 @@ class VenueControllerSpec extends Specification {
 						[openHour: 8, openMinute: 0, closeHour: 11, closeMinute: 0]
 					]],
 				features: ['wifi', 'mobile payments']
-				)
-		request.json = venueDto
-
+				]
+		request.json = venueJson
+		Venue venue = new Venue()
+		venueJsonMarshaller.asVenue(venueJson) >> venue
+		venueRepository.save(venue) >> 99
+		
 		when:
 		controller.save()
 
 		then:
-		1 * gormVenueRepository.save(venueDto)
-		response.text.equalToJsonOf(venueDto)
+		response.text.equalToJsonOf(venueJson + [id: 99])
 		response.status == 200
 	}
 
 	def setup() {
-		controller.gormVenueRepository = gormVenueRepository
-		controller.venueConverter = venueConverter
+		controller.venueRepository = venueRepository
+		controller.venueJsonMarshaller = venueJsonMarshaller
 		String.mixin(JSONMatcher)
 		Integer.mixin(VenuesMixin)
 	}

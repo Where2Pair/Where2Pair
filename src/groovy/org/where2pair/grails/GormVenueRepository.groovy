@@ -2,6 +2,7 @@ package org.where2pair.grails
 
 import org.where2pair.Address
 import org.where2pair.Coordinates
+import org.where2pair.DailyOpeningTimes;
 import org.where2pair.DayOfWeek
 import org.where2pair.Venue
 import org.where2pair.VenueRepository
@@ -18,6 +19,7 @@ class GormVenueRepository implements VenueRepository {
 		gormVenueDaoService.getAll().collect { mapGormVenueToVenue(it) }
 	}
 
+	@Override
     Venue get(long id) {
 		mapGormVenueToVenue(gormVenueDaoService.get(id))
     }
@@ -48,37 +50,38 @@ class GormVenueRepository implements VenueRepository {
 				features: venue.features.collect())
 	}
 
-	long save(VenueDto venueDto) {
-		GormVenue gormVenue = mapVenueDTOToGormVenue(venueDto)
+	@Override
+	long save(Venue venue) {
+		GormVenue gormVenue = mapVenueToGormVenue(venue)
 		GormVenue storedGormVenue = gormVenueDaoService.save(gormVenue)
 		storedGormVenue.id
 	}	
 	
-	private GormVenue mapVenueDTOToGormVenue(VenueDto venueDto) {
+	private GormVenue mapVenueToGormVenue(Venue venue) {
 		Set openPeriods = []
 		
-		venueDto.openHours.each { String day, List openPeriodsList ->
-			openPeriodsList.each {
-				openPeriods << new GormOpenPeriod(day: DayOfWeek.parseString(day),
-					 openHour: it.openHour,
-					 openMinute: it.openMinute,
-					 closeHour: it.closeHour,
-					 closeMinute: it.closeMinute)
+		venue.weeklyOpeningTimes.each { DayOfWeek day, DailyOpeningTimes dailyOpeningTimes ->
+			dailyOpeningTimes.openPeriods.each {
+				openPeriods << new GormOpenPeriod(day: day,
+					 openHour: it.start.hour,
+					 openMinute: it.start.minute,
+					 closeHour: it.end.hour,
+					 closeMinute: it.end.minute)
 			}
 		}
 		
 		new GormVenue(
-            name: venueDto.name,
-			latitude: venueDto.latitude,
-			longitude: venueDto.longitude,
-			addressLine1: venueDto.addressLine1,
-			addressLine2: venueDto.addressLine2,
-			addressLine3: venueDto.addressLine3,
-			city: venueDto.city,
-			postcode: venueDto.postcode,
-			phoneNumber: venueDto.phoneNumber,
+            name: venue.name,
+			latitude: venue.location.lat,
+			longitude: venue.location.lng,
+			addressLine1: venue.address.addressLine1,
+			addressLine2: venue.address.addressLine2,
+			addressLine3: venue.address.addressLine3,
+			city: venue.address.city,
+			postcode: venue.address.postcode,
+			phoneNumber: venue.address.phoneNumber,
 			openPeriods: openPeriods,
-			features: venueDto.features.collect()
+			features: venue.features.collect()
 		)
 	}
 }
