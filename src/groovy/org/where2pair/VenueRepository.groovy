@@ -8,4 +8,7 @@ interface VenueRepository {
 	
 	long save(Venue venue)
 	
+	Venue findByNameAndCoordinates(String name, Coordinates coordinates)
+	
+	void update(Venue venue)
 }
