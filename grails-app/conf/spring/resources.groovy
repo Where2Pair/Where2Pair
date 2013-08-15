@@ -13,14 +13,14 @@ beans = {
 		gormVenueDaoService = ref("venueDaoService") 
 	}
 	
-	venueConverter(VenueJsonMarshaller)
+	venueJsonMarshaller(VenueJsonMarshaller)
 
 	timeProvider(TimeProvider)
 
 	distanceCalculator(DistanceCalculator)
 	
 	venueFinder(VenueFinder) {
-		venueRepository = ref("gormVenueRepository")
+		venueRepository = ref("venueRepository")
 		distanceCalculator = ref("distanceCalculator")
 	}
 }

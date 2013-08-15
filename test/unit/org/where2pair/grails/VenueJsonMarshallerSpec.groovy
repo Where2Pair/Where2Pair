@@ -89,6 +89,34 @@ class VenueJsonMarshallerSpec extends Specification {
 		venue == expectedVenue
 	}
 	
+	def "converts map to Venue when address is null"() {
+		given:
+		Map venueJson = createCorrespondingVenueMap()
+		Venue expectedVenue = createVenue()
+		venueJson.address = null
+		expectedVenue.address = new Address()
+		
+		when:
+		Venue venue = venueJsonMarshaller.asVenue(venueJson)
+		
+		then:
+		venue == expectedVenue
+	}
+	
+	def "converts map to Venue when id is null"() {
+		given:
+		Map venueJson = createCorrespondingVenueMap()
+		Venue expectedVenue = createVenue()
+		venueJson.id = null
+		expectedVenue.id = 0
+		
+		when:
+		Venue venue = venueJsonMarshaller.asVenue(venueJson)
+		
+		then:
+		venue == expectedVenue
+	}
+	
 	private Venue createVenue() {
 		WeeklyOpeningTimesBuilder builder = new WeeklyOpeningTimesBuilder()
 		builder.addOpenPeriod(MONDAY, new SimpleTime(12, 0), new SimpleTime(18, 30))

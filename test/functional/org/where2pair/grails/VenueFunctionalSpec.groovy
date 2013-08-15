@@ -10,26 +10,23 @@ class VenueFunctionalSpec extends Specification {
 
     def "store and retrieve venue though the REST api"() {
         given:
-        VenueDto venueDto = new VenueDto(name: VENUE_NAME, 
+        Map venueJson = [name: VENUE_NAME, 
 			latitude: 1.0, 
 			longitude: 0.5,
-            openHours: ["monday": [[openHour: 12, openMinute: 0, closeHour: 18, closeMinute: 0]]],
-			addressLine1: 'addressLine1',
-			city: 'city',
-			postcode: 'postcode')
+            openHours: ["monday": [[openHour: 12, openMinute: 0, closeHour: 18, closeMinute: 0]]]]
 
         when:
-        JSON retrievedVenue = storeAndRetrieve(venueDto)
+        JSON retrievedVenue = storeAndRetrieve(venueJson)
 
         then:
         retrievedVenue.name == VENUE_NAME
     }
 
-    private JSON storeAndRetrieve(venueDto) {
+    private JSON storeAndRetrieve(venueJson) {
         def where2pair = new RESTClient("http://localhost:8080")
         where2pair.auth.basic("testUser", "password")
 
-        def response = where2pair.post(path: "Where2Pair/venue", body: venueDto, requestContentType: ContentType.JSON)
+        def response = where2pair.post(path: "Where2Pair/venue", body: venueJson, requestContentType: ContentType.JSON)
         assert response.status == 200
 
         JSON savedVenue = response.data

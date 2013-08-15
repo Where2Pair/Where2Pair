@@ -79,10 +79,10 @@ class VenueJsonMarshaller {
 				builder.addOpenPeriod(DayOfWeek.parseString(day), new SimpleTime(it.openHour, it.openMinute), new SimpleTime(it.closeHour, it.closeMinute))
 			}
 		}
-		new Venue(id: json.id,
+		new Venue(id: json.id ?: 0,
 			name: json.name,
 			location: new Coordinates(json.latitude, json.longitude),
-			address: new Address(json.address),
+			address: new Address(json.address ?: [:]),
 			weeklyOpeningTimes: builder.build(),
 			features: json.features)
 	}

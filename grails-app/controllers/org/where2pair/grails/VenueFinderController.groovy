@@ -26,7 +26,7 @@ class VenueFinderController {
 			OpenTimesCriteria openTimesCriteria = parseOpenTimesCriteriaFromRequest()
 			FeaturesCriteria featuresCriteria = parseFeaturesCriteriaFromRequest()
 			List venues = venueFinder.findNearestTo(openTimesCriteria, featuresCriteria, *coordinates)
-			List venuesWithDistanceJson = venueConverter.asVenuesWithDistanceJson(venues)
+			List venuesWithDistanceJson = venueJsonMarshaller.asVenuesWithDistanceJson(venues)
 			render venuesWithDistanceJson as JSON
 		} else {
 			handleIllegalCoordinatesCount(coordinates)

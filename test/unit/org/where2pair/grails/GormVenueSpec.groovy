@@ -18,14 +18,13 @@ class GormVenueSpec extends Specification {
 		def venue = new GormVenue(name: 'name',
 			latitude: 1.0,
 			longitude: -1.0,
-			addressLine1: 'addressLine1',
-			city: 'city',
-			postcode: 'postcode')
+			openPeriods: [new GormOpenPeriod()])
 		
 		when:
 		boolean validated = venue.validate()
 		
 		then:
+		println venue.errors
 		validated
 	}
 	
@@ -41,15 +40,10 @@ class GormVenueSpec extends Specification {
 		field			| val		| error
 		'name'			| null		| 'nullable'
 		'name'			| ''		| 'blank'
-		'addressLine1'	| null		| 'nullable'
-		'addressLine1'	| ''		| 'blank'
-		'city'			| null		| 'nullable'
-		'city'			| ''		| 'blank'
-		'postcode'		| null		| 'nullable'
-		'postcode'		| ''		| 'blank'
 		'latitude'		| 90.1		| 'max'
 		'latitude'		| -90.1		| 'min'
 		'longitude'		| 180.1		| 'max'
 		'longitude'		| -180.1	| 'min'
+		'openPeriods'	| []		| 'minSize'
 	}
 }

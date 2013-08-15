@@ -21,18 +21,20 @@ class GormVenue {
 	
     static constraints = {
 		name blank: false
-		addressLine1 blank: false
-		addressLine2 nullable: true
-		addressLine3 nullable: true
-		city blank: false
-		postcode blank: false
-		phoneNumber nullable: true
 		latitude min: -90d, max: 90d
 		longitude min: -180d, max: 180d
+		addressLine1 nullable: true
+		addressLine2 nullable: true
+		addressLine3 nullable: true
+		city nullable: true
+		postcode nullable: true
+		phoneNumber nullable: true
+		openPeriods minSize: 1
     }
 	
 	static mapping = {
 		table 'venue'
 		openPeriods lazy: false
+		features lazy: false
 	}
 }
