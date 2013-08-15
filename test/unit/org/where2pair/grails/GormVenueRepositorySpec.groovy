@@ -137,7 +137,15 @@ class GormVenueRepositorySpec extends Specification {
 		venue.name == gormVenue.name
 	}
 	
-	def "updates and existing Venue"() {
+	def "returns null if no Venue with name and coordinates exist"() {
+		when:
+		Venue venue = gormVenueRepository.findByNameAndCoordinates('name', new Coordinates(1.0, 0.1))
+
+		then:
+		!venue
+	}
+	
+	def "updates an existing Venue"() {
 		given:
 		WeeklyOpeningTimesBuilder builder = new WeeklyOpeningTimesBuilder()
 		builder.addOpenPeriod(MONDAY, new SimpleTime(12, 0), new SimpleTime(18, 30))

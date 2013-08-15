@@ -14,11 +14,10 @@ class VenueWriterSpec extends Specification {
 		venueRepository.save(venue) >> 99
 		
 		when:
-		long id = venueWriter.save(venue)
+		long result = venueWriter.save(venue)
 		
 		then:
-		id == 99
-		1 * venueRepository.save(venue)
+		result == 99
 	}
 	
 	def "when matching Venue is found, then saves new Venue"() {
@@ -28,10 +27,10 @@ class VenueWriterSpec extends Specification {
 		venueRepository.findByNameAndCoordinates('name', new Coordinates(1.0, 0.1)) >> matchingVenue
 		
 		when:
-		long id = venueWriter.save(venue)
+		long result = venueWriter.save(venue)
 		
 		then:
-		id == 99
+		result == 99
 		1 * venueRepository.update({ it == venue && it.id == 99 })
 	}
 }

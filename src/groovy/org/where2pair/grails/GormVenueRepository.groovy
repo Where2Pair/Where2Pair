@@ -88,6 +88,10 @@ class GormVenueRepository implements VenueRepository {
 	@Override
 	public Venue findByNameAndCoordinates(String name, Coordinates coordinates) {
 		GormVenue gormVenue = gormVenueDaoService.findByNameAndCoordinates(name, coordinates)
+		
+		if (!gormVenue)
+			return null
+			
 		mapGormVenueToVenue(gormVenue)
 	}
 

@@ -1,6 +1,7 @@
 import org.where2pair.DistanceCalculator;
 import org.where2pair.TimeProvider
 import org.where2pair.VenueFinder
+import org.where2pair.VenueWriter;
 import org.where2pair.grails.GormVenueDaoService
 import org.where2pair.grails.GormVenueRepository
 import org.where2pair.grails.VenueJsonMarshaller;
@@ -11,6 +12,10 @@ beans = {
 
 	venueRepository(GormVenueRepository) { 
 		gormVenueDaoService = ref("venueDaoService") 
+	}
+	
+	venueWriter(VenueWriter) {
+		venueRepository = ref("venueRepository")
 	}
 	
 	venueJsonMarshaller(VenueJsonMarshaller)
