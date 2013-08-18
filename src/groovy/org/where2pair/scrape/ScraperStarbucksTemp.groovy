@@ -6,7 +6,7 @@ import groovy.json.JsonSlurper
 import groovyx.net.http.ContentType
 import groovyx.net.http.RESTClient
 
-def results = 'https://openapi.starbucks.com/location/v1/stores?&callback=jQuery17206076719672419131_1370202711616&radius=50&limit=100&brandCode=SBUX&latLng=51.520547%2C-0.082103&apikey=7b35m595vccu6spuuzu2rjh4&_=1370202720762'.toURL().text
+def results = 'https://openapi.starbucks.com/location/v1/stores?&callback=jQuery17206076719672419131_1370202711616&radius=50&limit=50&brandCode=SBUX&latLng=51.520547%2C-0.082103&apikey=7b35m595vccu6spuuzu2rjh4&_=1370202720762'.toURL().text
 
 results = results.replaceAll('jQuery17206076719672419131_1370202711616', '')[1..-1]
 
@@ -20,6 +20,9 @@ def stores = map.items.collect {
 	def address = store.address
     def regularHours = store.regularHours
     def openHours = regularHours.collectEntries {
+		if (it.key == 'open24x7')
+			return [:]
+		
         String[] openTimes = it.value.openTime.split(':')
         String[] closeTimes = it.value.closeTime.split(':')
         [(it.key): [[openHour: openTimes[0], openMinute: openTimes[1], 
@@ -50,18 +53,20 @@ def stores = map.items.collect {
     [name: 'Starbucks', 
         longitude: store.coordinates.longitude, 
         latitude: store.coordinates.latitude,
-		addressLine1: addressLines[0],
-		addressLine2: addressLines[1],
-		addressLine3: addressLines[2],
-		city: address.city,
-		postcode: address.postalCode,
-		phoneNumber: store.phoneNumber,
+		address: [
+			addressLine1: addressLines[0],
+			addressLine2: addressLines[1],
+			addressLine3: addressLines[2],
+			city: address.city,
+			postcode: address.postalCode,
+			phoneNumber: store.phoneNumber],
         openHours: openHours,
 		features: features]
 }
 
 println "Number of stores: $stores.size"
-def where2pair = new RESTClient("http://where2pair.herokuapp.com/")
+def where2pair = new RESTClient("http://localhost:8080/Where2Pair/")//where2pair.herokuapp.com/")
+where2pair.auth.basic("testUser", "password")
 
 stores.each { 
 	println it 

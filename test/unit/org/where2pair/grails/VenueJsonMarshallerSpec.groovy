@@ -2,7 +2,6 @@ package org.where2pair.grails
 
 import static org.where2pair.DayOfWeek.MONDAY
 import static org.where2pair.DayOfWeek.TUESDAY
-import grails.test.mixin.*
 
 import org.where2pair.Address
 import org.where2pair.Coordinates
@@ -16,45 +15,43 @@ import spock.lang.Specification
 
 class VenueJsonMarshallerSpec extends Specification {
 
-	VenueJsonMarshaller venueJsonMarshaller = new VenueJsonMarshaller()
+	Venue venue = createVenue()
+	Map venueJson = createCorrespondingVenueJson()
+	OpenHoursJsonMarshaller openHoursJsonMarshaller = Mock() {
+		asOpenHoursJson(venue.weeklyOpeningTimes) >> venueJson.openHours
+		asWeeklyOpeningTimes(venueJson.openHours) >> venue.weeklyOpeningTimes
+	}
+	VenueJsonMarshaller venueJsonMarshaller = new VenueJsonMarshaller(
+		openHoursJsonMarshaller: openHoursJsonMarshaller )
 
-    def "converts Venue to map"() {
-		given:
-		Venue venue = createVenue()
-		Map expectedVenueMap = createCorrespondingVenueMap()
-		
+    def "converts Venue to json"() {
 		when:
-		Map venueMap = venueJsonMarshaller.asVenueJson(venue)
+		Map result = venueJsonMarshaller.asVenueJson(venue)
 		
 		then:
-		venueMap == expectedVenueMap
+		result == venueJson
 	}
 	
-	def "converts Venues to map"() {
-		given:
-		Venue venue = createVenue()
-		Map expectedVenueMap = createCorrespondingVenueMap()
-		
+	def "converts Venues to json"() {
 		when:
-		List venueMap = venueJsonMarshaller.asVenuesJson([venue])
+		List result = venueJsonMarshaller.asVenuesJson([venue])
 		
 		then:
-		venueMap == [expectedVenueMap]
+		result == [venueJson]
 	}
 	
-	def "converts VenueWithDistance to map"() {
+	def "converts VenueWithDistance to json"() {
 		given:
-		Venue venue = createVenue()
 		VenueWithDistance venueWithDistance = new VenueWithDistance(venue: venue, distanceInKm: 10.5)
-		Map expectedVenueWithDistanceMap = [
+		Map expectedVenueWithDistanceJson = [
 			distanceInKm: 10.5,
-			venue: createCorrespondingVenueMap()]
+			venue: venueJson]
 		
 		when:
-		List venuesWithDistanceMap = venueJsonMarshaller.asVenuesWithDistanceJson([venueWithDistance])
+		List venuesWithDistanceJson = venueJsonMarshaller.asVenuesWithDistanceJson([venueWithDistance])
 		
 		then:
-		venuesWithDistanceMap == [expectedVenueWithDistanceMap]
+		venuesWithDistanceJson == [expectedVenueWithDistanceJson]
 	}
 	
 	def "renders null string values as empty strings"() {
@@ -65,56 +62,48 @@ class VenueJsonMarshallerSpec extends Specification {
 			location: new Coordinates(0, 0))
 		
 		when:
-		Map venueMap = venueJsonMarshaller.asVenueJson(venue)
+		Map venueJson = venueJsonMarshaller.asVenueJson(venue)
 		
 		then:
-		venueMap.name == ""
-		venueMap.address.addressLine1 == ""
-		venueMap.address.addressLine2 == ""
-		venueMap.address.addressLine3 == ""
-		venueMap.address.city == ""
-		venueMap.address.postcode == ""
-		venueMap.address.phoneNumber == ""
+		venueJson.name == ""
+		venueJson.address.addressLine1 == ""
+		venueJson.address.addressLine2 == ""
+		venueJson.address.addressLine3 == ""
+		venueJson.address.city == ""
+		venueJson.address.postcode == ""
+		venueJson.address.phoneNumber == ""
 	}
 	
-	def "converts map to Venue"() {
-		given:
-		Map venueJson = createCorrespondingVenueMap()
-		Venue expectedVenue = createVenue()
-		
+	def "converts json to Venue"() {
 		when:
-		Venue venue = venueJsonMarshaller.asVenue(venueJson)
+		Venue result = venueJsonMarshaller.asVenue(venueJson)
 	
 		then:
-		venue == expectedVenue
+		result == venue
 	}
 	
-	def "converts map to Venue when address is null"() {
+	def "converts json to Venue when address is null"() {
 		given:
-		Map venueJson = createCorrespondingVenueMap()
-		Venue expectedVenue = createVenue()
 		venueJson.address = null
-		expectedVenue.address = new Address()
+		venue.address = new Address()
 		
 		when:
-		Venue venue = venueJsonMarshaller.asVenue(venueJson)
+		Venue result = venueJsonMarshaller.asVenue(venueJson)
 		
 		then:
-		venue == expectedVenue
+		result == venue
 	}
 	
-	def "converts map to Venue when id is null"() {
+	def "converts json to Venue when id is null"() {
 		given:
-		Map venueJson = createCorrespondingVenueMap()
-		Venue expectedVenue = createVenue()
 		venueJson.id = null
-		expectedVenue.id = 0
+		venue.id = 0
 		
 		when:
-		Venue venue = venueJsonMarshaller.asVenue(venueJson)
+		Venue result = venueJsonMarshaller.asVenue(venueJson)
 		
 		then:
-		venue == expectedVenue
+		result == venue
 	}
 	
 	private Venue createVenue() {
@@ -138,7 +127,7 @@ class VenueJsonMarshallerSpec extends Specification {
 		)
 	}
 	
-	private Map createCorrespondingVenueMap() {
+	private Map createCorrespondingVenueJson() {
 		[
 			id: 99,
 			name: 'venue name',

@@ -4,6 +4,7 @@ import org.where2pair.VenueFinder
 import org.where2pair.VenueWriter;
 import org.where2pair.grails.GormVenueDaoService
 import org.where2pair.grails.GormVenueRepository
+import org.where2pair.grails.OpenHoursJsonMarshaller;
 import org.where2pair.grails.VenueJsonMarshaller;
 
 
@@ -18,7 +19,11 @@ beans = {
 		venueRepository = ref("venueRepository")
 	}
 	
-	venueJsonMarshaller(VenueJsonMarshaller)
+	openHoursJsonMarshaller(OpenHoursJsonMarshaller)
+	
+	venueJsonMarshaller(VenueJsonMarshaller) {
+		openHoursJsonMarshaller = ref("openHoursJsonMarshaller")	
+	}
 
 	timeProvider(TimeProvider)
 

@@ -15,19 +15,9 @@ import org.where2pair.DailyOpeningTimes.SimpleTime
 
 class VenueJsonMarshaller {
 
+	OpenHoursJsonMarshaller openHoursJsonMarshaller
+	
     Map asVenueJson(Venue venue) {
-		Map openHours = (MONDAY..SUNDAY).collectEntries { [dayToString(it), []] }
-
-		venue.weeklyOpeningTimes.each { DayOfWeek day, DailyOpeningTimes dailyOpeningTimes ->
-			dailyOpeningTimes.openPeriods.each { OpenPeriod openPeriod ->
-				openHours[dayToString(day)] << [
-					openHour: openPeriod.start.hour,
-					openMinute: openPeriod.start.minute,
-					closeHour: openPeriod.end.hour,
-					closeMinute: openPeriod.end.minute]
-			}
-		}
-		
 		[
             id: venue.id,
 			name: venue.name ?: '',
@@ -41,7 +31,7 @@ class VenueJsonMarshaller {
 				postcode: venue.address.postcode ?: '',
 				phoneNumber: venue.address.phoneNumber ?: ''
 			],
-			openHours: openHours,
+			openHours: openHoursJsonMarshaller.asOpenHoursJson(venue.weeklyOpeningTimes),
 			features: venue.features.collect()
 		]
 
@@ -68,22 +58,12 @@ class VenueJsonMarshaller {
 		}
 	}
 	
-	private String dayToString(DayOfWeek day) {
-		day.toString().toLowerCase()
-	}
-	
 	Venue asVenue(Map json) {
-		WeeklyOpeningTimesBuilder builder = new WeeklyOpeningTimesBuilder()
-		json.openHours.each { day, dailyOpenHours ->
-			dailyOpenHours.each {
-				builder.addOpenPeriod(DayOfWeek.parseString(day), new SimpleTime(it.openHour, it.openMinute), new SimpleTime(it.closeHour, it.closeMinute))
-			}
-		}
 		new Venue(id: json.id ?: 0,
 			name: json.name,
 			location: new Coordinates(json.latitude, json.longitude),
 			address: new Address(json.address ?: [:]),
-			weeklyOpeningTimes: builder.build(),
+			weeklyOpeningTimes: openHoursJsonMarshaller.asWeeklyOpeningTimes(json.openHours),
 			features: json.features)
 	}
 }
