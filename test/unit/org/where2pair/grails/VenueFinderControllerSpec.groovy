@@ -32,19 +32,19 @@ class VenueFinderControllerSpec extends Specification {
 	VenueFinder venueFinder = Mock()
 	VenueRepository venueRepository = Mock()
 	TimeProvider timeProvider = Mock()
-	VenueJsonMarshaller venueJsonMarshaller = new VenueJsonMarshaller()
+	VenueJsonMarshaller venueJsonMarshaller = Mock() {
+		asVenuesWithDistanceJson(_) >> [[:]]
+	}
 	
 	def "should display search results for given coordinates"() {
 		given:
 		controller.params.'location1' = '1.0,0.1'
-		venueFinder.findNearestTo(_,_,new Coordinates(1.0,0.1)) >> 10.venuesWithDistance()
-		List venuesJson = toVenuesWithDistanceJson(10.venuesWithDistance())
 
 		when:
 		controller.findNearest()
 
 		then:
-		response.text.equalToJsonOf(venuesJson)
+		1 *	venueFinder.findNearestTo(_,_,new Coordinates(1.0,0.1))
 		response.status == 200
 	}
 
@@ -66,6 +66,7 @@ class VenueFinderControllerSpec extends Specification {
 
 		when:
 		controller.findNearest()
+
 
 		then:
 		response.text == "Only upto 1000 locations are supported at this time."
@@ -125,10 +126,6 @@ class VenueFinderControllerSpec extends Specification {
 		}, _)
 	}
 		
-	private def toVenuesWithDistanceJson(List venues) {
-		venueJsonMarshaller.asVenuesWithDistanceJson(venues)
-	}
-
 	def setup() {
 		request.method = 'GET'
 		timeProvider.timeNow() >> TIME_NOW
@@ -137,21 +134,11 @@ class VenueFinderControllerSpec extends Specification {
 		controller.venueRepository = venueRepository
 		controller.venueJsonMarshaller = venueJsonMarshaller
 		controller.timeProvider = timeProvider
-		String.mixin(JSONMatcher)
 		Integer.mixin(VenuesMixin)
 	}
 
 	def cleanup() {
-		String.metaClass = null
 		Integer.metaClass = null
-	}
-
-	@Category(String)
-	static class JSONMatcher {
-		boolean equalToJsonOf(Object object) {
-			JSONAssert.assertEquals(new JSON(object).toString(), this, false)
-			true
-		}
 	}
 
 	@Category(Integer)
