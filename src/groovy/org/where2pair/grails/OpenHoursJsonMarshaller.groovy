@@ -45,6 +45,6 @@ class OpenHoursJsonMarshaller {
 	}
 	
 	private int asInt(timeUnit) {
-		timeUnit instanceof Integer ? timeUnit : Integer.parseInt(timeUnit)
+		(timeUnit instanceof Integer) ? timeUnit : Integer.parseInt(timeUnit)
 	}
 }

@@ -15,9 +15,10 @@ class WeeklyOpeningTimesBuilder {
 
 	Map weeklyOpeningTimes = (MONDAY..SUNDAY).collectEntries { [it, new DailyOpeningTimes() ] }
 	
-	void addOpenPeriod(DayOfWeek day, SimpleTime openTime, SimpleTime closeTime) {
+	WeeklyOpeningTimesBuilder addOpenPeriod(DayOfWeek day, SimpleTime openTime, SimpleTime closeTime) {
 		DailyOpeningTimes dailyOpeningTimes = weeklyOpeningTimes[day]
 		dailyOpeningTimes.openPeriods << new OpenPeriod(openTime, closeTime)
+		this
 	}
 	
 	WeeklyOpeningTimes build() {
