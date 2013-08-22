@@ -1,0 +1,60 @@
+apply plugin: "ratpack-groovy"
+
+buildscript {
+    repositories {
+        maven { url "http://oss.jfrog.org/repo" }
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.ratpack-framework:ratpack-gradle:0.9.0-SNAPSHOT"
+    }
+}
+
+repositories {
+    maven { url "http://oss.jfrog.org/repo" }
+    mavenCentral()
+    maven { url "http://repo.springsource.org/repo" } // for springloaded
+}
+
+apply plugin: "ratpack-groovy"
+apply plugin: "idea"
+
+
+task integrationTest(type: Test) {
+    include '**/*IntegrationSpec.*'
+    doFirst { println 'starting app' }
+    doLast { println 'stopping app' }
+}
+
+task functionalTest(type: Test) {
+    include '**/*FunctionalSpec.*'
+    doFirst { println 'starting app' }
+    doLast { println 'stopping app' }
+}
+
+test {
+    exclude '**/*IntegrationSpec.*'
+    exclude '**/*FunctionalSpec.*'
+}
+
+idea {
+    project {
+        jdkName "1.7"
+        languageLevel "1.7"
+    }
+}
+
+dependencies {
+    testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
+    testCompile "org.ratpack-framework:ratpack-test-support:0.9.0-SNAPSHOT"
+    compile 'org.mongodb:mongo-java-driver:2.11.2'
+    compile 'org.apache.commons:commons-io:1.3.2'
+
+    // SpringLoaded enables runtime hot reloading.
+    // It is not part of the app runtime and is not shipped in the distribution.
+    springloaded "org.springsource.springloaded:springloaded-core:1.1.1"
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = "1.6"
+}

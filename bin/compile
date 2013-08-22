@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir>
+
+# fail fast
+set -e
+
+BIN_DIR=$(cd $(dirname $0); pwd) # absolute path
+
+# parse args
+BUILD_DIR=$1
+CACHE_DIR=$2
+
+
+curl --silent --location http://heroku-jvm-common.s3.amazonaws.com/jvm-buildpack-common.tar.gz | tar xz
+. bin/java
+
+# create default system.properties 
+if [ ! -f ${BUILD_DIR}/system.properties ]; then
+  echo "java.runtime.version=1.7" > ${BUILD_DIR}/system.properties
+fi
+
+# install JDK 
+javaVersion=$(detect_java_version ${BUILD_DIR})
+echo -n "-----> Installing OpenJDK ${javaVersion}... "
+install_java ${BUILD_DIR} ${javaVersion}
+jdk_overlay ${BUILD_DIR}
+echo "done"
+
+export PATH=$JAVA_HOME/bin:$PATH
+
+#create the cache dir if it doesn't exist
+mkdir -p $CACHE_DIR
+cd $BUILD_DIR
+
+echo ""
+echo "-----> Building project with Gradle wrapper:"
+echo "       ./gradlew clean installApp"
+export GRADLE_OPTS="-Dfile.encoding=UTF-8 -server -Xmx512m -XX:+UseCompressedOops"
+export GRADLE_USER_HOME="$CACHE_DIR/.gradle"
+
+./gradlew clean installApp
