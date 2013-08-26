@@ -1,23 +1,21 @@
-apply plugin: "ratpack-groovy"
+apply plugin: 'ratpack-groovy'
+apply plugin: 'idea'
 
 buildscript {
     repositories {
-        maven { url "http://oss.jfrog.org/repo" }
+        maven { url 'http://oss.jfrog.org/repo' }
         mavenCentral()
     }
     dependencies {
-        classpath "org.ratpack-framework:ratpack-gradle:0.9.0-SNAPSHOT"
+        classpath 'org.ratpack-framework:ratpack-gradle:0.9.0-SNAPSHOT'
     }
 }
 
 repositories {
-    maven { url "http://oss.jfrog.org/repo" }
+    maven { url 'http://oss.jfrog.org/repo' }
     mavenCentral()
-    maven { url "http://repo.springsource.org/repo" } // for springloaded
+    maven { url 'http://repo.springsource.org/repo' } // for springloaded
 }
-
-apply plugin: "ratpack-groovy"
-apply plugin: "idea"
 
 
 task integrationTest(type: Test) {
@@ -39,23 +37,23 @@ test {
 
 idea {
     project {
-        jdkName "1.7"
-        languageLevel "1.7"
+        jdkName '1.7'
+        languageLevel '1.7'
     }
 }
 
 dependencies {
-    testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
-    testCompile "org.ratpack-framework:ratpack-test-support:0.9.0-SNAPSHOT"
-    compile 'org.mongodb:mongo-java-driver:2.11.2'
+    testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+    testCompile 'org.ratpack-framework:ratpack-test-support:0.9.0-SNAPSHOT'
     compile 'org.apache.commons:commons-io:1.3.2'
     compile 'joda-time:joda-time:1.6.1'
-
+	compile 'com.google.inject:guice:3.0'
+	
     // SpringLoaded enables runtime hot reloading.
     // It is not part of the app runtime and is not shipped in the distribution.
-    springloaded "org.springsource.springloaded:springloaded-core:1.1.1"
+    springloaded 'org.springsource.springloaded:springloaded-core:1.1.1'
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = "1.6"
+    gradleVersion = '1.6'
 }
