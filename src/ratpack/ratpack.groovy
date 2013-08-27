@@ -34,23 +34,22 @@ ratpack {
                 def json = new JsonBuilder(venues)
                 response.send json.toString()
             }
-            get("venue/:venueId") {
-                def venue = venues.findAll { it.id == pathTokens.venueId }
-                def json = new JsonBuilder(venue)
-                response.send json.toString()
-            }
-            get("findNearest") {
+            get("nearest") {
                 response.send "nearest venues"
             }
-            post("venue") {
-                def json = new JsonBuilder(params)
-                venue << json
-                response.send json
-            }
         }
-
-
-
+		prefix("venue") {
+			get(":venueId") {
+				def venue = venues.findAll { it.id == pathTokens.venueId }
+				def json = new JsonBuilder(venue)
+				response.send json.toString()
+			}
+			post {
+				def json = new JsonBuilder(params)
+				venue << json
+				response.send json
+			}
+		}
         assets "public", indexPages
     }
 }
