@@ -1,8 +1,14 @@
-import groovy.json.JsonBuilder
-
+import static org.ratpackframework.groovy.RatpackScript.ratpack
 import static org.where2pair.DayOfWeek.MONDAY
 import static org.where2pair.DayOfWeek.SUNDAY
-import static org.ratpackframework.groovy.RatpackScript.ratpack
+import groovy.json.JsonBuilder
+
+import org.where2pair.DistanceCalculator
+import org.where2pair.TimeProvider;
+import org.where2pair.VenueFinder
+import org.where2pair.VenueRepository
+
+import com.google.inject.AbstractModule
 
 def indexPages = ["index.html"] as String[]
 def venues = []
@@ -27,14 +33,29 @@ Random random = new Random()
     }
 }
 
+class VenueFinderModule extends AbstractModule {
+	protected void configure() {
+		bind(TimeProvider)
+		bind(DistanceCalculator)
+		bind(VenueRepository).to(ArrayListVenueRepository).asSingleton()
+		bind(VenueFinder)
+		bind(VenueFinderController)
+	}
+}
+
+
 ratpack {
+	modules {
+		register new VenueFinderModule()
+	}
+	
     handlers {
         prefix("venues") {
             get {
                 def json = new JsonBuilder(venues)
                 response.send json.toString()
             }
-            get("nearest") {
+            get("nearest") { VenueFinderController venueFinderController ->
                 response.send "nearest venues"
             }
         }
