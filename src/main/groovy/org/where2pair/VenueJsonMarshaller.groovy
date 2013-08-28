@@ -1,18 +1,5 @@
 package org.where2pair
 
-import static org.where2pair.DayOfWeek.MONDAY
-import static org.where2pair.DayOfWeek.SUNDAY
-
-import org.where2pair.Address
-import org.where2pair.Coordinates
-import org.where2pair.DailyOpeningTimes
-import org.where2pair.DayOfWeek
-import org.where2pair.Venue
-import org.where2pair.WeeklyOpeningTimes;
-import org.where2pair.WeeklyOpeningTimesBuilder
-import org.where2pair.DailyOpeningTimes.OpenPeriod
-import org.where2pair.DailyOpeningTimes.SimpleTime
-
 class VenueJsonMarshaller {
 
 	OpenHoursJsonMarshaller openHoursJsonMarshaller

@@ -1,9 +1,5 @@
 package org.where2pair
 
-import org.where2pair.Venue
-import org.where2pair.VenueRepository
-import org.where2pair.VenueWriter
-
 class VenueController {
     VenueRepository venueRepository
 	VenueWriter venueWriter

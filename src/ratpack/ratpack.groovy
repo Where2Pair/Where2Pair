@@ -1,3 +1,8 @@
+import com.google.inject.Provides
+import org.where2pair.VenueController
+import org.where2pair.VenueJsonMarshaller
+import org.where2pair.VenueWriter
+
 import static org.ratpackframework.groovy.RatpackScript.ratpack
 import static org.where2pair.DayOfWeek.MONDAY
 import static org.where2pair.DayOfWeek.SUNDAY
@@ -38,19 +43,36 @@ Random random = new Random()
 }
 
 class VenueFinderModule extends AbstractModule {
-	protected void configure() {
-		bind(TimeProvider)
-		bind(DistanceCalculator)
-		bind(VenueRepository).to(ArrayListVenueRepository).in(Singleton)
-		bind(VenueFinder)
-		bind(VenueFinderController)
-	}
+    @Provides
+    VenueFinderController createVenueController(VenueRepository venueRepository){
+        DistanceCalculator distanceCalculator = new DistanceCalculator()
+        VenueFinder venueFinder = new VenueFinder(distanceCalculator: distanceCalculator, venueRepository: venueRepository)
+        TimeProvider timeProvider = new TimeProvider()
+        VenueJsonMarshaller venueJsonMarshaller = new VenueJsonMarshaller()
+        new VenueFinderController(timeProvider: timeProvider, venueFinder: venueFinder, venueJsonMarshaller: venueJsonMarshaller)
+    }
+
+    @Override
+    protected void configure() {
+        bind(VenueRepository).to(ArrayListVenueRepository).in(Singleton)
+    }
+}
+
+
+class VenueModule extends AbstractModule {
+    protected void configure() {
+        bind(VenueRepository).to(ArrayListVenueRepository).in(Singleton)
+        bind(VenueWriter)
+        bind(VenueJsonMarshaller)
+        bind(VenueController)
+    }
 }
 
 
 ratpack {
 	modules {
 		register new VenueFinderModule()
+		register new VenueModule()
 	}
 	
     handlers {
@@ -65,10 +87,9 @@ ratpack {
             }
         }
 		prefix("venue") {
-			get(":venueId") {
-				def venue = venues.findAll { it.id == pathTokens.venueId }
-				def json = new JsonBuilder(venue)
-				response.send json.toString()
+			get(":venueId") { VenueController venueController ->
+				def venue = venueController.show(Long.parseLong(pathTokens.venueId))
+                renderResult(response, venue)
 			}
 			post {
 				def json = new JsonBuilder(params)
@@ -81,8 +102,8 @@ ratpack {
 }
 
 def renderResult(response, ErrorResponse errorResponse) {
-	response.status(errorResponse.status)
-	response.send("Hello")
+	response.status(errorResponse.status, errorResponse.message)
+	response.send(errorResponse.message)
 }
 
 def renderResult(response, result) {
