@@ -1,4 +1,4 @@
-package org.where2pair.grails
+package org.where2pair
 
 import static org.where2pair.DayOfWeek.MONDAY
 import static org.where2pair.DayOfWeek.TUESDAY

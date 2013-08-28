@@ -1,9 +1,5 @@
-package org.where2pair.grails
+package org.where2pair
 
-import grails.converters.JSON
-import grails.test.mixin.*
-
-import org.skyscreamer.jsonassert.JSONAssert
 import org.where2pair.Coordinates
 import org.where2pair.Venue
 import org.where2pair.VenueRepository;
@@ -12,7 +8,6 @@ import org.where2pair.WeeklyOpeningTimesBuilder
 
 import spock.lang.Specification
 
-@TestFor(VenueController)
 class VenueControllerSpec extends Specification {
 
 	static final String VENUE_NAME = 'my venue'
@@ -103,21 +98,12 @@ class VenueControllerSpec extends Specification {
 		controller.venueRepository = venueRepository
 		controller.venueWriter = venueWriter
 		controller.venueJsonMarshaller = venueJsonMarshaller
-		String.mixin(JSONMatcher)
 		Integer.mixin(VenuesMixin)
 	}
 
 	def cleanup() {
 		String.metaClass = null
 		Integer.metaClass = null
-	}
-
-	@Category(String)
-	static class JSONMatcher {
-		boolean equalToJsonOf(Object object) {
-			JSONAssert.assertEquals(new JSON(object).toString(), this, false)
-			true
-		}
 	}
 
 	@Category(Integer)

@@ -4,8 +4,9 @@ import static org.where2pair.DayOfWeek.SUNDAY
 import groovy.json.JsonBuilder
 
 import org.where2pair.DistanceCalculator
-import org.where2pair.TimeProvider;
+import org.where2pair.TimeProvider
 import org.where2pair.VenueFinder
+import org.where2pair.VenueFinderController
 import org.where2pair.VenueRepository
 
 import com.google.inject.AbstractModule

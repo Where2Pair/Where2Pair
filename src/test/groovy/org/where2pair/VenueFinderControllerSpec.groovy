@@ -1,14 +1,11 @@
-package org.where2pair.grails
+package org.where2pair
 
 import static org.where2pair.DayOfWeek.FRIDAY
 import static org.where2pair.DayOfWeek.MONDAY
 import static org.where2pair.DayOfWeek.SUNDAY
 import static org.where2pair.DayOfWeek.THURSDAY
 import static org.where2pair.DayOfWeek.WEDNESDAY
-import grails.converters.JSON
-import grails.test.mixin.*
 
-import org.skyscreamer.jsonassert.JSONAssert
 import org.where2pair.Address
 import org.where2pair.Coordinates
 import org.where2pair.FeaturesCriteria
@@ -24,7 +21,6 @@ import org.where2pair.DailyOpeningTimes.SimpleTime
 import spock.lang.Specification
 import spock.lang.Unroll
 
-@TestFor(VenueFinderController)
 class VenueFinderControllerSpec extends Specification {
 
 	static final TIME_NOW = new SimpleTime(1, 2)

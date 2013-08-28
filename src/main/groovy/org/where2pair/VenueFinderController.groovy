@@ -1,7 +1,6 @@
-package org.where2pair.grails
+package org.where2pair
 
 import static java.lang.Double.parseDouble
-import grails.converters.JSON
 
 import org.where2pair.Coordinates
 import org.where2pair.DayOfWeek
@@ -25,7 +24,7 @@ class VenueFinderController {
 			FeaturesCriteria featuresCriteria = parseFeaturesCriteriaFromRequest()
 			List venues = venueFinder.findNearestTo(openTimesCriteria, featuresCriteria, *coordinates)
 			List venuesWithDistanceJson = venueJsonMarshaller.asVenuesWithDistanceJson(venues)
-			render venuesWithDistanceJson as JSON
+			return venuesWithDistanceJson
 		} else {
 			handleIllegalCoordinatesCount(coordinates)
 		}
