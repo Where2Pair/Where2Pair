@@ -59,7 +59,7 @@ class VenueFinderController {
 	}
 	
 	private ErrorResponse handleIllegalCoordinatesCount(List suppliedCoordinates) {
-		String errorMessage = !suppliedCoordinates ? "Missing locations from the request parameters. I expect a query in the form: findNearest?location1=x1,y1&location2=x2,y2..."
+		String errorMessage = !suppliedCoordinates ? "Missing locations from the request parameters. I expect a query in the form: nearest?location1=x1,y1&location2=x2,y2..."
 			: "Only upto 1000 locations are supported at this time."
 			
 		new ErrorResponse(message: errorMessage, status: 413)

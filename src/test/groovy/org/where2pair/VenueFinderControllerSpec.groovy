@@ -65,7 +65,7 @@ class VenueFinderControllerSpec extends Specification {
 		ErrorResponse response = controller.findNearest([:])
 
 		then:
-		response.message == "Missing locations from the request parameters. I expect a query in the form: findNearest?location1=x1,y1&location2=x2,y2..."
+		response.message == "Missing locations from the request parameters. I expect a query in the form: nearest?location1=x1,y1&location2=x2,y2..."
 		response.status == 413
 	}
 
