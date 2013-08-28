@@ -12,57 +12,53 @@ class VenueControllerSpec extends Specification {
 
 	static final String VENUE_NAME = 'my venue'
     static final long VENUE_ID = 1L
+	VenueController controller = new VenueController()
     VenueRepository venueRepository = Mock()
 	VenueWriter venueWriter = Mock()
 	VenueJsonMarshaller venueJsonMarshaller = Mock()
 
     def "should show the specified venue"() {
         given:
-        request.method = 'GET'
         Venue venue = new Venue(name: VENUE_NAME)
         Map venueJson = [name: VENUE_NAME]
         venueRepository.get(VENUE_ID) >> venue
         venueJsonMarshaller.asVenueJson(venue) >> venueJson
 
         when:
-        controller.show(VENUE_ID)
+        Map response = controller.show(VENUE_ID)
 
         then:
-        response.text.equalToJsonOf(venueJson)
+        response == venueJson
     }
 
     def "should show 404 if venue not found"() {
-        request.method = 'GET'
         Venue venue = new Venue(name: VENUE_NAME)
         venueRepository.get(VENUE_ID) >> null
 
         when:
-        controller.show(VENUE_ID)
+        ErrorResponse response = controller.show(VENUE_ID)
 
         then:
         response.status == 404
-		response.text == "Venue with id $VENUE_ID could not be found"
+		response.message == "Venue with id $VENUE_ID could not be found"
     }
 
 	def "should show all venues"() {
 		given:
-		request.method = 'GET'
         List venues = 100.venues()
 		List venuesJson = 100.venuesJson()
 		venueRepository.getAll() >> venues
         venueJsonMarshaller.asVenuesJson(venues) >> venuesJson
 
 		when:
-		controller.showAll()
+		List response = controller.showAll()
 
 		then:
-		response.text.equalToJsonOf(venuesJson)
-		response.status == 200
+		response == venuesJson
 	}
 	
 	def "should save new venues"() {
 		given:
-		request.method = 'POST'
 		Map venueJson = [
 				name: 'name',
 				latitude: 1.0,
@@ -81,17 +77,15 @@ class VenueControllerSpec extends Specification {
 					]],
 				features: ['wifi', 'mobile payments']
 				]
-		request.json = venueJson
 		Venue venue = new Venue()
 		venueJsonMarshaller.asVenue(venueJson) >> venue
 		venueWriter.save(venue) >> 99
 		
 		when:
-		controller.save()
+		Map response = controller.save(venueJson)
 
 		then:
-		response.text.equalToJsonOf(venueJson + [id: 99])
-		response.status == 200
+		response == venueJson + [id: 99]
 	}
 
 	def setup() {

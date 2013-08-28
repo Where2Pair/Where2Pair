@@ -6,18 +6,9 @@ import static org.where2pair.DayOfWeek.SUNDAY
 import static org.where2pair.DayOfWeek.THURSDAY
 import static org.where2pair.DayOfWeek.WEDNESDAY
 
-import org.where2pair.Address
-import org.where2pair.Coordinates
-import org.where2pair.FeaturesCriteria
-import org.where2pair.OpenTimesCriteria
-import org.where2pair.TimeProvider
-import org.where2pair.Venue
-import org.where2pair.VenueFinder
-import org.where2pair.VenueRepository
-import org.where2pair.VenueWithDistance
-import org.where2pair.WeeklyOpeningTimesBuilder
 import org.where2pair.DailyOpeningTimes.SimpleTime
 
+import spock.lang.Ignore
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -25,32 +16,32 @@ class VenueFinderControllerSpec extends Specification {
 
 	static final TIME_NOW = new SimpleTime(1, 2)
 	static final TODAY = FRIDAY
+	VenueFinderController controller = new VenueFinderController()
 	VenueFinder venueFinder = Mock()
-	VenueRepository venueRepository = Mock()
 	TimeProvider timeProvider = Mock()
 	VenueJsonMarshaller venueJsonMarshaller = Mock() {
 		asVenuesWithDistanceJson(_) >> [[:]]
 	}
+	Map params = [:]
 	
 	def "should display search results for given coordinates"() {
 		given:
-		controller.params.'location1' = '1.0,0.1'
+		params.'location1' = '1.0,0.1'
 
 		when:
-		controller.findNearest()
+		controller.findNearest(params)
 
 		then:
 		1 *	venueFinder.findNearestTo(_,_,new Coordinates(1.0,0.1))
-		response.status == 200
 	}
 
 	def "should support multiple supplied locations"() {
 		given:
-		(1..1000).each { controller.params."location$it" = '1.0,0.1'}
+		(1..1000).each { params."location$it" = '1.0,0.1'}
 		List expectedCoordArgs = [new Coordinates(1.0,0.1)] * 1000
 
 		when:
-		controller.findNearest()
+		controller.findNearest(params)
 
 		then:
 		1 * venueFinder.findNearestTo(_,_,expectedCoordArgs)
@@ -58,36 +49,36 @@ class VenueFinderControllerSpec extends Specification {
 
 	def "should reject more than 1000 supplied locations"() {
 		given:
-		(1..1001).each { controller.params."location$it" = '1.0,0.1'}
+		(1..1001).each { params."location$it" = '1.0,0.1'}
 
 		when:
-		controller.findNearest()
+		ErrorResponse response = controller.findNearest(params)
 
 
 		then:
-		response.text == "Only upto 1000 locations are supported at this time."
+		response.message == "Only upto 1000 locations are supported at this time."
 		response.status == 413
 	}
 
 	def "should reject 0 supplied locations"() {
 		when:
-		controller.findNearest()
+		ErrorResponse response = controller.findNearest([:])
 
 		then:
-		response.text == "Missing locations from the request parameters. I expect a query in the form: findNearest?location1=x1,y1&location2=x2,y2..."
+		response.message == "Missing locations from the request parameters. I expect a query in the form: findNearest?location1=x1,y1&location2=x2,y2..."
 		response.status == 413
 	}
 
 	@Unroll
 	def "given openFrom: #openFromParam openUntil: #openUntilParam openDay: #openDayParam should find venues open during correct time range"() {
 		given:
-		controller.params.'location1' = '1.0,0.1'
-		if (openFromParam != 'missing') controller.params.'openFrom' = openFromParam
-		if (openUntilParam != 'missing') controller.params.'openUntil' = openUntilParam
-		if (openDayParam != 'missing') controller.params.'openDay' = openDayParam
+		params.'location1' = '1.0,0.1'
+		if (openFromParam != 'missing') params.'openFrom' = openFromParam
+		if (openUntilParam != 'missing') params.'openUntil' = openUntilParam
+		if (openDayParam != 'missing') params.'openDay' = openDayParam
 		
 		when:
-		controller.findNearest()
+		controller.findNearest(params)
 		
 		then:
 		1 * venueFinder.findNearestTo({ OpenTimesCriteria criteria ->
@@ -110,11 +101,11 @@ class VenueFinderControllerSpec extends Specification {
 
 	def "parses features from request and uses them to find venues"() {
 		given:
-		controller.params.'location1' = '1.0,0.1'
-		controller.params.'withFeatures' = 'wifi,baby_changing'
+		params.'location1' = '1.0,0.1'
+		params.'withFeatures' = 'wifi,baby_changing'
 		
 		when:
-		controller.findNearest()
+		controller.findNearest(params)
 		
 		then:
 		1 * venueFinder.findNearestTo(_, { FeaturesCriteria criteria ->
@@ -123,11 +114,9 @@ class VenueFinderControllerSpec extends Specification {
 	}
 		
 	def setup() {
-		request.method = 'GET'
 		timeProvider.timeNow() >> TIME_NOW
 		timeProvider.today() >> TODAY
 		controller.venueFinder = venueFinder
-		controller.venueRepository = venueRepository
 		controller.venueJsonMarshaller = venueJsonMarshaller
 		controller.timeProvider = timeProvider
 		Integer.mixin(VenuesMixin)

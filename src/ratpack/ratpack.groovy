@@ -3,13 +3,16 @@ import static org.where2pair.DayOfWeek.MONDAY
 import static org.where2pair.DayOfWeek.SUNDAY
 import groovy.json.JsonBuilder
 
+import org.where2pair.ArrayListVenueRepository
 import org.where2pair.DistanceCalculator
+import org.where2pair.ErrorResponse
 import org.where2pair.TimeProvider
 import org.where2pair.VenueFinder
 import org.where2pair.VenueFinderController
 import org.where2pair.VenueRepository
 
 import com.google.inject.AbstractModule
+import com.google.inject.Singleton
 
 def indexPages = ["index.html"] as String[]
 def venues = []
@@ -38,7 +41,7 @@ class VenueFinderModule extends AbstractModule {
 	protected void configure() {
 		bind(TimeProvider)
 		bind(DistanceCalculator)
-		bind(VenueRepository).to(ArrayListVenueRepository).asSingleton()
+		bind(VenueRepository).to(ArrayListVenueRepository).in(Singleton)
 		bind(VenueFinder)
 		bind(VenueFinderController)
 	}
@@ -57,7 +60,8 @@ ratpack {
                 response.send json.toString()
             }
             get("nearest") { VenueFinderController venueFinderController ->
-                response.send "nearest venues"
+				def result = venueFinderController.findNearest(request.queryParams)
+				renderResult(response, result)
             }
         }
 		prefix("venue") {
@@ -74,4 +78,13 @@ ratpack {
 		}
         assets "public", indexPages
     }
+}
+
+def renderResult(response, ErrorResponse errorResponse) {
+	response.status(errorResponse.status)
+	response.send("Hello")
+}
+
+def renderResult(response, result) {
+	response.send new JsonBuilder(result).toString()
 }

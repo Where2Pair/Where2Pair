@@ -16,9 +16,7 @@ class VenueController {
 	        Map venueJson = venueJsonMarshaller.asVenueJson(venue)
 	        return venueJson
 		} else {
-			return [:]	
-//			response.status = 404
-//			render "Venue with id $id could not be found"
+			return new ErrorResponse(message: "Venue with id $id could not be found", status: 404)
 		}
     }
 
@@ -28,8 +26,7 @@ class VenueController {
 		venuesJson
     }
 
-    def save() {
-		Map json = request.JSON
+    def save(Map json) {
 		Venue venue = venueJsonMarshaller.asVenue(json)
         json.id = venueWriter.save(venue)
         json
