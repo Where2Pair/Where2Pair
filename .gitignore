@@ -14,7 +14,6 @@ Thumbs.db
 .idea
 .project
 .classpath
-/classes/
 .settings
 bin/*
 !bin/detect
@@ -23,6 +22,8 @@ bin/*
 
 # Gradle Files
 # ####################
-/build
-/.gradle
-/classes
+build/*
+.gradle/*
+**/.gradle/*
+**/build/*
+classes/*
