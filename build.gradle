@@ -1,3 +1,5 @@
+import java.util.concurrent.*
+
 apply plugin: 'ratpack-groovy'
 apply plugin: 'idea'
 
@@ -17,16 +19,14 @@ repositories {
     maven { url 'http://repo.springsource.org/repo' } // for springloaded
 }
 
+ext.es = Executors.newSingleThreadExecutor()
 
-task integrationTest(type: Test) {
-    include '**/*IntegrationSpec.*'
-    doFirst { println 'starting app' }
-    doLast { println 'stopping app' }
-}
-
-task functionalTest(type: Test, dependsOn: 'run') {
+task functionalTest(type: Test) {
     include '**/*FunctionalSpec.*'
-    doFirst { println 'starting app' }
+    doFirst { println 'starting app'
+		es.submit({ tasks.run.execute() })
+		waitForAppToStart()
+	}
     doLast { println 'stopping app' }
 }
 
@@ -62,4 +62,12 @@ dependencies {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '1.6'
+}
+
+def waitForAppToStart() {
+	ratpackRunning = true
+	while (!ratpackRunning) {
+		Thread.sleep(500)
+		ratpackRunning = false
+	}
 }
