@@ -24,7 +24,7 @@ task integrationTest(type: Test) {
     doLast { println 'stopping app' }
 }
 
-task functionalTest(type: Test) {
+task functionalTest(type: Test, dependsOn: 'run') {
     include '**/*FunctionalSpec.*'
     doFirst { println 'starting app' }
     doLast { println 'stopping app' }
@@ -50,6 +50,7 @@ idea {
 dependencies {
     testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
     testCompile 'org.ratpack-framework:ratpack-test-support:0.9.0-SNAPSHOT'
+	testCompile 'org.codehaus.groovy.modules.http-builder:http-builder:0.5.2'
     compile 'org.apache.commons:commons-io:1.3.2'
     compile 'joda-time:joda-time:1.6.1'
 	compile 'com.google.inject:guice:3.0'

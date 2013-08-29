@@ -16,7 +16,7 @@ class HashMapVenueRepository implements VenueRepository {
 
 	@Override
 	public Venue get(long id) {
-		find(id).clone()
+		find(id)?.clone()
 	}
 
 	@Override
@@ -30,7 +30,7 @@ class HashMapVenueRepository implements VenueRepository {
 	public Venue findByNameAndCoordinates(String name, Coordinates coordinates) {
 		venues.find { id, Venue venue -> 
 			venue.name == name && venue.location == coordinates 
-		}.value
+		}?.value
 	}
 
 	@Override

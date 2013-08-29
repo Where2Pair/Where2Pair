@@ -4,7 +4,7 @@ import static org.where2pair.ObjectUtils.createVenue
 import static org.where2pair.ObjectUtils.createDifferentVenue
 import spock.lang.Specification
 
-class HaspMapVenueRepositorySpec extends Specification {
+class HashMapVenueRepositorySpec extends Specification {
 
 	HashMapVenueRepository hashMapVenueRepository = new HashMapVenueRepository()
 	
@@ -95,6 +95,20 @@ class HaspMapVenueRepositorySpec extends Specification {
 		
 		then:
 		fetchedVenue == venue2
+	}
+	
+	def "returns null when venues don't exist"() {
+		when:
+		Venue fetchedVenue = hashMapVenueRepository.get(99)
+		
+		then:
+		fetchedVenue == null
+		
+		when:
+		fetchedVenue = hashMapVenueRepository.findByNameAndCoordinates('name', new Coordinates(1.0, 0.1))
+		
+		then:
+		fetchedVenue == null
 	}
 	
 	def "updates venues"() {

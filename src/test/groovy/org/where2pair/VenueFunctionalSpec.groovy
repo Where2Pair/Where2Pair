@@ -1,14 +1,12 @@
 package org.where2pair
 
-//import groovyx.net.http.ContentType
-//import groovyx.net.http.RESTClient
-import spock.lang.Ignore
+import groovyx.net.http.ContentType
+import groovyx.net.http.RESTClient
 import spock.lang.Specification
 
 class VenueFunctionalSpec extends Specification {
     public static final String VENUE_NAME = "my test venue"
 
-	@Ignore
     def "store and retrieve venue though the REST api"() {
         given:
         Map venueJson = [name: VENUE_NAME, 
@@ -23,14 +21,15 @@ class VenueFunctionalSpec extends Specification {
         retrievedVenue.name == VENUE_NAME
     }
 
-//    private JSON storeAndRetrieve(venueJson) {
-//        def where2pair = new RESTClient("http://localhost:8080")
-//        where2pair.auth.basic("testUser", "password")
-//
-//        def response = where2pair.post(path: "Where2Pair/venue", body: venueJson, requestContentType: ContentType.JSON)
-//        assert response.status == 200
-//
-//        JSdefON savedVenue = response.data
-//        where2pair.get(path: "Where2Pair/venue/${savedVenue.id}", requestContentType: ContentType.URLENC).data
-//    }
+    private storeAndRetrieve(venueJson) {
+        def where2pair = new RESTClient("http://localhost:5050/")
+        //where2pair.auth.basic("testUser", "password")
+
+        def putResponse = where2pair.post(path: "venue", body: venueJson, requestContentType: ContentType.JSON)
+        assert putResponse.status == 200
+        long savedVenueId = putResponse.data.id
+		
+		def getResponse = where2pair.get(path: "venue/$savedVenueId", requestContentType: ContentType.URLENC)
+        getResponse.data
+    }
 }

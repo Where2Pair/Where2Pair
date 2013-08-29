@@ -4,9 +4,10 @@ import static org.where2pair.DayOfWeek.SUNDAY
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 
-import org.where2pair.HashMapVenueRepository
 import org.where2pair.DistanceCalculator
 import org.where2pair.ErrorResponse
+import org.where2pair.HashMapVenueRepository
+import org.where2pair.OpenHoursJsonMarshaller
 import org.where2pair.TimeProvider
 import org.where2pair.VenueController
 import org.where2pair.VenueFinder
@@ -44,18 +45,22 @@ def indexPages = ["index.html"] as String[]
 
 class Where2PairModule extends AbstractModule {
 	@Provides
-	VenueController createVenueController(VenueRepository venueRepository) {
+	VenueJsonMarshaller createVenueJsonMarshaller() {
+		OpenHoursJsonMarshaller openHoursJsonMarshaller = new OpenHoursJsonMarshaller()
+		new VenueJsonMarshaller(openHoursJsonMarshaller: openHoursJsonMarshaller)
+	}
+	
+	@Provides
+	VenueController createVenueController(VenueRepository venueRepository, VenueJsonMarshaller venueJsonMarshaller) {
 		VenueWriter venueWriter = new VenueWriter(venueRepository: venueRepository)
-		VenueJsonMarshaller venueJsonMarshaller = new VenueJsonMarshaller()
 		new VenueController(venueRepository: venueRepository, venueWriter: venueWriter, venueJsonMarshaller: venueJsonMarshaller)
 	}
 	
     @Provides
-    VenueFinderController createVenueFinderController(VenueRepository venueRepository){
+    VenueFinderController createVenueFinderController(VenueRepository venueRepository, VenueJsonMarshaller venueJsonMarshaller){
         DistanceCalculator distanceCalculator = new DistanceCalculator()
         VenueFinder venueFinder = new VenueFinder(distanceCalculator: distanceCalculator, venueRepository: venueRepository)
         TimeProvider timeProvider = new TimeProvider()
-        VenueJsonMarshaller venueJsonMarshaller = new VenueJsonMarshaller()
         new VenueFinderController(timeProvider: timeProvider, venueFinder: venueFinder, venueJsonMarshaller: venueJsonMarshaller)
     }
 
@@ -102,5 +107,6 @@ def renderResult(response, ErrorResponse errorResponse) {
 }
 
 def renderResult(response, result) {
-	response.send new JsonBuilder(result).toString()
+	String json = new JsonBuilder(result).toString()
+	response.send("application/json", json)
 }
