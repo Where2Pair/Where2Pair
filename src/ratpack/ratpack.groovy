@@ -14,7 +14,7 @@ import org.where2pair.VenueFinder
 import org.where2pair.VenueFinderController
 import org.where2pair.VenueJsonMarshaller
 import org.where2pair.VenueRepository
-import org.where2pair.VenueWriter
+import org.where2pair.VenueSaveOrUpdater
 
 import com.google.inject.AbstractModule
 import com.google.inject.Provides
@@ -52,8 +52,8 @@ class Where2PairModule extends AbstractModule {
 	
 	@Provides
 	VenueController createVenueController(VenueRepository venueRepository, VenueJsonMarshaller venueJsonMarshaller) {
-		VenueWriter venueWriter = new VenueWriter(venueRepository: venueRepository)
-		new VenueController(venueRepository: venueRepository, venueWriter: venueWriter, venueJsonMarshaller: venueJsonMarshaller)
+		VenueSaveOrUpdater venueWriter = new VenueSaveOrUpdater(venueRepository: venueRepository)
+		new VenueController(venueRepository: venueRepository, venueSaveOrUpdater: venueWriter, venueJsonMarshaller: venueJsonMarshaller)
 	}
 	
     @Provides

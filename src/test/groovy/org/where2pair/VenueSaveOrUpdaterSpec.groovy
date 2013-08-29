@@ -2,10 +2,10 @@ package org.where2pair
 
 import spock.lang.Specification
 
-class VenueWriterSpec extends Specification {
+class VenueSaveOrUpdaterSpec extends Specification {
 
 	VenueRepository venueRepository = Mock()
-	VenueWriter venueWriter = new VenueWriter(venueRepository: venueRepository)
+	VenueSaveOrUpdater venueWriter = new VenueSaveOrUpdater(venueRepository: venueRepository)
 	
 	def "when no matching Venue already exists, then saves new Venue"() {
 		given:
@@ -20,7 +20,7 @@ class VenueWriterSpec extends Specification {
 		result == 99
 	}
 	
-	def "when matching Venue is found, then saves new Venue"() {
+	def "when matching Venue is found, then updates existing Venue"() {
 		given:
 		Venue venue = new Venue(id: 0, name: 'name', location: new Coordinates(1.0, 0.1))
 		Venue matchingVenue = new Venue(id: 99)

@@ -1,6 +1,6 @@
 package org.where2pair
 
-class VenueWriter {
+class VenueSaveOrUpdater {
 
 	VenueRepository venueRepository
 	

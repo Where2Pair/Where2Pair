@@ -2,7 +2,7 @@ package org.where2pair
 
 class VenueController {
     VenueRepository venueRepository
-	VenueWriter venueWriter
+	VenueSaveOrUpdater venueSaveOrUpdater
     VenueJsonMarshaller venueJsonMarshaller
 
     def show(long id) {
@@ -24,7 +24,7 @@ class VenueController {
 
     def save(Map json) {
 		Venue venue = venueJsonMarshaller.asVenue(json)
-        json.id = venueWriter.save(venue)
+        json.id = venueSaveOrUpdater.save(venue)
         json
     }
 

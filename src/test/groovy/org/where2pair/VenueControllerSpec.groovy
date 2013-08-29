@@ -3,7 +3,7 @@ package org.where2pair
 import org.where2pair.Coordinates
 import org.where2pair.Venue
 import org.where2pair.VenueRepository;
-import org.where2pair.VenueWriter;
+import org.where2pair.VenueSaveOrUpdater;
 import org.where2pair.WeeklyOpeningTimesBuilder
 
 import spock.lang.Specification
@@ -14,7 +14,7 @@ class VenueControllerSpec extends Specification {
     static final long VENUE_ID = 1L
 	VenueController controller = new VenueController()
     VenueRepository venueRepository = Mock()
-	VenueWriter venueWriter = Mock()
+	VenueSaveOrUpdater venueSaveOrUpdater = Mock()
 	VenueJsonMarshaller venueJsonMarshaller = Mock()
 
     def "should show the specified venue"() {
@@ -79,7 +79,7 @@ class VenueControllerSpec extends Specification {
 				]
 		Venue venue = new Venue()
 		venueJsonMarshaller.asVenue(venueJson) >> venue
-		venueWriter.save(venue) >> 99
+		venueSaveOrUpdater.save(venue) >> 99
 		
 		when:
 		Map response = controller.save(venueJson)
@@ -90,7 +90,7 @@ class VenueControllerSpec extends Specification {
 
 	def setup() {
 		controller.venueRepository = venueRepository
-		controller.venueWriter = venueWriter
+		controller.venueSaveOrUpdater = venueSaveOrUpdater
 		controller.venueJsonMarshaller = venueJsonMarshaller
 		Integer.mixin(VenuesMixin)
 	}
