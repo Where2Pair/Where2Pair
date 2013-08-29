@@ -15,6 +15,7 @@ Thumbs.db
 .project
 .classpath
 .settings
+build-eclipse/*
 bin/*
 !bin/detect
 !bin/release
