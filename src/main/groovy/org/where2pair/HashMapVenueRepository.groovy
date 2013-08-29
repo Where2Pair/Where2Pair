@@ -2,10 +2,12 @@ package org.where2pair
 
 import java.util.List
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 class HashMapVenueRepository implements VenueRepository {
 
 	ConcurrentHashMap venues = [:]
+	AtomicInteger idGenerator = new AtomicInteger()
 	
 	@Override
 	public List getAll() {
@@ -21,7 +23,7 @@ class HashMapVenueRepository implements VenueRepository {
 
 	@Override
 	public long save(Venue venue) {
-		venue.id = venues.size()
+		venue.id = idGenerator.incrementAndGet()
 		venues[venue.id] = venue.clone()
 		venue.id
 	}
