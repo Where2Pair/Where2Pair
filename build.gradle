@@ -1,0 +1,82 @@
+import java.util.concurrent.*
+import groovyx.net.http.RESTClient
+
+apply plugin: 'ratpack-groovy'
+apply plugin: 'idea'
+
+buildscript {
+    repositories {
+        maven { url 'http://oss.jfrog.org/repo' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.ratpack-framework:ratpack-gradle:0.9.0-SNAPSHOT'
+		classpath 'org.codehaus.groovy.modules.http-builder:http-builder:0.5.2'
+    }
+}
+
+repositories {
+    maven { url 'http://oss.jfrog.org/repo' }
+    mavenCentral()
+    maven { url 'http://repo.springsource.org/repo' } // for springloaded
+}
+
+ext.es = Executors.newSingleThreadExecutor()
+
+task functionalTest(type: Test) {
+    include '**/*FunctionalSpec.*'
+    doFirst {
+		es.submit({ tasks.run.execute() })
+		waitForAppToStart()
+	}
+}
+
+task(console, dependsOn: 'classes', type: JavaExec) {
+	main = 'groovy.ui.Console'
+	classpath = sourceSets.main.runtimeClasspath
+}
+
+test {
+    exclude '**/*IntegrationSpec.*'
+    exclude '**/*FunctionalSpec.*'
+}
+
+idea {
+    project {
+        jdkName '1.7'
+        languageLevel '1.7'
+    }
+}
+
+dependencies {
+    testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+	testCompile 'org.codehaus.groovy.modules.http-builder:http-builder:0.5.2'
+    compile 'org.apache.commons:commons-io:1.3.2'
+    compile 'joda-time:joda-time:1.6.1'
+	compile 'com.google.inject:guice:3.0'
+	
+    // SpringLoaded enables runtime hot reloading.
+    // It is not part of the app runtime and is not shipped in the distribution.
+    springloaded 'org.springsource.springloaded:springloaded-core:1.1.1'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.6'
+}
+
+def waitForAppToStart() {
+	def ratpackRunning = false
+	def connectCounter = 0
+	while (!ratpackRunning) {
+		if (connectCounter++ == 10)
+			throw new GradleScriptException("Timed-out waiting for application to start.", null)
+		
+		try {
+			def response = new RESTClient("http://localhost:5050/").get(path: 'venues')
+			ratpackRunning = response.status == 200
+		} catch (Exception e) {
+			Thread.sleep(500)
+		}
+	}
+	
+}

@@ -1,20 +1,28 @@
-*.iws
-*Db.properties
-*Db.script
-.settings
-stacktrace.log
-/*.zip
-/plugin.xml
-/*.log
-/*DB.*
-/cobertura.ser
-.DS_Store
-/target/
-/out/
-/web-app/plugins
-/web-app/WEB-INF/classes
-/.link_to_grails_plugins/
-/target-eclipse/
+# OS generated files #
+######################
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db
+
+# IDE Files #
+#######################
 *.iml
 .idea
+*.ipr
+*.iws
+.idea
+.project
+.classpath
 /classes/
+.settings
+bin/*
+!bin/detect
+!bin/release
+!bin/compile
+
+# Gradle Files
+# ####################
+/build
+/.gradle
+/classes
