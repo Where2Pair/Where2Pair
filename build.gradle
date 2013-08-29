@@ -30,6 +30,11 @@ task functionalTest(type: Test) {
     doLast { println 'stopping app' }
 }
 
+task(console, dependsOn: 'classes', type: JavaExec) {
+	main = 'groovy.ui.Console'
+	classpath = sourceSets.main.runtimeClasspath
+}
+
 test {
     exclude '**/*IntegrationSpec.*'
     exclude '**/*FunctionalSpec.*'

@@ -1,12 +1,13 @@
 package org.where2pair
 
+import groovy.transform.AutoClone;
 import groovy.transform.EqualsAndHashCode;
 import groovy.transform.Immutable
 import groovy.transform.ToString;
 
-
 @EqualsAndHashCode
 @ToString
+@AutoClone
 class WeeklyOpeningTimes {
 
 	Map weeklyOpeningTimes

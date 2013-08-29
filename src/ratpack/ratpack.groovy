@@ -4,7 +4,7 @@ import static org.where2pair.DayOfWeek.SUNDAY
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 
-import org.where2pair.ArrayListVenueRepository
+import org.where2pair.HashMapVenueRepository
 import org.where2pair.DistanceCalculator
 import org.where2pair.ErrorResponse
 import org.where2pair.TimeProvider
@@ -61,7 +61,7 @@ class Where2PairModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(VenueRepository).to(ArrayListVenueRepository).in(Singleton)
+        bind(VenueRepository).to(HashMapVenueRepository).in(Singleton)
     }
 }
 

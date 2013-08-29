@@ -1,10 +1,12 @@
 package org.where2pair
 
+import groovy.transform.AutoClone;
 import groovy.transform.EqualsAndHashCode;
 import groovy.transform.ToString;
 
 @EqualsAndHashCode
 @ToString
+@AutoClone
 class Venue {
     long id
     String name

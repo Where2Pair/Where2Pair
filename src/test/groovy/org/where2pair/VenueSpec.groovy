@@ -1,8 +1,10 @@
 package org.where2pair
 
-import spock.lang.Specification
-
 import static spock.util.matcher.HamcrestMatchers.closeTo
+import static org.where2pair.ObjectUtils.createVenue
+
+import org.where2pair.DailyOpeningTimes.SimpleTime
+import spock.lang.Specification
 
 class VenueSpec extends Specification {
 
@@ -60,4 +62,17 @@ class VenueSpec extends Specification {
 		''			| ''				| true
 		'a,B,c'		| 'A,b,C'			| true
 	}
+	
+	def "is cloneable"() {
+		given:
+		Venue venue = createVenue()
+		
+		when:
+		Venue newVenue = venue.clone()
+		
+		then:
+		newVenue == venue
+		!newVenue.is(venue)
+	}
+	
 }
