@@ -22,27 +22,6 @@ import com.google.inject.Provides
 import com.google.inject.Singleton
 
 def indexPages = ["index.html"] as String[]
-//def venues = []
-//
-//Set availableFeatures = ['wifi', 'mobile payments', 'baby changing']
-//Random random = new Random()
-//(MONDAY..SUNDAY).each { day ->
-//    (1d..10d).each {
-//        Set features = availableFeatures.findResults { if (random.nextBoolean()) return it }
-//        def venue = [
-//                id: random.nextLong().abs().toString(),
-//                name: "place-" + it,
-//                latitude: 1.0 + it/10,
-//                longitude: 0.1 + it/10,
-//                addressLine1: '123 Some Street',
-//                city: 'London',
-//                postcode: 'postcode',
-//                features: features,
-//                openPeriods: [day: day, openHour: 8, closeHour: 30]
-//        ]
-//        venues << venue
-//    }
-//}
 
 class Where2PairModule extends AbstractModule {
 	@Provides
