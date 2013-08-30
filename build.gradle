@@ -19,6 +19,10 @@ repositories {
     maven { url 'http://repo.springsource.org/repo' } // for springloaded
 }
 
+configurations.all {
+	resolutionStrategy.cacheChangingModulesFor 7, 'days'
+}
+
 idea {
 	project {
 		jdkName '1.7'
