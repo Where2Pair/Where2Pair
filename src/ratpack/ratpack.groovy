@@ -1,20 +1,21 @@
 import static org.ratpackframework.groovy.RatpackScript.ratpack
-import static org.where2pair.venue.DayOfWeek.MONDAY;
-import static org.where2pair.venue.DayOfWeek.SUNDAY;
+import static org.where2pair.venue.DayOfWeek.MONDAY
+import static org.where2pair.venue.DayOfWeek.SUNDAY
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 
-import org.where2pair.venue.ErrorResponse;
-import org.where2pair.venue.OpenHoursJsonMarshaller;
-import org.where2pair.venue.VenueController;
-import org.where2pair.venue.VenueJsonMarshaller;
-import org.where2pair.venue.VenueRepository;
-import org.where2pair.venue.VenueSaveOrUpdater;
-import org.where2pair.venue.find.DistanceCalculator;
-import org.where2pair.venue.find.TimeProvider;
-import org.where2pair.venue.find.VenueFinder;
-import org.where2pair.venue.find.VenueFinderController;
-import org.where2pair.venue.persist.HashMapVenueRepository;
+import org.where2pair.venue.ErrorResponse
+import org.where2pair.venue.OpenHoursJsonMarshaller
+import org.where2pair.venue.VenueJsonMarshaller
+import org.where2pair.venue.VenueRepository
+import org.where2pair.venue.find.DistanceCalculator
+import org.where2pair.venue.find.TimeProvider
+import org.where2pair.venue.find.VenueFinder
+import org.where2pair.venue.find.VenueFinderController
+import org.where2pair.venue.persist.HashMapVenueRepository
+import org.where2pair.venue.save.SaveVenueController
+import org.where2pair.venue.save.VenueSaveOrUpdater
+import org.where2pair.venue.show.ShowVenueController
 
 import com.google.inject.AbstractModule
 import com.google.inject.Provides
@@ -51,9 +52,14 @@ class Where2PairModule extends AbstractModule {
 	}
 	
 	@Provides
-	VenueController createVenueController(VenueRepository venueRepository, VenueJsonMarshaller venueJsonMarshaller) {
-		VenueSaveOrUpdater venueWriter = new VenueSaveOrUpdater(venueRepository: venueRepository)
-		new VenueController(venueRepository: venueRepository, venueSaveOrUpdater: venueWriter, venueJsonMarshaller: venueJsonMarshaller)
+	ShowVenueController createShowVenueController(VenueRepository venueRepository, VenueJsonMarshaller venueJsonMarshaller) {
+		new ShowVenueController(venueRepository: venueRepository, venueJsonMarshaller: venueJsonMarshaller)
+	}
+	
+	@Provides
+	SaveVenueController createSaveVenueController(VenueRepository venueRepository, VenueJsonMarshaller venueJsonMarshaller) {
+		VenueSaveOrUpdater venueSaveOrUpdater = new VenueSaveOrUpdater(venueRepository: venueRepository)
+		new SaveVenueController(venueSaveOrUpdater: venueSaveOrUpdater, venueJsonMarshaller: venueJsonMarshaller)
 	}
 	
     @Provides
@@ -75,10 +81,10 @@ ratpack {
 		register new Where2PairModule()
 	}
 	
-    handlers { VenueController venueController ->
-        prefix("venues") {
-            get {
-                def venues = venueController.showAll()
+    handlers {
+        prefix("venues") { 
+            get { ShowVenueController showVenueController ->
+                def venues = showVenueController.showAll()
                 renderResult(response, venues)
             }
             get("nearest") { VenueFinderController venueFinderController ->
@@ -87,13 +93,13 @@ ratpack {
             }
         }
 		prefix("venue") {
-			get(":venueId") {
-				def venue = venueController.show(Long.parseLong(pathTokens.venueId))
+			get(":venueId") { ShowVenueController showVenueController ->
+				def venue = showVenueController.show(Long.parseLong(pathTokens.venueId))
                 renderResult(response, venue)
 			}
-			post {
+			post { SaveVenueController saveVenueController ->
 				def json = new JsonSlurper().parseText(request.text)
-				def venue = venueController.save(json)
+				def venue = saveVenueController.save(json)
 				renderResult(response, venue)
 			}
 		}

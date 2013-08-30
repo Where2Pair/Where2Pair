@@ -1,22 +1,22 @@
-package org.where2pair.venue
+package org.where2pair.venue.show
 
 import org.where2pair.venue.Coordinates;
 import org.where2pair.venue.ErrorResponse;
 import org.where2pair.venue.Venue;
-import org.where2pair.venue.VenueController;
 import org.where2pair.venue.VenueJsonMarshaller;
 import org.where2pair.venue.VenueRepository;
 import org.where2pair.venue.WeeklyOpeningTimesBuilder;
+import org.where2pair.venue.save.VenueSaveOrUpdater;
+import org.where2pair.venue.show.ShowVenueController;
 
 import spock.lang.Specification
 
-class VenueControllerSpec extends Specification {
+class ShowVenueControllerSpec extends Specification {
 
 	static final String VENUE_NAME = 'my venue'
     static final long VENUE_ID = 1L
-	VenueController controller = new VenueController()
+	ShowVenueController controller = new ShowVenueController()
     VenueRepository venueRepository = Mock()
-	VenueSaveOrUpdater venueSaveOrUpdater = Mock()
 	VenueJsonMarshaller venueJsonMarshaller = Mock()
 
     def "should show the specified venue"() {
@@ -58,41 +58,9 @@ class VenueControllerSpec extends Specification {
 		then:
 		response == venuesJson
 	}
-	
-	def "should save new venues"() {
-		given:
-		Map venueJson = [
-				name: 'name',
-				latitude: 1.0,
-				longitude: 0.1,
-				addressLine1: 'addressLine1',
-				addressLine2: 'addressLine2',
-				addressLine3: 'addressLine3',
-				city: 'city',
-				postcode: 'postcode',
-				phoneNumber: '01234567890',
-				openHours: [monday: [
-						[openHour: 12, openMinute: 0, closeHour: 18, closeMinute: 30]
-					],
-					tuesday: [
-						[openHour: 8, openMinute: 0, closeHour: 11, closeMinute: 0]
-					]],
-				features: ['wifi', 'mobile payments']
-				]
-		Venue venue = new Venue()
-		venueJsonMarshaller.asVenue(venueJson) >> venue
-		venueSaveOrUpdater.save(venue) >> 99
-		
-		when:
-		Map response = controller.save(venueJson)
-
-		then:
-		response == venueJson + [id: 99]
-	}
 
 	def setup() {
 		controller.venueRepository = venueRepository
-		controller.venueSaveOrUpdater = venueSaveOrUpdater
 		controller.venueJsonMarshaller = venueJsonMarshaller
 		Integer.mixin(VenuesMixin)
 	}

@@ -1,4 +1,7 @@
-package org.where2pair.venue
+package org.where2pair.venue.save
+
+import org.where2pair.venue.Venue;
+import org.where2pair.venue.VenueRepository;
 
 
 class VenueSaveOrUpdater {

@@ -1,4 +1,4 @@
-package org.where2pair.venue
+package org.where2pair.venue.functional
 
 import groovyx.net.http.ContentType
 import groovyx.net.http.RESTClient

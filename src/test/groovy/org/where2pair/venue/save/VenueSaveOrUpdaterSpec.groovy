@@ -1,9 +1,9 @@
-package org.where2pair.venue
+package org.where2pair.venue.save
 
 import org.where2pair.venue.Coordinates;
 import org.where2pair.venue.Venue;
 import org.where2pair.venue.VenueRepository;
-import org.where2pair.venue.VenueSaveOrUpdater;
+import org.where2pair.venue.save.VenueSaveOrUpdater;
 
 import spock.lang.Specification
 

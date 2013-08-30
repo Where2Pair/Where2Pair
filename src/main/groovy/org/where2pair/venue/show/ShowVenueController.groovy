@@ -1,9 +1,13 @@
-package org.where2pair.venue
+package org.where2pair.venue.show
 
+import org.where2pair.venue.ErrorResponse
+import org.where2pair.venue.Venue
+import org.where2pair.venue.VenueJsonMarshaller
+import org.where2pair.venue.VenueRepository
+import org.where2pair.venue.save.VenueSaveOrUpdater
 
-class VenueController {
+class ShowVenueController {
     VenueRepository venueRepository
-	VenueSaveOrUpdater venueSaveOrUpdater
     VenueJsonMarshaller venueJsonMarshaller
 
     def show(long id) {
@@ -21,12 +25,6 @@ class VenueController {
         List venues = venueRepository.getAll()
         List venuesJson = venueJsonMarshaller.asVenuesJson(venues)
 		venuesJson
-    }
-
-    def save(Map json) {
-		Venue venue = venueJsonMarshaller.asVenue(json)
-        json.id = venueSaveOrUpdater.save(venue)
-        json
     }
 
 }
