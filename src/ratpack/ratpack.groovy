@@ -1,20 +1,20 @@
 import static org.ratpackframework.groovy.RatpackScript.ratpack
-import static org.where2pair.DayOfWeek.MONDAY
-import static org.where2pair.DayOfWeek.SUNDAY
+import static org.where2pair.venue.DayOfWeek.MONDAY;
+import static org.where2pair.venue.DayOfWeek.SUNDAY;
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 
-import org.where2pair.DistanceCalculator
-import org.where2pair.ErrorResponse
-import org.where2pair.HashMapVenueRepository
-import org.where2pair.OpenHoursJsonMarshaller
-import org.where2pair.TimeProvider
-import org.where2pair.VenueController
-import org.where2pair.VenueFinder
-import org.where2pair.VenueFinderController
-import org.where2pair.VenueJsonMarshaller
-import org.where2pair.VenueRepository
-import org.where2pair.VenueSaveOrUpdater
+import org.where2pair.venue.ErrorResponse;
+import org.where2pair.venue.OpenHoursJsonMarshaller;
+import org.where2pair.venue.VenueController;
+import org.where2pair.venue.VenueJsonMarshaller;
+import org.where2pair.venue.VenueRepository;
+import org.where2pair.venue.VenueSaveOrUpdater;
+import org.where2pair.venue.find.DistanceCalculator;
+import org.where2pair.venue.find.TimeProvider;
+import org.where2pair.venue.find.VenueFinder;
+import org.where2pair.venue.find.VenueFinderController;
+import org.where2pair.venue.persist.HashMapVenueRepository;
 
 import com.google.inject.AbstractModule
 import com.google.inject.Provides
