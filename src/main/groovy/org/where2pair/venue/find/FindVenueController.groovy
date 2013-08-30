@@ -8,7 +8,7 @@ import org.where2pair.venue.DayOfWeek;
 import org.where2pair.venue.ErrorResponse;
 import org.where2pair.venue.VenueJsonMarshaller;
 
-class VenueFinderController {
+class FindVenueController {
 
 	VenueFinder venueFinder
 	VenueJsonMarshaller venueJsonMarshaller

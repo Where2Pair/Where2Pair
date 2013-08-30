@@ -11,7 +11,7 @@ import org.where2pair.venue.VenueRepository
 import org.where2pair.venue.find.DistanceCalculator
 import org.where2pair.venue.find.TimeProvider
 import org.where2pair.venue.find.VenueFinder
-import org.where2pair.venue.find.VenueFinderController
+import org.where2pair.venue.find.FindVenueController
 import org.where2pair.venue.persist.HashMapVenueRepository
 import org.where2pair.venue.save.SaveVenueController
 import org.where2pair.venue.save.VenueSaveOrUpdater
@@ -63,11 +63,11 @@ class Where2PairModule extends AbstractModule {
 	}
 	
     @Provides
-    VenueFinderController createVenueFinderController(VenueRepository venueRepository, VenueJsonMarshaller venueJsonMarshaller){
+    FindVenueController createFindVenueController(VenueRepository venueRepository, VenueJsonMarshaller venueJsonMarshaller){
         DistanceCalculator distanceCalculator = new DistanceCalculator()
         VenueFinder venueFinder = new VenueFinder(distanceCalculator: distanceCalculator, venueRepository: venueRepository)
         TimeProvider timeProvider = new TimeProvider()
-        new VenueFinderController(timeProvider: timeProvider, venueFinder: venueFinder, venueJsonMarshaller: venueJsonMarshaller)
+        new FindVenueController(timeProvider: timeProvider, venueFinder: venueFinder, venueJsonMarshaller: venueJsonMarshaller)
     }
 
     @Override
@@ -87,8 +87,8 @@ ratpack {
                 def venues = showVenueController.showAll()
                 renderResult(response, venues)
             }
-            get("nearest") { VenueFinderController venueFinderController ->
-				def venues = venueFinderController.findNearest(request.queryParams)
+            get("nearest") { FindVenueController findVenueController ->
+				def venues = findVenueController.findNearest(request.queryParams)
 				renderResult(response, venues)
             }
         }

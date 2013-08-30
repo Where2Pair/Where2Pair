@@ -17,11 +17,11 @@ import org.where2pair.venue.DailyOpeningTimes.SimpleTime
 import spock.lang.Specification
 import spock.lang.Unroll
 
-class VenueFinderControllerSpec extends Specification {
+class FindVenueControllerSpec extends Specification {
 
 	static final TIME_NOW = new SimpleTime(1, 2)
 	static final TODAY = FRIDAY
-	VenueFinderController controller = new VenueFinderController()
+	FindVenueController controller = new FindVenueController()
 	VenueFinder venueFinder = Mock()
 	TimeProvider timeProvider = Mock()
 	VenueJsonMarshaller venueJsonMarshaller = Mock() {
