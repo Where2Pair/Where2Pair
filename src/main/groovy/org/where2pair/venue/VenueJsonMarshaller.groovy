@@ -39,10 +39,9 @@ class VenueJsonMarshaller {
 		
 		venuesWithDistance.collect {
 			Map distances = it.distances
-			
 			if (distances.size() > 1) distances['average'] = it.averageDistance
 			
-			[distance: distances, venue: asVenueJson(it.venue)]
+			[distance: distances.sort(), venue: asVenueJson(it.venue)]
 		}
 	}
 	
