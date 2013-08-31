@@ -1,9 +1,9 @@
 package org.where2pair.venue.show
 
-import org.where2pair.venue.ErrorResponse
 import org.where2pair.venue.Venue
 import org.where2pair.venue.VenueJsonMarshaller
 import org.where2pair.venue.VenueRepository
+import org.where2pair.venue.find.ErrorResponse;
 import org.where2pair.venue.save.VenueSaveOrUpdater
 
 class ShowVenueController {

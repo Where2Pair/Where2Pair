@@ -3,22 +3,16 @@ package org.where2pair.venue.find
 import org.where2pair.venue.Coordinates;
 import org.where2pair.venue.Venue;
 import org.where2pair.venue.VenueRepository;
-import org.where2pair.venue.find.DistanceCalculator;
-import org.where2pair.venue.find.FeaturesCriteria;
-import org.where2pair.venue.find.OpenTimesCriteria;
-import org.where2pair.venue.find.VenueFinder;
+import org.where2pair.venue.find.FeaturesCriteria
+import org.where2pair.venue.find.OpenTimesCriteria
+import org.where2pair.venue.find.VenueFinder
 
 import spock.lang.Specification
 
 class VenueFinderSpec extends Specification {
 
-	static final OPEN_TIMES_CRITERIA = new OpenTimesCriteria()
-	static final FEATURES_CRITERIA = new FeaturesCriteria()
-	static final USER_LOCATION = new LocationsCriteria()
 	VenueRepository venueRepository = Mock()
-	DistanceCalculator distanceCalculator = Mock()
-	VenueFinder venueFinder = new VenueFinder(venueRepository: venueRepository, 
-		distanceCalculator: distanceCalculator)
+	VenueFinder venueFinder = new VenueFinder(venueRepository: venueRepository)
 	
 	def "should return at most 50 venues"() {
 		given:
@@ -78,14 +72,21 @@ class VenueFinderSpec extends Specification {
 	def "returns 50 closest venues, ordered ascending by distance"() {
 		given:
 		List nearbyVenues = 50.openVenues()
+		nearbyVenues = assignUniqueIds(nearbyVenues)
 		venueRepository.getAll() >> 50.openVenues() + nearbyVenues
-		distanceCalculator.distanceBetween(_ as Venue, USER_LOCATION) >>> (99..0)
+		LocationsCriteria locationsCriteria = Mock()
+		locationsCriteria.distanceTo(_ as Venue) >>> (99..0)
 		
 		when:
-		List venues = venueFinder.findNearestTo(OPEN_TIMES_CRITERIA, FEATURES_CRITERIA, USER_LOCATION)
+		List venues = venueFinder.findNearestTo(OPEN_TIMES_CRITERIA, FEATURES_CRITERIA, locationsCriteria)
 		
 		then:
 		venues.venue == nearbyVenues.reverse()
+	}
+	
+	def assignUniqueIds(List venues) {
+		int idIndex = 0
+		venues.collect { it.id = ++idIndex; it }
 	}
 	
 	def setup() {
@@ -137,5 +138,11 @@ class VenueFinderSpec extends Specification {
 			if (this == 0) return []
 			(0..(this - 1)).collect { c() }
 		}
+	}
+	
+	static final OPEN_TIMES_CRITERIA = new OpenTimesCriteria()
+	static final FEATURES_CRITERIA = new FeaturesCriteria()
+	LocationsCriteria USER_LOCATION = Mock(LocationsCriteria) {
+		distanceTo(_) >> 1.0
 	}
 }

@@ -1,44 +1,29 @@
 package org.where2pair.venue.find
 
-import static java.lang.Double.parseDouble
-
-import org.where2pair.venue.DailyOpeningTimes.SimpleTime
-import org.where2pair.venue.Coordinates;
-import org.where2pair.venue.DayOfWeek;
-import org.where2pair.venue.ErrorResponse;
-import org.where2pair.venue.VenueJsonMarshaller;
-
 import static org.where2pair.venue.DayOfWeek.parseDayOfWeek
-import static org.where2pair.venue.find.DistanceUnit.KM
+
+import org.where2pair.venue.DayOfWeek
+import org.where2pair.venue.VenueJsonMarshaller
+import org.where2pair.venue.DailyOpeningTimes.SimpleTime
 
 class FindVenueController {
 
 	VenueFinder venueFinder
+	LocationsCriteriaParser locationsCriteriaParser
 	VenueJsonMarshaller venueJsonMarshaller
 	TimeProvider timeProvider
 	
 	def findNearest(Map params) {
-		LocationsCriteria locationsCriteria = parseLocationsCriteriaFromRequest(params)
+		LocationsCriteria locationsCriteria = locationsCriteriaParser.parse(params)
 		
-		if (locationsCriteria.isValid()) {
+		if (!locationsCriteria.errors) {
 			OpenTimesCriteria openTimesCriteria = parseOpenTimesCriteriaFromRequest(params)
 			FeaturesCriteria featuresCriteria = parseFeaturesCriteriaFromRequest(params)
 			List venues = venueFinder.findNearestTo(openTimesCriteria, featuresCriteria, locationsCriteria)
 			return venueJsonMarshaller.asVenuesWithDistanceJson(venues)
 		} else {
-			return handleIllegalLocationsCount(locationsCriteria)
+			return handleIllegalLocationsCriteria(locationsCriteria)
 		}
-	}
-	
-	private LocationsCriteria parseLocationsCriteriaFromRequest(Map params) {
-		List locations = params.findAll { it.key.startsWith('location') }.collect {
-			def (lat, lng) = it.value.split(',').collect { parseDouble(it) }
-			new Coordinates(lat, lng)
-		}
-		
-		def distanceUnit = params.distanceUnit ?: KM.toString()
-		
-		new LocationsCriteria(locations: locations, distanceUnit: distanceUnit)
 	}
 	
 	private OpenTimesCriteria parseOpenTimesCriteriaFromRequest(Map params) {
@@ -62,8 +47,8 @@ class FindVenueController {
 		new FeaturesCriteria(requestedFeatures: requestedFeatures)
 	}
 	
-	private ErrorResponse handleIllegalLocationsCount(LocationsCriteria suppliedLocations) {
-		def (errorMessage, status) = suppliedLocations.errorResponse
+	private ErrorResponse handleIllegalLocationsCriteria(LocationsCriteria suppliedLocations) {
+		def (errorMessage, status) = suppliedLocations.errors
 		new ErrorResponse(message: errorMessage, status: status)
 	}
 }

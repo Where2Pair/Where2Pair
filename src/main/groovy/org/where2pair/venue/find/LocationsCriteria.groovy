@@ -1,28 +1,35 @@
 package org.where2pair.venue.find
 
+import org.where2pair.venue.Venue;
+
 import groovy.transform.EqualsAndHashCode;
 import groovy.transform.ToString;
-import static org.where2pair.venue.find.DistanceUnit.parseDistanceUnit
 
 @EqualsAndHashCode
 @ToString
 class LocationsCriteria {
+	
+	final static VALID_DISTANCE_UNITS = ['MILES', 'KM']	
 	List locations
 	String distanceUnit
-
-	DistanceUnit getDistanceUnit() {
-		parseDistanceUnit(this.@distanceUnit)
+	
+	void setDistanceUnit(String distanceUnit) {
+		this.distanceUnit = distanceUnit.toUpperCase()
 	}
-		
+	
 	int size() {
 		locations.size()
 	}
 	
-	boolean isValid() {
-		locations.size() in 1..1000 && this.@distanceUnit.toUpperCase() in DistanceUnit.values().collect { it.toString() }
+	double distanceTo(Venue venue) {
+		List distances = locations.collect {
+			distanceUnit == 'KM' ? venue.distanceInKmTo(it) : venue.distanceInMilesTo(it)
+		}
+		
+		distances.sum() / distances.size()
 	}
 	
-	def getErrorResponse() {
+	def getErrors() {
 		if (isValid()) return null
 
 		String errorMessage
@@ -40,5 +47,9 @@ class LocationsCriteria {
 		}
 		
 		[errorMessage, status]
+	}
+	
+	private boolean isValid() {
+		locations.size() in 1..1000 && distanceUnit in VALID_DISTANCE_UNITS
 	}
 }

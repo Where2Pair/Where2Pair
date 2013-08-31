@@ -7,7 +7,6 @@ import org.where2pair.venue.VenueRepository;
 class VenueFinder {
 
 	VenueRepository venueRepository
-	DistanceCalculator distanceCalculator
 	
 	List findNearestTo(OpenTimesCriteria openTimesCriteria, FeaturesCriteria featuresCriteria, LocationsCriteria locationsCriteria) {
 		List openVenues = venueRepository.getAll().findAll { Venue venue -> 
@@ -25,7 +24,7 @@ class VenueFinder {
 
 	private List sortVenuesByDistance(List openVenues, LocationsCriteria locationsCriteria) {
 		List venuesWithDistance = openVenues.collect { Venue venue -> 
-			new VenueWithDistance(venue: venue, distance: distanceCalculator.distanceBetween(venue, locationsCriteria))
+			new VenueWithDistance(venue: venue, distance: locationsCriteria.distanceTo(venue))
 		}
 		
 		venuesWithDistance.sort { VenueWithDistance venue -> 

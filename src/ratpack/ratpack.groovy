@@ -4,11 +4,11 @@ import static org.where2pair.venue.DayOfWeek.SUNDAY
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 
-import org.where2pair.venue.ErrorResponse
 import org.where2pair.venue.OpenHoursJsonMarshaller
 import org.where2pair.venue.VenueJsonMarshaller
 import org.where2pair.venue.VenueRepository
-import org.where2pair.venue.find.DistanceCalculator
+import org.where2pair.venue.find.ErrorResponse;
+import org.where2pair.venue.find.LocationsCriteriaParser
 import org.where2pair.venue.find.TimeProvider
 import org.where2pair.venue.find.VenueFinder
 import org.where2pair.venue.find.FindVenueController
@@ -43,10 +43,10 @@ class Where2PairModule extends AbstractModule {
 	
     @Provides
     FindVenueController createFindVenueController(VenueRepository venueRepository, VenueJsonMarshaller venueJsonMarshaller){
-        DistanceCalculator distanceCalculator = new DistanceCalculator()
-        VenueFinder venueFinder = new VenueFinder(distanceCalculator: distanceCalculator, venueRepository: venueRepository)
+        VenueFinder venueFinder = new VenueFinder(venueRepository: venueRepository)
         TimeProvider timeProvider = new TimeProvider()
-        new FindVenueController(timeProvider: timeProvider, venueFinder: venueFinder, venueJsonMarshaller: venueJsonMarshaller)
+		LocationsCriteriaParser locationsCriteriaParser = new LocationsCriteriaParser()
+        new FindVenueController(timeProvider: timeProvider, locationsCriteriaParser: locationsCriteriaParser, venueFinder: venueFinder, venueJsonMarshaller: venueJsonMarshaller)
     }
 
     @Override

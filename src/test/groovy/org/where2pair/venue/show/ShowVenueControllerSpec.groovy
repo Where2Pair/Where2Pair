@@ -1,11 +1,11 @@
 package org.where2pair.venue.show
 
 import org.where2pair.venue.Coordinates;
-import org.where2pair.venue.ErrorResponse;
 import org.where2pair.venue.Venue;
 import org.where2pair.venue.VenueJsonMarshaller;
 import org.where2pair.venue.VenueRepository;
 import org.where2pair.venue.WeeklyOpeningTimesBuilder;
+import org.where2pair.venue.find.ErrorResponse;
 import org.where2pair.venue.save.VenueSaveOrUpdater;
 import org.where2pair.venue.show.ShowVenueController;
 

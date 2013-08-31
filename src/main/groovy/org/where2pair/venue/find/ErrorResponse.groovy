@@ -1,4 +1,4 @@
-package org.where2pair.venue
+package org.where2pair.venue.find
 
 class ErrorResponse {
 
