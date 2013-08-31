@@ -32,7 +32,7 @@ class OpenHoursJsonMarshaller {
 		WeeklyOpeningTimesBuilder builder = new WeeklyOpeningTimesBuilder()
 		openHours.each { day, dailyOpenHours ->
 			dailyOpenHours.each {
-				builder.addOpenPeriod(DayOfWeek.parseString(day),
+				builder.addOpenPeriod(DayOfWeek.parseDayOfWeek(day),
 					new SimpleTime(asInt(it.openHour), asInt(it.openMinute)),
 					new SimpleTime(asInt(it.closeHour), asInt(it.closeMinute)))
 			}

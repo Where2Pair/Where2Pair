@@ -4,7 +4,7 @@ enum DistanceUnit {
 
 	METRIC, IMPERIAL
 	
-	static DistanceUnit parseString(String distanceUnit) {
+	static DistanceUnit parseDistanceUnit(String distanceUnit) {
 		distanceUnit.toUpperCase()
 	}
 	

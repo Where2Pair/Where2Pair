@@ -8,7 +8,9 @@ import org.where2pair.venue.DayOfWeek;
 import org.where2pair.venue.ErrorResponse;
 import org.where2pair.venue.VenueJsonMarshaller;
 
+import static org.where2pair.venue.DayOfWeek.parseDayOfWeek
 import static org.where2pair.venue.find.DistanceUnit.METRIC
+import static org.where2pair.venue.find.DistanceUnit.parseDistanceUnit
 
 class FindVenueController {
 
@@ -35,7 +37,7 @@ class FindVenueController {
 			new Coordinates(lat, lng)
 		}
 		
-		def distanceUnit = params.distanceUnit ? DistanceUnit.parseString(params.distanceUnit) : METRIC
+		def distanceUnit = params.distanceUnit ? parseDistanceUnit(params.distanceUnit) : METRIC
 		
 		new LocationsCriteria(locations: locations, distanceUnit: distanceUnit)
 	}
@@ -43,7 +45,7 @@ class FindVenueController {
 	private OpenTimesCriteria parseOpenTimesCriteriaFromRequest(Map params) {
 		SimpleTime openFrom = parseOpenFromTimeFromRequest(params)
 		SimpleTime openUntil = params.openUntil ? parseSimpleTime(params.openUntil) : openFrom
-		DayOfWeek dayOfWeek = params.openDay ? DayOfWeek.parseString(params.openDay) : timeProvider.today()
+		DayOfWeek dayOfWeek = params.openDay ? parseDayOfWeek(params.openDay) : timeProvider.today()
 		new OpenTimesCriteria(openFrom: openFrom, openUntil: openUntil, dayOfWeek: dayOfWeek)
 	}
 	
