@@ -9,8 +9,7 @@ import org.where2pair.venue.ErrorResponse;
 import org.where2pair.venue.VenueJsonMarshaller;
 
 import static org.where2pair.venue.DayOfWeek.parseDayOfWeek
-import static org.where2pair.venue.find.DistanceUnit.METRIC
-import static org.where2pair.venue.find.DistanceUnit.parseDistanceUnit
+import static org.where2pair.venue.find.DistanceUnit.KM
 
 class FindVenueController {
 
@@ -21,7 +20,7 @@ class FindVenueController {
 	def findNearest(Map params) {
 		LocationsCriteria locationsCriteria = parseLocationsCriteriaFromRequest(params)
 		
-		if (locationsCriteria.size() in 1..1000) {
+		if (locationsCriteria.isValid()) {
 			OpenTimesCriteria openTimesCriteria = parseOpenTimesCriteriaFromRequest(params)
 			FeaturesCriteria featuresCriteria = parseFeaturesCriteriaFromRequest(params)
 			List venues = venueFinder.findNearestTo(openTimesCriteria, featuresCriteria, locationsCriteria)
@@ -37,7 +36,7 @@ class FindVenueController {
 			new Coordinates(lat, lng)
 		}
 		
-		def distanceUnit = params.distanceUnit ? parseDistanceUnit(params.distanceUnit) : METRIC
+		def distanceUnit = params.distanceUnit ?: KM.toString()
 		
 		new LocationsCriteria(locations: locations, distanceUnit: distanceUnit)
 	}
@@ -64,10 +63,7 @@ class FindVenueController {
 	}
 	
 	private ErrorResponse handleIllegalLocationsCount(LocationsCriteria suppliedLocations) {
-		String errorMessage = suppliedLocations.size() == 0 ? 
-			"Missing locations from the request parameters. I expect a query in the form: nearest?location1=x1,y1&location2=x2,y2..."
-			: "Only upto 1000 locations are supported at this time."
-			
-		new ErrorResponse(message: errorMessage, status: 413)
+		def (errorMessage, status) = suppliedLocations.errorResponse
+		new ErrorResponse(message: errorMessage, status: status)
 	}
 }

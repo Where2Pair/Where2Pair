@@ -5,8 +5,8 @@ import static org.where2pair.venue.DayOfWeek.MONDAY
 import static org.where2pair.venue.DayOfWeek.SUNDAY
 import static org.where2pair.venue.DayOfWeek.THURSDAY
 import static org.where2pair.venue.DayOfWeek.WEDNESDAY
-import static org.where2pair.venue.find.DistanceUnit.METRIC
-import static org.where2pair.venue.find.DistanceUnit.IMPERIAL
+import static org.where2pair.venue.find.DistanceUnit.KM
+import static org.where2pair.venue.find.DistanceUnit.MILES
 import static org.where2pair.venue.find.LocationsCriteriaBuilder.locationsCriteria
 
 import org.where2pair.venue.Address
@@ -35,8 +35,8 @@ class FindVenueControllerSpec extends Specification {
 	def "displays search results for given locations"() {
 		given:
 		params.'location1' = '1.0,0.1'
-		params.'distanceUnit' = 'imperial'
-		def expectedLocationCriteria = locationsCriteria().withLocation(1.0,0.1).withDistanceUnit(IMPERIAL)
+		params.'distanceUnit' = 'miles'
+		def expectedLocationCriteria = locationsCriteria().withLocation(1.0,0.1).withDistanceUnit(MILES)
 		
 		when:
 		controller.findNearest(params)
@@ -48,8 +48,8 @@ class FindVenueControllerSpec extends Specification {
 	def "supports multiple supplied locations"() {
 		given:
 		(1..1000).each { params."location$it" = '1.0,0.1'}
-		params.'distanceUnit' = 'imperial'
-		def expectedLocationCriteria = locationsCriteria().withLocations([[1.0,0.1]] * 1000).withDistanceUnit(IMPERIAL)
+		params.'distanceUnit' = 'miles'
+		def expectedLocationCriteria = locationsCriteria().withLocations([[1.0,0.1]] * 1000).withDistanceUnit(MILES)
 
 		when:
 		controller.findNearest(params)
@@ -58,10 +58,10 @@ class FindVenueControllerSpec extends Specification {
 		1 * venueFinder.findNearestTo(_,_,expectedLocationCriteria)
 	}
 
-	def "defaults to metric distance units when none supplied"() {
+	def "defaults to km distance unit when none supplied"() {
 		given:
 		params.'location1' = '1.0,0.1'
-		def expectedLocationCriteria = locationsCriteria().withLocation(1.0,0.1).withDistanceUnit(METRIC)
+		def expectedLocationCriteria = locationsCriteria().withLocation(1.0,0.1).withDistanceUnit(KM)
 		
 		when:
 		controller.findNearest(params)
@@ -89,9 +89,22 @@ class FindVenueControllerSpec extends Specification {
 
 		then:
 		response.message == "Missing locations from the request parameters. I expect a query in the form: nearest?location1=x1,y1&location2=x2,y2..."
-		response.status == 413
+		response.status == 400
 	}
-
+	
+	def "rejects invalid distance unit"() {
+		given:
+		params.'location1' = '1.0,0.1'
+		params.'distanceUnit' = 'furlongs'
+		
+		when:
+		ErrorResponse response = controller.findNearest(params)
+		
+		then:
+		response.message == "Distance unit 'furlongs' is invalid. Use either 'km' or 'miles' (omitting distanceUnit altogether defaults to 'km')."
+		response.status == 400
+	}
+	
 	@Unroll
 	def "given openFrom: #openFromParam openUntil: #openUntilParam openDay: #openDayParam finds venues open during correct time range"() {
 		given:

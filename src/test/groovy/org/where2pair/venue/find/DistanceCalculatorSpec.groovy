@@ -6,8 +6,8 @@ import org.where2pair.venue.find.DistanceCalculator
 import spock.lang.Specification
 import static spock.util.matcher.HamcrestMatchers.closeTo
 import static org.where2pair.venue.find.LocationsCriteriaBuilder.locationsCriteria
-import static org.where2pair.venue.find.DistanceUnit.METRIC
-import static org.where2pair.venue.find.DistanceUnit.IMPERIAL
+import static org.where2pair.venue.find.DistanceUnit.KM
+import static org.where2pair.venue.find.DistanceUnit.MILES
 
 class DistanceCalculatorSpec extends Specification {
 
@@ -18,7 +18,7 @@ class DistanceCalculatorSpec extends Specification {
 		given:
 		def coords = new Coordinates(0.1, 0.2)
 		venue.distanceInKmTo(coords) >> 2.3
-		def locationsCriteria = locationsCriteria().withLocation(coords).withDistanceUnit(METRIC)
+		def locationsCriteria = locationsCriteria().withLocation(coords).withDistanceUnit(KM)
 		
 		when:
 		double distance = distanceCalculator.distanceBetween(venue, locationsCriteria)
@@ -31,7 +31,7 @@ class DistanceCalculatorSpec extends Specification {
 		given:
 		def coords = new Coordinates(0.1, 0.2)
 		venue.distanceInMilesTo(coords) >> 1.2
-		def locationsCriteria = locationsCriteria().withLocation(coords).withDistanceUnit(IMPERIAL)
+		def locationsCriteria = locationsCriteria().withLocation(coords).withDistanceUnit(MILES)
 		
 		when:
 		double distance = distanceCalculator.distanceBetween(venue, locationsCriteria)
@@ -48,7 +48,7 @@ class DistanceCalculatorSpec extends Specification {
 		venue.distanceInKmTo(coords1) >> 2.3
 		venue.distanceInKmTo(coords2) >> 5.9
 		venue.distanceInKmTo(coords3) >> 3.4
-		def locationsCriteria = locationsCriteria().withLocation(coords1).withLocation(coords2).withLocation(coords3).withDistanceUnit(METRIC)
+		def locationsCriteria = locationsCriteria().withLocation(coords1).withLocation(coords2).withLocation(coords3).withDistanceUnit(KM)
 		
 		when:
 		double distance = distanceCalculator.distanceBetween(venue, locationsCriteria)
