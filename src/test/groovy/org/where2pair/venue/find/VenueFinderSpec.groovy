@@ -14,7 +14,7 @@ class VenueFinderSpec extends Specification {
 
 	static final OPEN_TIMES_CRITERIA = new OpenTimesCriteria()
 	static final FEATURES_CRITERIA = new FeaturesCriteria()
-	static final USER_LOCATION = new Coordinates(lat: 0.2, lng: 0.1)
+	static final USER_LOCATION = new LocationsCriteria()
 	VenueRepository venueRepository = Mock()
 	DistanceCalculator distanceCalculator = Mock()
 	VenueFinder venueFinder = new VenueFinder(venueRepository: venueRepository, 
@@ -79,28 +79,13 @@ class VenueFinderSpec extends Specification {
 		given:
 		List nearbyVenues = 50.openVenues()
 		venueRepository.getAll() >> 50.openVenues() + nearbyVenues
-		distanceCalculator.distanceInKmTo(_ as Venue, USER_LOCATION) >>> (99..0)
+		distanceCalculator.distanceBetween(_ as Venue, USER_LOCATION) >>> (99..0)
 		
 		when:
 		List venues = venueFinder.findNearestTo(OPEN_TIMES_CRITERIA, FEATURES_CRITERIA, USER_LOCATION)
 		
 		then:
 		venues.venue == nearbyVenues.reverse()
-	}
-	
-	def "considers all coordinates when determining the distance"() {
-		given:
-		List venues = 1.openVenues()
-		venueRepository.getAll() >> venues
-		Coordinates coords1 = new Coordinates(0.1, 0.2)
-		Coordinates coords2 = new Coordinates(0.2, 0.3)
-		Coordinates coords3 = new Coordinates(0.3, 0.4)
-		
-		when:
-		venueFinder.findNearestTo(OPEN_TIMES_CRITERIA, FEATURES_CRITERIA, coords1, coords2, coords3)
-		
-		then:
-		1 * distanceCalculator.distanceInKmTo(venues[0], coords1, coords2, coords3)
 	}
 	
 	def setup() {

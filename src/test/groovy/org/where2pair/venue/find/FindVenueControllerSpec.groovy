@@ -5,6 +5,9 @@ import static org.where2pair.venue.DayOfWeek.MONDAY
 import static org.where2pair.venue.DayOfWeek.SUNDAY
 import static org.where2pair.venue.DayOfWeek.THURSDAY
 import static org.where2pair.venue.DayOfWeek.WEDNESDAY
+import static org.where2pair.venue.find.DistanceUnit.METRIC
+import static org.where2pair.venue.find.DistanceUnit.IMPERIAL
+import static org.where2pair.venue.find.LocationsCriteriaBuilder.locationsCriteria
 
 import org.where2pair.venue.Address
 import org.where2pair.venue.Coordinates
@@ -29,30 +32,45 @@ class FindVenueControllerSpec extends Specification {
 	}
 	Map params = [:]
 	
-	def "should display search results for given coordinates"() {
+	def "displays search results for given locations"() {
 		given:
 		params.'location1' = '1.0,0.1'
-
+		params.'distanceUnit' = 'imperial'
+		def expectedLocationCriteria = locationsCriteria().withLocation(1.0,0.1).withDistanceUnit(IMPERIAL)
+		
 		when:
 		controller.findNearest(params)
 
 		then:
-		1 *	venueFinder.findNearestTo(_,_,new Coordinates(1.0,0.1))
+		1 *	venueFinder.findNearestTo(_,_,expectedLocationCriteria)
 	}
 
-	def "should support multiple supplied locations"() {
+	def "supports multiple supplied locations"() {
 		given:
 		(1..1000).each { params."location$it" = '1.0,0.1'}
-		List expectedCoordArgs = [new Coordinates(1.0,0.1)] * 1000
+		params.'distanceUnit' = 'imperial'
+		def expectedLocationCriteria = locationsCriteria().withLocations([[1.0,0.1]] * 1000).withDistanceUnit(IMPERIAL)
 
 		when:
 		controller.findNearest(params)
 
 		then:
-		1 * venueFinder.findNearestTo(_,_,expectedCoordArgs)
+		1 * venueFinder.findNearestTo(_,_,expectedLocationCriteria)
 	}
 
-	def "should reject more than 1000 supplied locations"() {
+	def "defaults to metric distance units when none supplied"() {
+		given:
+		params.'location1' = '1.0,0.1'
+		def expectedLocationCriteria = locationsCriteria().withLocation(1.0,0.1).withDistanceUnit(METRIC)
+		
+		when:
+		controller.findNearest(params)
+
+		then:
+		1 *	venueFinder.findNearestTo(_,_,expectedLocationCriteria)
+	}
+	
+	def "rejects more than 1000 supplied locations"() {
 		given:
 		(1..1001).each { params."location$it" = '1.0,0.1'}
 
@@ -65,7 +83,7 @@ class FindVenueControllerSpec extends Specification {
 		response.status == 413
 	}
 
-	def "should reject 0 supplied locations"() {
+	def "rejects 0 supplied locations"() {
 		when:
 		ErrorResponse response = controller.findNearest([:])
 
@@ -75,7 +93,7 @@ class FindVenueControllerSpec extends Specification {
 	}
 
 	@Unroll
-	def "given openFrom: #openFromParam openUntil: #openUntilParam openDay: #openDayParam should find venues open during correct time range"() {
+	def "given openFrom: #openFromParam openUntil: #openUntilParam openDay: #openDayParam finds venues open during correct time range"() {
 		given:
 		params.'location1' = '1.0,0.1'
 		if (openFromParam != 'missing') params.'openFrom' = openFromParam
@@ -139,7 +157,7 @@ class FindVenueControllerSpec extends Specification {
 					location: new Coordinates(1.0, 0.5),
 					weeklyOpeningTimes: new WeeklyOpeningTimesBuilder().build(), 
 					address: new Address()),
-				distanceInKm: 10.5)
+				distance: 10.5)
 			}
 		}
 	}

@@ -46,9 +46,9 @@ class VenueJsonMarshallerSpec extends Specification {
 	
 	def "converts VenueWithDistance to json"() {
 		given:
-		VenueWithDistance venueWithDistance = new VenueWithDistance(venue: venue, distanceInKm: 10.5)
+		VenueWithDistance venueWithDistance = new VenueWithDistance(venue: venue, distance: 10.5)
 		Map expectedVenueWithDistanceJson = [
-			distanceInKm: 10.5,
+			distance: 10.5,
 			venue: venueJson]
 		
 		when:

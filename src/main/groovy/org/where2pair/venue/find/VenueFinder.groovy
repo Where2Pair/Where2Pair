@@ -9,7 +9,7 @@ class VenueFinder {
 	VenueRepository venueRepository
 	DistanceCalculator distanceCalculator
 	
-	List findNearestTo(OpenTimesCriteria openTimesCriteria, FeaturesCriteria featuresCriteria, Coordinates... coordinates) {
+	List findNearestTo(OpenTimesCriteria openTimesCriteria, FeaturesCriteria featuresCriteria, LocationsCriteria locationsCriteria) {
 		List openVenues = venueRepository.getAll().findAll { Venue venue -> 
 			venue.isOpen(openTimesCriteria) 
 		}
@@ -18,18 +18,18 @@ class VenueFinder {
 			venue.hasFeatures(featuresCriteria)
 		}
 		
-		List sortedVenues = sortVenuesByDistance(venuesWithFeatures, coordinates)
+		List sortedVenues = sortVenuesByDistance(venuesWithFeatures, locationsCriteria)
 		
 		restrictTo50Results(sortedVenues)
 	}
 
-	private List sortVenuesByDistance(List openVenues, Coordinates... coordinates) {
+	private List sortVenuesByDistance(List openVenues, LocationsCriteria locationsCriteria) {
 		List venuesWithDistance = openVenues.collect { Venue venue -> 
-			new VenueWithDistance(venue: venue, distanceInKm: distanceCalculator.distanceInKmTo(venue, coordinates))
+			new VenueWithDistance(venue: venue, distance: distanceCalculator.distanceBetween(venue, locationsCriteria))
 		}
 		
 		venuesWithDistance.sort { VenueWithDistance venue -> 
-			venue.distanceInKm 
+			venue.distance 
 		}
 	}
 

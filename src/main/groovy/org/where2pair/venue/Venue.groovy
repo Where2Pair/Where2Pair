@@ -31,4 +31,8 @@ class Venue {
 	double distanceInKmTo(Coordinates coordinates) {
 		location.distanceInKmTo(coordinates)
 	}
+	
+	double distanceInMilesTo(Coordinates coordinates) {
+		location.distanceInMilesTo(coordinates)
+	}
 }

@@ -1,6 +1,5 @@
 package org.where2pair.venue
 
-
 class VenueJsonMarshaller {
 
 	OpenHoursJsonMarshaller openHoursJsonMarshaller
@@ -39,10 +38,10 @@ class VenueJsonMarshaller {
 			return []
 		
 		List venues = venuesWithDistance.venue
-		List distances = venuesWithDistance.distanceInKm
-		List venueDtos = asVenuesJson(venues)
-		[venueDtos, distances].transpose().collect { Map venueJson, double distance -> 
-			[distanceInKm: distance, venue: venueJson]
+		List distances = venuesWithDistance.distance
+		List venuesMap = asVenuesJson(venues)
+		[venuesMap, distances].transpose().collect { Map venueJson, double distance -> 
+			[distance: distance, venue: venueJson]
 		}
 	}
 	

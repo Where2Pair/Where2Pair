@@ -19,4 +19,8 @@ class Coordinates {
 		double dist = earthRadius * c
 		dist.doubleValue()
 	}
+	
+	double distanceInMilesTo(Coordinates coordinates) {
+		distanceInKmTo(coordinates) * 0.62137
+	}
 }
