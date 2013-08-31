@@ -114,11 +114,11 @@ class FindVenueControllerSpec extends Specification {
 	static class VenuesMixin {
 		List venuesWithDistance() {
 			(0..this).collect {
-				new VenueWithDistance(venue: new Venue(
+				new VenueWithDistances(venue: new Venue(
 					location: new Coordinates(1.0, 0.5),
 					weeklyOpeningTimes: new WeeklyOpeningTimesBuilder().build(), 
 					address: new Address()),
-				distance: 10.5)
+				averageDistance: 10.5)
 			}
 		}
 	}

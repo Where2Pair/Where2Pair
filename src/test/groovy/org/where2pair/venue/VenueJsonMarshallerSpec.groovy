@@ -13,7 +13,7 @@ import org.where2pair.venue.Venue;
 import org.where2pair.venue.VenueJsonMarshaller;
 import org.where2pair.venue.WeeklyOpeningTimes;
 import org.where2pair.venue.WeeklyOpeningTimesBuilder;
-import org.where2pair.venue.find.VenueWithDistance;
+import org.where2pair.venue.find.VenueWithDistances;
 
 import spock.lang.Specification
 
@@ -46,9 +46,23 @@ class VenueJsonMarshallerSpec extends Specification {
 	
 	def "converts VenueWithDistance to json"() {
 		given:
-		VenueWithDistance venueWithDistance = new VenueWithDistance(venue: venue, distance: 10.5)
+		VenueWithDistances venueWithDistance = new VenueWithDistances(venue: venue, distances: [location1: 10, location2: 10])
 		Map expectedVenueWithDistanceJson = [
-			distance: 10.5,
+			distance: [average: 10, location1: 10, location2: 10],
+			venue: venueJson]
+		
+		when:
+		List venuesWithDistanceJson = venueJsonMarshaller.asVenuesWithDistanceJson([venueWithDistance])
+		
+		then:
+		venuesWithDistanceJson == [expectedVenueWithDistanceJson]
+	}
+	
+	def "ignores average if only one location when converting VenueWithDistance to json"() {
+		given:
+		VenueWithDistances venueWithDistance = new VenueWithDistances(venue: venue, distances: [location1: 10])
+		Map expectedVenueWithDistanceJson = [
+			distance: [location1: 10],
 			venue: venueJson]
 		
 		when:

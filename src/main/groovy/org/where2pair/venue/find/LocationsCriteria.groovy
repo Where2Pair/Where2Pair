@@ -10,7 +10,7 @@ import groovy.transform.ToString;
 class LocationsCriteria {
 	
 	final static VALID_DISTANCE_UNITS = ['MILES', 'KM']	
-	List locations
+	Map locations
 	String distanceUnit
 	
 	void setDistanceUnit(String distanceUnit) {
@@ -21,12 +21,10 @@ class LocationsCriteria {
 		locations.size()
 	}
 	
-	double distanceTo(Venue venue) {
-		List distances = locations.collect {
-			distanceUnit == 'KM' ? venue.distanceInKmTo(it) : venue.distanceInMilesTo(it)
+	Map distancesTo(Venue venue) {
+		locations.collectEntries { label, coordinates ->
+			[(label): distanceUnit == 'KM' ? venue.distanceInKmTo(coordinates) : venue.distanceInMilesTo(coordinates)]
 		}
-		
-		distances.sum() / distances.size()
 	}
 	
 	def getErrors() {

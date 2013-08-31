@@ -37,11 +37,12 @@ class VenueJsonMarshaller {
 		if (!venuesWithDistance)
 			return []
 		
-		List venues = venuesWithDistance.venue
-		List distances = venuesWithDistance.distance
-		List venuesMap = asVenuesJson(venues)
-		[venuesMap, distances].transpose().collect { Map venueJson, double distance -> 
-			[distance: distance, venue: venueJson]
+		venuesWithDistance.collect {
+			Map distances = it.distances
+			
+			if (distances.size() > 1) distances['average'] = it.averageDistance
+			
+			[distance: distances, venue: asVenueJson(it.venue)]
 		}
 	}
 	

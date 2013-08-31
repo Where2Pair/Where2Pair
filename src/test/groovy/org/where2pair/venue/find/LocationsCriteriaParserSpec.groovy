@@ -12,7 +12,7 @@ class LocationsCriteriaParserSpec extends Specification {
 		given:
 		params.'location1' = '1.0,0.1'
 		params.'distanceUnit' = 'miles'
-		def expectedLocationsCriteria = locationsCriteria().withLocation(1.0,0.1).withDistanceUnit('miles')
+		def expectedLocationsCriteria = locationsCriteria().with([location1: [1.0,0.1]]).withDistanceUnit('miles')
 		
 		when:
 		def locationsCriteria = locationsCriteriaParser.parse(params)
@@ -23,9 +23,10 @@ class LocationsCriteriaParserSpec extends Specification {
 
 	def "supports multiple supplied locations"() {
 		given:
-		(1..1000).each { params."location$it" = '1.0,0.1'}
+		params."location1" = '1.0,0.1'
+		params."location2" = '2.0,0.2'
 		params.'distanceUnit' = 'miles'
-		def expectedLocationsCriteria = locationsCriteria().withLocations([[1.0,0.1]] * 1000).withDistanceUnit('miles')
+		def expectedLocationsCriteria = locationsCriteria().with([location1: [1.0,0.1], location2: [2.0,0.2]]).withDistanceUnit('miles')
 
 		when:
 		def locationsCriteria = locationsCriteriaParser.parse(params)
@@ -37,7 +38,7 @@ class LocationsCriteriaParserSpec extends Specification {
 	def "defaults to km distance unit when none supplied"() {
 		given:
 		params.'location1' = '1.0,0.1'
-		def expectedLocationsCriteria = locationsCriteria().withLocation(1.0,0.1).withDistanceUnit('km')
+		def expectedLocationsCriteria = locationsCriteria().with([location1: [1.0,0.1]]).withDistanceUnit('km')
 		
 		when:
 		def locationsCriteria = locationsCriteriaParser.parse(params)

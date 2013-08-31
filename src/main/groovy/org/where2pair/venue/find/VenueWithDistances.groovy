@@ -8,7 +8,11 @@ import groovy.transform.ToString;
 
 @EqualsAndHashCode
 @ToString
-class VenueWithDistance {
+class VenueWithDistances {
 	Venue venue
-	double distance
+	Map distances
+	
+	double getAverageDistance() {
+		distances.values().sum() / distances.size()
+	}
 }

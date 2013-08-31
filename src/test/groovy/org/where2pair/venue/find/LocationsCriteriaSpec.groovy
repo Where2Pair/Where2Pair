@@ -24,16 +24,16 @@ class LocationsCriteriaSpec extends Specification {
 		!errors
 		
 		where:
-		locations 		| distanceUnit
-		[COORDS]  		| 'miles'
-		[COORDS]  		| 'km'
-		[COORDS] * 1000 | 'miles'
-		[COORDS] * 1000 | 'km'
+		locations 												| distanceUnit
+		[location1: COORDS]  									| 'miles'
+		[location1: COORDS]  									| 'km'
+		1000.locations(COORDS)									| 'miles'
+		1000.locations(COORDS)								  	| 'km'
 	}
 		
 	def "rejects more than 1000 supplied locations"() {
 		given:
-		LocationsCriteria locationsCriteria = new LocationsCriteria(locations: [COORDS] * 1001, distanceUnit: 'miles')
+		LocationsCriteria locationsCriteria = new LocationsCriteria(locations: 1001.locations(COORDS), distanceUnit: 'miles')
 
 		when:
 		def (message, status) = locationsCriteria.errors
@@ -45,7 +45,7 @@ class LocationsCriteriaSpec extends Specification {
 
 	def "rejects 0 supplied locations"() {
 		given:
-		LocationsCriteria locationsCriteria = new LocationsCriteria(locations: [], distanceUnit: 'miles')
+		LocationsCriteria locationsCriteria = new LocationsCriteria(locations: [:], distanceUnit: 'miles')
 		
 		when:
 		def (message, status) = locationsCriteria.errors
@@ -57,7 +57,7 @@ class LocationsCriteriaSpec extends Specification {
 	
 	def "rejects invalid distance unit"() {
 		given:
-		LocationsCriteria locationsCriteria = new LocationsCriteria(locations: [COORDS], distanceUnit: 'furlongs')
+		LocationsCriteria locationsCriteria = new LocationsCriteria(locations: [location1: COORDS], distanceUnit: 'furlongs')
 		
 		when:
 		def (message, status) = locationsCriteria.errors
@@ -67,33 +67,33 @@ class LocationsCriteriaSpec extends Specification {
 		status == 400
 	}
 	
-	def "given locations criteria in km then returns distance in km from venue"() {
+	def "returns distance in km from venue given km as distance unit"() {
 		given:
 		def coords = new Coordinates(0.1, 0.2)
 		venue.distanceInKmTo(coords) >> 2.3
-		def locationsCriteria = locationsCriteria().withLocation(coords).withDistanceUnit('km')
+		def locationsCriteria = locationsCriteria().with([location1: coords]).withDistanceUnit('km')
 		
 		when:
-		double distance = locationsCriteria.distanceTo(venue)
+		def distances = locationsCriteria.distancesTo(venue)
 		
 		then:
-		distance == 2.3
+		distances == [location1: 2.3]
 	}
 	
-	def "given locations criteria in miles then returns distance in miles from venue"() {
+	def "returns distance in miles from venue given miles as distance unit"() {
 		given:
 		def coords = new Coordinates(0.1, 0.2)
 		venue.distanceInMilesTo(coords) >> 1.2
-		def locationsCriteria = locationsCriteria().withLocation(coords).withDistanceUnit('miles')
+		def locationsCriteria = locationsCriteria().with(['location1': coords]).withDistanceUnit('miles')
 		
 		when:
-		double distance = locationsCriteria.distanceTo(venue)
+		def distances = locationsCriteria.distancesTo(venue)
 		
 		then:
-		distance == 1.2
+		distances == [location1: 1.2]
 	}
 	
-	def "given multiple coordinates then return average distance to all coordinates from venue"() {
+	def "returns distances to all locations from venue"() {
 		given:
 		def coords1 = new Coordinates(0.1, 0.2)
 		def coords2 = new Coordinates(0.2, 0.3)
@@ -101,12 +101,27 @@ class LocationsCriteriaSpec extends Specification {
 		venue.distanceInKmTo(coords1) >> 2.3
 		venue.distanceInKmTo(coords2) >> 5.9
 		venue.distanceInKmTo(coords3) >> 3.4
-		def locationsCriteria = locationsCriteria().withLocation(coords1).withLocation(coords2).withLocation(coords3).withDistanceUnit('km')
+		def locationsCriteria = locationsCriteria().with([location1: coords1, location2: coords2, location3: coords3]).withDistanceUnit('km')
 		
 		when:
-		double distance = locationsCriteria.distanceTo(venue)
+		def distances = locationsCriteria.distancesTo(venue)
 		
 		then:
-		distance closeTo((2.3 + 5.9 + 3.4)/3, 0.01)
+		distances == [location1: 2.3, location2: 5.9, location3: 3.4]
+	}
+	
+	void setupSpec() {
+		Integer.mixin(LocationsMixin)
+	}
+	
+	void cleanupSpec() {
+		Integer.metaClass = null
+	}
+	
+	@Category(Integer)
+	static class LocationsMixin {
+		Map locations(Coordinates coords) {
+			(1..this).collectEntries { ["location$it" : coords] }
+		}
 	}
 }

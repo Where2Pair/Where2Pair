@@ -6,9 +6,9 @@ import static java.lang.Double.parseDouble
 class LocationsCriteriaParser {
 
 	LocationsCriteria parse(Map params) {
-		List locations = params.findAll { it.key.startsWith('location') }.collect {
+		Map locations = params.findAll { it.key.startsWith('location') }.collectEntries {
 			def (lat, lng) = it.value.split(',').collect { parseDouble(it) }
-			new Coordinates(lat, lng)
+			[(it.key): new Coordinates(lat, lng)]
 		}
 		
 		def distanceUnit = params.distanceUnit ?: 'km'

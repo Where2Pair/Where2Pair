@@ -75,7 +75,7 @@ class VenueFinderSpec extends Specification {
 		nearbyVenues = assignUniqueIds(nearbyVenues)
 		venueRepository.getAll() >> 50.openVenues() + nearbyVenues
 		LocationsCriteria locationsCriteria = Mock()
-		locationsCriteria.distanceTo(_ as Venue) >>> (99..0)
+		locationsCriteria.distancesTo(_ as Venue) >>> (99..0).collect { ["location$it": it] }
 		
 		when:
 		List venues = venueFinder.findNearestTo(OPEN_TIMES_CRITERIA, FEATURES_CRITERIA, locationsCriteria)
@@ -143,6 +143,6 @@ class VenueFinderSpec extends Specification {
 	static final OPEN_TIMES_CRITERIA = new OpenTimesCriteria()
 	static final FEATURES_CRITERIA = new FeaturesCriteria()
 	LocationsCriteria USER_LOCATION = Mock(LocationsCriteria) {
-		distanceTo(_) >> 1.0
+		distancesTo(_) >> [location1: 1.0]
 	}
 }
