@@ -1,27 +1,18 @@
-import static org.ratpackframework.groovy.RatpackScript.ratpack
-import static org.where2pair.venue.DayOfWeek.MONDAY
-import static org.where2pair.venue.DayOfWeek.SUNDAY
+import com.google.inject.AbstractModule
+import com.google.inject.Provides
+import com.google.inject.Singleton
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
-
 import org.where2pair.venue.OpenHoursJsonMarshaller
 import org.where2pair.venue.VenueJsonMarshaller
 import org.where2pair.venue.VenueRepository
-import org.where2pair.venue.find.ErrorResponse;
-import org.where2pair.venue.find.LocationsCriteriaParser
-import org.where2pair.venue.find.TimeProvider
-import org.where2pair.venue.find.VenueFinder
-import org.where2pair.venue.find.FindVenueController
+import org.where2pair.venue.find.*
 import org.where2pair.venue.persist.HashMapVenueRepository
 import org.where2pair.venue.save.SaveVenueController
 import org.where2pair.venue.save.VenueSaveOrUpdater
 import org.where2pair.venue.show.ShowVenueController
 
-import com.google.inject.AbstractModule
-import com.google.inject.Provides
-import com.google.inject.Singleton
-
-def indexPages = ["index.html"] as String[]
+import static org.ratpackframework.groovy.RatpackScript.ratpack
 
 class Where2PairModule extends AbstractModule {
     @Provides
@@ -82,7 +73,6 @@ ratpack {
                 renderResult(response, venue)
             }
         }
-        assets "public", indexPages
     }
 }
 
