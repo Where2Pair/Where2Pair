@@ -6,16 +6,16 @@ import org.where2pair.venue.DayOfWeek;
 
 class TimeProvider {
 
-	DateTime getCurrentDateTime() {
-		new DateTime()
-	}
-	
-	SimpleTime timeNow() {
-		DateTime currentTime = getCurrentDateTime()
-		new SimpleTime(currentTime.hourOfDay, currentTime.minuteOfHour)
-	}
-	
-	DayOfWeek today() {
-		DayOfWeek.getDayOfWeek(getCurrentDateTime())
-	}
+    DateTime getCurrentDateTime() {
+        new DateTime()
+    }
+
+    SimpleTime timeNow() {
+        DateTime currentTime = getCurrentDateTime()
+        new SimpleTime(currentTime.hourOfDay, currentTime.minuteOfHour)
+    }
+
+    DayOfWeek today() {
+        DayOfWeek.getDayOfWeek(getCurrentDateTime())
+    }
 }
