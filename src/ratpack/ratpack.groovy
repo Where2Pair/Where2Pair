@@ -24,28 +24,28 @@ import com.google.inject.Singleton
 def indexPages = ["index.html"] as String[]
 
 class Where2PairModule extends AbstractModule {
-	@Provides
-	VenueJsonMarshaller createVenueJsonMarshaller() {
-		OpenHoursJsonMarshaller openHoursJsonMarshaller = new OpenHoursJsonMarshaller()
-		new VenueJsonMarshaller(openHoursJsonMarshaller: openHoursJsonMarshaller)
-	}
-	
-	@Provides
-	ShowVenueController createShowVenueController(VenueRepository venueRepository, VenueJsonMarshaller venueJsonMarshaller) {
-		new ShowVenueController(venueRepository: venueRepository, venueJsonMarshaller: venueJsonMarshaller)
-	}
-	
-	@Provides
-	SaveVenueController createSaveVenueController(VenueRepository venueRepository, VenueJsonMarshaller venueJsonMarshaller) {
-		VenueSaveOrUpdater venueSaveOrUpdater = new VenueSaveOrUpdater(venueRepository: venueRepository)
-		new SaveVenueController(venueSaveOrUpdater: venueSaveOrUpdater, venueJsonMarshaller: venueJsonMarshaller)
-	}
-	
     @Provides
-    FindVenueController createFindVenueController(VenueRepository venueRepository, VenueJsonMarshaller venueJsonMarshaller){
+    VenueJsonMarshaller createVenueJsonMarshaller() {
+        OpenHoursJsonMarshaller openHoursJsonMarshaller = new OpenHoursJsonMarshaller()
+        new VenueJsonMarshaller(openHoursJsonMarshaller: openHoursJsonMarshaller)
+    }
+
+    @Provides
+    ShowVenueController createShowVenueController(VenueRepository venueRepository, VenueJsonMarshaller venueJsonMarshaller) {
+        new ShowVenueController(venueRepository: venueRepository, venueJsonMarshaller: venueJsonMarshaller)
+    }
+
+    @Provides
+    SaveVenueController createSaveVenueController(VenueRepository venueRepository, VenueJsonMarshaller venueJsonMarshaller) {
+        VenueSaveOrUpdater venueSaveOrUpdater = new VenueSaveOrUpdater(venueRepository: venueRepository)
+        new SaveVenueController(venueSaveOrUpdater: venueSaveOrUpdater, venueJsonMarshaller: venueJsonMarshaller)
+    }
+
+    @Provides
+    FindVenueController createFindVenueController(VenueRepository venueRepository, VenueJsonMarshaller venueJsonMarshaller) {
         VenueFinder venueFinder = new VenueFinder(venueRepository: venueRepository)
         TimeProvider timeProvider = new TimeProvider()
-		LocationsCriteriaParser locationsCriteriaParser = new LocationsCriteriaParser()
+        LocationsCriteriaParser locationsCriteriaParser = new LocationsCriteriaParser()
         new FindVenueController(timeProvider: timeProvider, locationsCriteriaParser: locationsCriteriaParser, venueFinder: venueFinder, venueJsonMarshaller: venueJsonMarshaller)
     }
 
@@ -56,42 +56,42 @@ class Where2PairModule extends AbstractModule {
 }
 
 ratpack {
-	modules {
-		register new Where2PairModule()
-	}
-	
+    modules {
+        register new Where2PairModule()
+    }
+
     handlers {
-        prefix("venues") { 
+        prefix("venues") {
             get { ShowVenueController showVenueController ->
                 def venues = showVenueController.showAll()
                 renderResult(response, venues)
             }
             get("nearest") { FindVenueController findVenueController ->
-				def venues = findVenueController.findNearest(request.queryParams)
-				renderResult(response, venues)
+                def venues = findVenueController.findNearest(request.queryParams)
+                renderResult(response, venues)
             }
         }
-		prefix("venue") {
-			get(":venueId") { ShowVenueController showVenueController ->
-				def venue = showVenueController.show(Long.parseLong(pathTokens.venueId))
+        prefix("venue") {
+            get(":venueId") { ShowVenueController showVenueController ->
+                def venue = showVenueController.show(Long.parseLong(pathTokens.venueId))
                 renderResult(response, venue)
-			}
-			post { SaveVenueController saveVenueController ->
-				def json = new JsonSlurper().parseText(request.text)
-				def venue = saveVenueController.save(json)
-				renderResult(response, venue)
-			}
-		}
+            }
+            post { SaveVenueController saveVenueController ->
+                def json = new JsonSlurper().parseText(request.text)
+                def venue = saveVenueController.save(json)
+                renderResult(response, venue)
+            }
+        }
         assets "public", indexPages
     }
 }
 
 def renderResult(response, ErrorResponse errorResponse) {
-	response.status(errorResponse.status, errorResponse.message)
-	response.send(errorResponse.message)
+    response.status(errorResponse.status, errorResponse.message)
+    response.send(errorResponse.message)
 }
 
 def renderResult(response, result) {
-	String json = new JsonBuilder(result).toString()
-	response.send("application/json", json)
+    String json = new JsonBuilder(result).toString()
+    response.send("application/json", json)
 }
