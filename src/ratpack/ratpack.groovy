@@ -7,6 +7,7 @@ import org.where2pair.venue.OpenHoursJsonMarshaller
 import org.where2pair.venue.VenueJsonMarshaller
 import org.where2pair.venue.VenueRepository
 import org.where2pair.venue.find.*
+import org.where2pair.venue.home.HomeController
 import org.where2pair.venue.persist.HashMapVenueRepository
 import org.where2pair.venue.save.SaveVenueController
 import org.where2pair.venue.save.VenueSaveOrUpdater
@@ -38,6 +39,11 @@ class Where2PairModule extends AbstractModule {
         TimeProvider timeProvider = new TimeProvider()
         LocationsCriteriaParser locationsCriteriaParser = new LocationsCriteriaParser()
         new FindVenueController(timeProvider: timeProvider, locationsCriteriaParser: locationsCriteriaParser, venueFinder: venueFinder, venueJsonMarshaller: venueJsonMarshaller)
+    }
+
+    @Provides
+    HomeController createHomeController() {
+        new HomeController()
     }
 
     @Override
@@ -72,6 +78,9 @@ ratpack {
                 def venue = saveVenueController.save(json)
                 renderResult(response, venue)
             }
+        }
+        get { HomeController controller ->
+            response.send(controller.homepage())
         }
     }
 }

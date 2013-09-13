@@ -32,4 +32,17 @@ class VenueFunctionalSpec extends Specification {
         def getResponse = where2pair.get(path: "venue/$savedVenueId", requestContentType: ContentType.URLENC)
         getResponse.data
     }
+
+    def "displays an information page on the server root"() {
+        given:
+        def where2pair = new RESTClient("http://localhost:5050/")
+
+        when:
+        def homePageResponse = where2pair.get(path: "")
+
+        then:
+        homePageResponse.status == 200
+        homePageResponse.contentType == "text/plain"
+        // TODO: verify the expected message is shown
+    }
 }
