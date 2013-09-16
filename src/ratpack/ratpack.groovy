@@ -52,6 +52,9 @@ ratpack {
     }
 
     handlers {
+        get {
+            response.send "Welcome to Where2Pair!!! Your installation is working. For a list of the endpoints available, please see the documentation."
+        }
         prefix("venues") {
             get { ShowVenueController showVenueController ->
                 def venues = showVenueController.showAll()
