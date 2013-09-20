@@ -3,43 +3,29 @@ package org.where2pair.venue.find
 import org.where2pair.venue.Venue
 import org.where2pair.venue.VenueRepository
 import spock.lang.Specification
+import spock.lang.Unroll
 
 class VenueFinderSpec extends Specification {
 
     VenueRepository venueRepository = Mock()
     VenueFinder venueFinder = new VenueFinder(venueRepository: venueRepository)
 
-    def "should return at most 50 venues"() {
+    @Unroll("#rationale")
+    def "returns correct count of venues"() {
         given:
-        venueRepository.getAll() >> 100.openVenues()
+        venueRepository.getAll() >> numberOf.openVenues()
 
         when:
         List venues = venueFinder.findNearestTo(OPEN_TIMES_CRITERIA, FEATURES_CRITERIA, USER_LOCATION)
 
         then:
-        venues.size() == 50
-    }
+        venues.size() == expectedVenueCount
 
-    def "given less than 50 venues then return all venues"() {
-        given:
-        venueRepository.getAll() >> 49.openVenues()
-
-        when:
-        List venues = venueFinder.findNearestTo(OPEN_TIMES_CRITERIA, FEATURES_CRITERIA, USER_LOCATION)
-
-        then:
-        venues.size() == 49
-    }
-
-    def "given 0 venues then return 0 venues"() {
-        given:
-        venueRepository.getAll() >> 0.openVenues()
-
-        when:
-        List venues = venueFinder.findNearestTo(OPEN_TIMES_CRITERIA, FEATURES_CRITERIA, USER_LOCATION)
-
-        then:
-        venues.size() == 0
+        where:
+        rationale                                          | numberOf | expectedVenueCount
+        "should return at most 50 venues"                  | 100      | 50
+        "given less than 50 venues then return all venues" | 49       | 49
+        "given 0 venues then return 0 venues"              | 0        | 0
     }
 
     def "only returns open venues"() {
