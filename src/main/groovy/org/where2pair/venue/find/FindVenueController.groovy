@@ -18,8 +18,8 @@ class FindVenueController {
 
         if (!locationsCriteria.errors) {
             OpenTimesCriteria openTimesCriteria = parseOpenTimesCriteriaFromRequest(params)
-            FeaturesCriteria featuresCriteria = parseFeaturesCriteriaFromRequest(params)
-            List venues = venueFinder.findNearestTo(openTimesCriteria, featuresCriteria, locationsCriteria)
+            FacilitiesCriteria facilitiesCriteria = parseFacilitiesCriteriaFromRequest(params)
+            List venues = venueFinder.findNearestTo(openTimesCriteria, facilitiesCriteria, locationsCriteria)
             return venueJsonMarshaller.asVenuesWithDistanceJson(venues)
         } else {
             return handleIllegalLocationsCriteria(locationsCriteria)
@@ -42,9 +42,9 @@ class FindVenueController {
         return new SimpleTime(hour as Integer, minute as Integer)
     }
 
-    private FeaturesCriteria parseFeaturesCriteriaFromRequest(Map params) {
-        Set requestedFeatures = params.withFeatures ? params.withFeatures.split(',') : []
-        new FeaturesCriteria(requestedFeatures: requestedFeatures)
+    private FacilitiesCriteria parseFacilitiesCriteriaFromRequest(Map params) {
+        Set requestedFacilities = params.withFacilities ? params.withFacilities.split(',') : []
+        new FacilitiesCriteria(requestedFacilities: requestedFacilities)
     }
 
     private ErrorResponse handleIllegalLocationsCriteria(LocationsCriteria suppliedLocations) {

@@ -42,16 +42,16 @@ class FindVenueControllerSpec extends Specification {
         response.status == 404
     }
 
-    def "parses features from request and uses them to find venues"() {
+    def "parses facilities from request and uses them to find venues"() {
         given:
-        params.'withFeatures' = 'wifi,baby_changing'
+        params.'withFacilities' = 'wifi,baby_changing'
 
         when:
         controller.findNearest(params)
 
         then:
-        1 * venueFinder.findNearestTo(_, { FeaturesCriteria criteria ->
-            criteria.requestedFeatures == ['wifi', 'baby_changing'] as HashSet
+        1 * venueFinder.findNearestTo(_, { FacilitiesCriteria criteria ->
+            criteria.requestedFacilities == ['wifi', 'baby_changing'] as HashSet
         }, _)
     }
 

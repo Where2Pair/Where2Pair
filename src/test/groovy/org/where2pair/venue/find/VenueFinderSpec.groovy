@@ -117,7 +117,7 @@ class VenueFinderSpec extends Specification {
     }
 
     static final OPEN_TIMES_CRITERIA = new OpenTimesCriteria()
-    static final FEATURES_CRITERIA = new FeaturesCriteria()
+    static final FEATURES_CRITERIA = new FacilitiesCriteria()
     LocationsCriteria USER_LOCATION = Mock(LocationsCriteria) {
         distancesTo(_) >> [location1: 1.0]
     }

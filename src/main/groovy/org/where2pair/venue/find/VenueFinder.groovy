@@ -7,7 +7,7 @@ class VenueFinder {
 
     VenueRepository venueRepository
 
-    List findNearestTo(OpenTimesCriteria openTimesCriteria, FeaturesCriteria featuresCriteria, LocationsCriteria locationsCriteria) {
+    List findNearestTo(OpenTimesCriteria openTimesCriteria, FacilitiesCriteria featuresCriteria, LocationsCriteria locationsCriteria) {
         List openVenues = venueRepository.getAll().findAll { Venue venue ->
             venue.isOpen(openTimesCriteria)
         }

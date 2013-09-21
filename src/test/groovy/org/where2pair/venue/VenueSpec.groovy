@@ -1,6 +1,6 @@
 package org.where2pair.venue
 
-import org.where2pair.venue.find.FeaturesCriteria
+import org.where2pair.venue.find.FacilitiesCriteria
 import org.where2pair.venue.find.OpenTimesCriteria
 import spock.lang.Specification
 
@@ -50,7 +50,7 @@ class VenueSpec extends Specification {
     def "determines whether venue has features"() {
         given:
         Venue venue = new Venue(features: features.split(','))
-        FeaturesCriteria featuresCriteria = new FeaturesCriteria(requestedFeatures: requestedFeatures.split(','))
+        FacilitiesCriteria featuresCriteria = new FacilitiesCriteria(requestedFacilities: requestedFeatures.split(','))
 
         when:
         boolean hasFeatures = venue.hasFeatures(featuresCriteria)
@@ -59,7 +59,7 @@ class VenueSpec extends Specification {
         hasFeatures == expectedResult
 
         where:
-        features | requestedFeatures | expectedResult
+        features | requestedFacilities | expectedResult
         'a,b,c'  | 'a,b'             | true
         'a,b,c'  | 'd'               | false
         ''       | ''                | true
