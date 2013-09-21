@@ -23,7 +23,7 @@ class ObjectUtils {
                         phoneNumber: '01234567890'
                 ),
                 weeklyOpeningTimes: builder.build(),
-                features: ['wifi', 'mobile payments']
+                facilities: ['wifi', 'mobile payments']
         )
     }
 
@@ -44,7 +44,7 @@ class ObjectUtils {
                         phoneNumber: 'different 01234567890'
                 ),
                 weeklyOpeningTimes: builder.build(),
-                features: ['different wifi', 'different mobile payments']
+                facilities: ['different wifi', 'different mobile payments']
         )
     }
 
@@ -69,7 +69,7 @@ class ObjectUtils {
                         friday: [],
                         saturday: [],
                         sunday: []] as LinkedHashMap,
-                features: ['wifi', 'mobile payments']
+                facilities: ['wifi', 'mobile payments']
         ]
     }
 

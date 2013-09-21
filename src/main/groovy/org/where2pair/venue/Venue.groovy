@@ -15,16 +15,16 @@ class Venue {
     Coordinates location
     Address address
     WeeklyOpeningTimes weeklyOpeningTimes
-    Set features
+    Set facilities
 
     boolean isOpen(OpenTimesCriteria openTimesCriteria) {
         weeklyOpeningTimes.isOpen(openTimesCriteria)
     }
 
-    boolean hasFeatures(FacilitiesCriteria featuresCriteria) {
-        Set upperCaseAvailableFeatures = features.collect { it.toUpperCase() }
-        Set upperCaseRequestedFeatures = featuresCriteria.requestedFacilities.collect { it.toUpperCase() }
-        upperCaseRequestedFeatures.every { it in upperCaseAvailableFeatures }
+    boolean hasFacilities(FacilitiesCriteria facilitiesCriteria) {
+        Set upperCaseAvailableFacilities = facilities.collect { it.toUpperCase() }
+        Set upperCaseRequestedFacilities = facilitiesCriteria.requestedFacilities.collect { it.toUpperCase() }
+        upperCaseRequestedFacilities.every { it in upperCaseAvailableFacilities }
     }
 
     double distanceInKmTo(Coordinates coordinates) {

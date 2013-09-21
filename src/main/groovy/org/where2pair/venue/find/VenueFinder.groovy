@@ -7,16 +7,16 @@ class VenueFinder {
 
     VenueRepository venueRepository
 
-    List findNearestTo(OpenTimesCriteria openTimesCriteria, FacilitiesCriteria featuresCriteria, LocationsCriteria locationsCriteria) {
+    List findNearestTo(OpenTimesCriteria openTimesCriteria, FacilitiesCriteria facilitiesCriteria, LocationsCriteria locationsCriteria) {
         List openVenues = venueRepository.getAll().findAll { Venue venue ->
             venue.isOpen(openTimesCriteria)
         }
 
-        List venuesWithFeatures = openVenues.findAll { Venue venue ->
-            venue.hasFeatures(featuresCriteria)
+        List venuesWithFacilities = openVenues.findAll { Venue venue ->
+            venue.hasFacilities(facilitiesCriteria)
         }
 
-        List sortedVenues = sortVenuesByDistance(venuesWithFeatures, locationsCriteria)
+        List sortedVenues = sortVenuesByDistance(venuesWithFacilities, locationsCriteria)
 
         restrictTo50Results(sortedVenues)
     }

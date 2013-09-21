@@ -16,7 +16,7 @@ class VenueFinderSpec extends Specification {
         venueRepository.getAll() >> numberOf.openVenues()
 
         when:
-        List venues = venueFinder.findNearestTo(OPEN_TIMES_CRITERIA, FEATURES_CRITERIA, USER_LOCATION)
+        List venues = venueFinder.findNearestTo(OPEN_TIMES_CRITERIA, FACILITIES_CRITERIA, USER_LOCATION)
 
         then:
         venues.size() == expectedVenueCount
@@ -33,18 +33,18 @@ class VenueFinderSpec extends Specification {
         venueRepository.getAll() >> 10.openVenues() + 5.closedVenues()
 
         when:
-        List venues = venueFinder.findNearestTo(OPEN_TIMES_CRITERIA, FEATURES_CRITERIA, USER_LOCATION)
+        List venues = venueFinder.findNearestTo(OPEN_TIMES_CRITERIA, FACILITIES_CRITERIA, USER_LOCATION)
 
         then:
         venues.size() == 10
     }
 
-    def "only returns venues that meet features criteria"() {
+    def "only returns venues that meet facilities criteria"() {
         given:
-        venueRepository.getAll() >> 15.venuesWithFeatures() + 5.venuesWithoutFeatures()
+        venueRepository.getAll() >> 15.venuesWithFacilities() + 5.venuesWithoutFacilities()
 
         when:
-        List venues = venueFinder.findNearestTo(OPEN_TIMES_CRITERIA, FEATURES_CRITERIA, USER_LOCATION)
+        List venues = venueFinder.findNearestTo(OPEN_TIMES_CRITERIA, FACILITIES_CRITERIA, USER_LOCATION)
 
         then:
         venues.size() == 15
@@ -59,7 +59,7 @@ class VenueFinderSpec extends Specification {
         locationsCriteria.distancesTo(_ as Venue) >>> (99..0).collect { ["location$it": it] }
 
         when:
-        List venues = venueFinder.findNearestTo(OPEN_TIMES_CRITERIA, FEATURES_CRITERIA, locationsCriteria)
+        List venues = venueFinder.findNearestTo(OPEN_TIMES_CRITERIA, FACILITIES_CRITERIA, locationsCriteria)
 
         then:
         venues.venue == nearbyVenues.reverse()
@@ -83,7 +83,7 @@ class VenueFinderSpec extends Specification {
         List openVenues() {
             venuesWithTemplate {
                 [isOpen: { openTimesCriteria -> openTimesCriteria == VenueFinderSpec.OPEN_TIMES_CRITERIA },
-                        hasFeatures: { featuresCriteria -> true },
+                        hasFacilities: { facilitiesCriteria -> true },
                         distanceInKmTo: { coordinates -> 0 }] as Venue
             }
         }
@@ -91,22 +91,22 @@ class VenueFinderSpec extends Specification {
         List closedVenues() {
             venuesWithTemplate {
                 [isOpen: { openTimesCriteria -> false },
-                        hasFeatures: { featuresCriteria -> true }] as Venue
+                        hasFacilities: { facilities -> true }] as Venue
             }
         }
 
-        List venuesWithFeatures() {
+        List venuesWithFacilities() {
             venuesWithTemplate {
                 [isOpen: { openTimesCriteria -> true },
-                        hasFeatures: { featuresCriteria -> featuresCriteria == VenueFinderSpec.FEATURES_CRITERIA },
+                        hasFacilities: { facilitiesCriteria -> facilitiesCriteria == VenueFinderSpec.FACILITIES_CRITERIA },
                         distanceInKmTo: { coordinates -> 0 }] as Venue
             }
         }
 
-        List venuesWithoutFeatures() {
+        List venuesWithoutFacilities() {
             venuesWithTemplate {
                 [isOpen: { openTimesCriteria -> true },
-                        hasFeatures: { featuresCriteria -> false }] as Venue
+                        hasFacilities: { facilitiesCriteria -> false }] as Venue
             }
         }
 
@@ -117,7 +117,7 @@ class VenueFinderSpec extends Specification {
     }
 
     static final OPEN_TIMES_CRITERIA = new OpenTimesCriteria()
-    static final FEATURES_CRITERIA = new FacilitiesCriteria()
+    static final FACILITIES_CRITERIA = new FacilitiesCriteria()
     LocationsCriteria USER_LOCATION = Mock(LocationsCriteria) {
         distancesTo(_) >> [location1: 1.0]
     }

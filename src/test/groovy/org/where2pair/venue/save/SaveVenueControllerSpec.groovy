@@ -28,7 +28,7 @@ class SaveVenueControllerSpec extends Specification {
                         tuesday: [
                                 [openHour: 8, openMinute: 0, closeHour: 11, closeMinute: 0]
                         ]],
-                features: ['wifi', 'mobile payments']
+                facilities: ['wifi', 'mobile payments']
         ]
         Venue venue = new Venue()
         venueJsonMarshaller.asVenue(venueJson) >> venue

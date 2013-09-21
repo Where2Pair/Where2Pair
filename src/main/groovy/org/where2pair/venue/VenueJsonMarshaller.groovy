@@ -19,9 +19,8 @@ class VenueJsonMarshaller {
                         phoneNumber: venue.address.phoneNumber ?: ''
                 ],
                 openHours: openHoursJsonMarshaller.asOpenHoursJson(venue.weeklyOpeningTimes),
-                features: venue.features.collect()
+                facilities: venue.facilities.collect()
         ]
-
     }
 
     List asVenuesJson(List venues) {
@@ -51,6 +50,6 @@ class VenueJsonMarshaller {
                 location: new Coordinates(json.latitude, json.longitude),
                 address: new Address(json.address ?: [:]),
                 weeklyOpeningTimes: openHoursJsonMarshaller.asWeeklyOpeningTimes(json.openHours),
-                features: json.features)
+                facilities: json.facilities)
     }
 }

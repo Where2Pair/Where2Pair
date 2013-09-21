@@ -47,23 +47,23 @@ class VenueSpec extends Specification {
         expectedOpenStatus << [true, false]
     }
 
-    def "determines whether venue has features"() {
+    def "determines whether venue has facilities"() {
         given:
-        Venue venue = new Venue(features: features.split(','))
-        FacilitiesCriteria featuresCriteria = new FacilitiesCriteria(requestedFacilities: requestedFeatures.split(','))
+        Venue venue = new Venue(facilities: facilities.split(','))
+        FacilitiesCriteria facilitiesCriteria = new FacilitiesCriteria(requestedFacilities: requestedFacilities.split(','))
 
         when:
-        boolean hasFeatures = venue.hasFeatures(featuresCriteria)
+        boolean hasFacilities = venue.hasFacilities(facilitiesCriteria)
 
         then:
-        hasFeatures == expectedResult
+        hasFacilities == expectedResult
 
         where:
-        features | requestedFacilities | expectedResult
-        'a,b,c'  | 'a,b'             | true
-        'a,b,c'  | 'd'               | false
-        ''       | ''                | true
-        'a,B,c'  | 'A,b,C'           | true
+        facilities | requestedFacilities | expectedResult
+        'a,b,c'    | 'a,b'               | true
+        'a,b,c'    | 'd'                 | false
+        ''         | ''                  | true
+        'a,B,c'    | 'A,b,C'             | true
     }
 
     def "is cloneable"() {
