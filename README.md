@@ -1,10 +1,12 @@
 ## Where2Pair ##
 
-A simple venue-finding service.
+[![Build Status](https://where2pair.ci.cloudbees.com/job/Server%20master/badge/icon)](https://where2pair.ci.cloudbees.com/job/Server%20master/)
 
-[![Build Status](https://where2pair.ci.cloudbees.com/job/Master%20build/badge/icon)](https://where2pair.ci.cloudbees.com/job/Master%20build/)
+A simple venue-finding service for London.
 
-to run app type
+Alpha builds are frequently deployed to [Heroku](http://where2pair.herokuapp.com/venues).
+
+To run the app locally type
 ```
 ./gradlew run
 ```
