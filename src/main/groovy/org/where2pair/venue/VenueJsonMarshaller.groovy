@@ -1,5 +1,7 @@
 package org.where2pair.venue
 
+import org.where2pair.venue.find.LocationsCriteria;
+
 class VenueJsonMarshaller {
 
     OpenHoursJsonMarshaller openHoursJsonMarshaller
@@ -8,8 +10,10 @@ class VenueJsonMarshaller {
         [
                 id: venue.id,
                 name: venue.name ?: '',
-                latitude: venue.location.lat,
-                longitude: venue.location.lng,
+                location: [
+						latitude: venue.location.lat,
+						longitude: venue.location.lng
+				],
                 address: [
                         addressLine1: venue.address.addressLine1 ?: '',
                         addressLine2: venue.address.addressLine2 ?: '',
@@ -47,7 +51,7 @@ class VenueJsonMarshaller {
     Venue asVenue(Map json) {
         new Venue(id: json.id ?: 0,
                 name: json.name,
-                location: new Coordinates(json.latitude, json.longitude),
+                location: new Coordinates(json.location.latitude, json.location.longitude),
                 address: new Address(json.address ?: [:]),
                 weeklyOpeningTimes: openHoursJsonMarshaller.asWeeklyOpeningTimes(json.openHours),
                 facilities: json.facilities)

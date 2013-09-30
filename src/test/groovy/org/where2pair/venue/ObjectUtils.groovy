@@ -52,16 +52,15 @@ class ObjectUtils {
         [
                 id: 99,
                 name: 'venue name',
-                latitude: 1.0,
-                longitude: 0.1,
+                location: [latitude: 1.0,
+						longitude: 0.1],
                 address: [
                         addressLine1: 'addressLine1',
                         addressLine2: 'addressLine2',
                         addressLine3: 'addressLine3',
                         city: 'city',
                         postcode: 'postcode',
-                        phoneNumber: '01234567890'
-                ],
+                        phoneNumber: '01234567890'],
                 openHours: [monday: [[openHour: 12, openMinute: 0, closeHour: 18, closeMinute: 30]],
                         tuesday: [[openHour: 8, openMinute: 0, closeHour: 11, closeMinute: 0]],
                         wednesday: [],
