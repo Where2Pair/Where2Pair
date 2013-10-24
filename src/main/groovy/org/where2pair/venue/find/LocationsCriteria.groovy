@@ -2,14 +2,15 @@ package org.where2pair.venue.find
 
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
+
+import org.where2pair.venue.DistanceUnit;
 import org.where2pair.venue.Venue
 
 @EqualsAndHashCode
 @ToString
 class LocationsCriteria {
 
-    final static VALID_DISTANCE_UNITS = ['MILES', 'KM']
-    Map locations
+    List locations
     String distanceUnit
 
     void setDistanceUnit(String distanceUnit) {
@@ -21,8 +22,8 @@ class LocationsCriteria {
     }
 
     Map distancesTo(Venue venue) {
-        locations.collectEntries { label, coordinates ->
-            [(label): distanceUnit == 'KM' ? venue.distanceInKmTo(coordinates) : venue.distanceInMilesTo(coordinates)]
+        locations.collectEntries { coordinates ->
+            [(coordinates): venue.distanceTo(coordinates, distanceUnit as DistanceUnit)]
         }
     }
 
@@ -44,9 +45,9 @@ class LocationsCriteria {
         }
 
         [errorMessage, status]
-    }
+    } 
 
     private boolean isValid() {
-        locations.size() in 1..1000 && distanceUnit in VALID_DISTANCE_UNITS
+		locations.size() in 1..1000 && distanceUnit in DistanceUnit.values().collect { it.toString() }
     }
 }

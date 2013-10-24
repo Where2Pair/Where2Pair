@@ -1,8 +1,8 @@
 package org.where2pair.venue.find
 
-import spock.lang.Specification
+import org.where2pair.venue.Coordinates
 
-import static org.where2pair.venue.find.LocationsCriteriaBuilder.locationsCriteria
+import spock.lang.Specification
 
 class LocationsCriteriaParserSpec extends Specification {
 
@@ -11,9 +11,9 @@ class LocationsCriteriaParserSpec extends Specification {
 
     def "creates locations criteria based on location and distance unit"() {
         given:
-        params.'location1' = '1.0,0.1'
+        params.'location' = ['1.0,0.1']
         params.'distanceUnit' = 'miles'
-        def expectedLocationsCriteria = locationsCriteria().with([location1: [1.0, 0.1]]).withDistanceUnit('miles')
+        def expectedLocationsCriteria = new LocationsCriteria(locations: [new Coordinates(1.0, 0.1)], distanceUnit: 'miles')
 
         when:
         def locationsCriteria = locationsCriteriaParser.parse(params)
@@ -24,10 +24,9 @@ class LocationsCriteriaParserSpec extends Specification {
 
     def "supports multiple supplied locations"() {
         given:
-        params."location1" = '1.0,0.1'
-        params."location2" = '2.0,0.2'
+        params."location" = ['1.0,0.1', '2.0,0.2']
         params.'distanceUnit' = 'miles'
-        def expectedLocationsCriteria = locationsCriteria().with([location1: [1.0, 0.1], location2: [2.0, 0.2]]).withDistanceUnit('miles')
+        def expectedLocationsCriteria = new LocationsCriteria(locations: [new Coordinates(1.0, 0.1), new Coordinates(2.0, 0.2)], distanceUnit: 'miles')
 
         when:
         def locationsCriteria = locationsCriteriaParser.parse(params)
@@ -38,8 +37,8 @@ class LocationsCriteriaParserSpec extends Specification {
 
     def "defaults to km distance unit when none supplied"() {
         given:
-        params.'location1' = '1.0,0.1'
-        def expectedLocationsCriteria = locationsCriteria().with([location1: [1.0, 0.1]]).withDistanceUnit('km')
+        params.'location1' = ['1.0,0.1']
+        def expectedLocationsCriteria = new LocationsCriteria(locations: [new Coordinates(1.0, 0.1)], distanceUnit: 'km')
 
         when:
         def locationsCriteria = locationsCriteriaParser.parse(params)

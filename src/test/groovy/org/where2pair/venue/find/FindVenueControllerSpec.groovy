@@ -88,7 +88,7 @@ class FindVenueControllerSpec extends Specification {
         timeProvider.timeNow() >> TIME_NOW
         timeProvider.today() >> TODAY
         locationsCriteriaParser.parse(params) >> validLocationsCriteria
-        venueJsonMarshaller.asVenuesWithDistanceJson(_) >> [[:]]
+        venueJsonMarshaller.asVenuesWithDistancesJson(_) >> [[:]]
         controller.venueFinder = venueFinder
         controller.venueJsonMarshaller = venueJsonMarshaller
         controller.timeProvider = timeProvider

@@ -36,18 +36,27 @@ class VenueJsonMarshaller {
         }
     }
 
-    List asVenuesWithDistanceJson(List venuesWithDistance) {
-        if (!venuesWithDistance)
+    List asVenuesWithDistancesJson(List venuesWithDistances) {
+        if (!venuesWithDistances)
             return []
 
-        venuesWithDistance.collect {
-            Map distances = it.distances
-            if (distances.size() > 1) distances['average'] = it.averageDistance
+        venuesWithDistances.collect {
+            List distances = it.distances.collect {
+				[location: it.key, distance: distanceAsJson(it.value)]
+			}
 
-            [distance: distances.sort(), venue: asVenueJson(it.venue)]
+            [	
+				distances: distances, 
+				averageDistance: distanceAsJson(it.averageDistance), 
+				venue: asVenueJson(it.venue)
+			]
         }
     }
 
+	def distanceAsJson(Distance distance) {
+		[value: distance.value, unit: distance.unit.toString().toLowerCase()]
+	}
+	
     Venue asVenue(Map json) {
         new Venue(id: json.id ?: 0,
                 name: json.name,

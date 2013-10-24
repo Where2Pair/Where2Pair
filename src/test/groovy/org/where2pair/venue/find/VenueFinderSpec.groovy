@@ -1,7 +1,12 @@
 package org.where2pair.venue.find
 
+import static org.where2pair.venue.DistanceUnit.KM
+import org.where2pair.venue.Coordinates
+import org.where2pair.venue.Distance
+import org.where2pair.venue.DistanceUnit
 import org.where2pair.venue.Venue
 import org.where2pair.venue.VenueRepository
+
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -56,7 +61,7 @@ class VenueFinderSpec extends Specification {
         nearbyVenues = assignUniqueIds(nearbyVenues)
         venueRepository.getAll() >> 50.openVenues() + nearbyVenues
         LocationsCriteria locationsCriteria = Mock()
-        locationsCriteria.distancesTo(_ as Venue) >>> (99..0).collect { ["location$it": it] }
+        locationsCriteria.distancesTo(_ as Venue) >>> (99..0).collect { [(new Coordinates(1.0,it)): new Distance(value:it, unit:KM)] }
 
         when:
         List venues = venueFinder.findNearestTo(OPEN_TIMES_CRITERIA, FACILITIES_CRITERIA, locationsCriteria)
@@ -84,7 +89,7 @@ class VenueFinderSpec extends Specification {
             venuesWithTemplate {
                 [isOpen: { openTimesCriteria -> openTimesCriteria == VenueFinderSpec.OPEN_TIMES_CRITERIA },
                         hasFacilities: { facilitiesCriteria -> true },
-                        distanceInKmTo: { coordinates -> 0 }] as Venue
+                        distanceTo: { coordinates, distanceUnit -> new Distance(value: 0, unit: KM) }] as Venue
             }
         }
 
@@ -99,7 +104,7 @@ class VenueFinderSpec extends Specification {
             venuesWithTemplate {
                 [isOpen: { openTimesCriteria -> true },
                         hasFacilities: { facilitiesCriteria -> facilitiesCriteria == VenueFinderSpec.FACILITIES_CRITERIA },
-                        distanceInKmTo: { coordinates -> 0 }] as Venue
+                        distanceTo: { coordinates, distanceUnit -> new Distance(value: 0, unit: KM) }] as Venue
             }
         }
 
@@ -119,6 +124,6 @@ class VenueFinderSpec extends Specification {
     static final OPEN_TIMES_CRITERIA = new OpenTimesCriteria()
     static final FACILITIES_CRITERIA = new FacilitiesCriteria()
     LocationsCriteria USER_LOCATION = Mock(LocationsCriteria) {
-        distancesTo(_) >> [location1: 1.0]
+        distancesTo(_) >> [(new Coordinates(1.0,0.1)): new Distance(value: 1.0, unit: KM)]
     }
 }

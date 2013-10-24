@@ -3,6 +3,7 @@ package org.where2pair.venue
 import groovy.transform.AutoClone
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
+
 import org.where2pair.venue.find.FacilitiesCriteria
 import org.where2pair.venue.find.OpenTimesCriteria
 
@@ -27,11 +28,7 @@ class Venue {
         upperCaseRequestedFacilities.every { it in upperCaseAvailableFacilities }
     }
 
-    double distanceInKmTo(Coordinates coordinates) {
-        location.distanceInKmTo(coordinates)
-    }
-
-    double distanceInMilesTo(Coordinates coordinates) {
-        location.distanceInMilesTo(coordinates)
-    }
+	Distance distanceTo(Coordinates coordinates, DistanceUnit distanceUnit) {
+		distanceUnit.distanceBetween(coordinates, location)
+	}
 }

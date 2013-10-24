@@ -1,16 +1,20 @@
 package org.where2pair.venue.find
 
-import org.where2pair.venue.Coordinates
-import org.where2pair.venue.Venue
-import spock.lang.Specification
+import static org.where2pair.venue.DistanceUnit.KM
+import static org.where2pair.venue.DistanceUnit.MILES
 
-import static org.where2pair.venue.find.LocationsCriteriaBuilder.locationsCriteria
+import org.where2pair.venue.Coordinates
+import org.where2pair.venue.Distance
+import org.where2pair.venue.Venue
+
+import spock.lang.Specification
 
 class LocationsCriteriaSpec extends Specification {
 
     static final Coordinates COORDS = new Coordinates(1.0, 0.1)
     Venue venue = Mock()
-
+	Distance distance = Mock()
+	
     def "expects between 1 and 1000 locations, and km or miles as distance unit"() {
         given:
         LocationsCriteria locationsCriteria = new LocationsCriteria(locations: locations, distanceUnit: distanceUnit)
@@ -22,16 +26,16 @@ class LocationsCriteriaSpec extends Specification {
         !errors
 
         where:
-        locations              | distanceUnit
-        [location1: COORDS]    | 'miles'
-        [location1: COORDS]    | 'km'
-        1000.locations(COORDS) | 'miles'
-        1000.locations(COORDS) | 'km'
+        locations              	| distanceUnit
+        [COORDS]    			| 'miles'
+        [COORDS]    			| 'km'
+        [COORDS] * 1000		 	| 'miles'
+        [COORDS] * 1000		 	| 'km'
     }
 
     def "rejects more than 1000 supplied locations"() {
         given:
-        LocationsCriteria locationsCriteria = new LocationsCriteria(locations: 1001.locations(COORDS), distanceUnit: 'miles')
+        LocationsCriteria locationsCriteria = new LocationsCriteria(locations: [COORDS] * 1001, distanceUnit: 'miles')
 
         when:
         def (message, status) = locationsCriteria.errors
@@ -43,7 +47,7 @@ class LocationsCriteriaSpec extends Specification {
 
     def "rejects 0 supplied locations"() {
         given:
-        LocationsCriteria locationsCriteria = new LocationsCriteria(locations: [:], distanceUnit: 'miles')
+        LocationsCriteria locationsCriteria = new LocationsCriteria(locations: [], distanceUnit: 'miles')
 
         when:
         def (message, status) = locationsCriteria.errors
@@ -55,7 +59,7 @@ class LocationsCriteriaSpec extends Specification {
 
     def "rejects invalid distance unit"() {
         given:
-        LocationsCriteria locationsCriteria = new LocationsCriteria(locations: [location1: COORDS], distanceUnit: 'furlongs')
+        LocationsCriteria locationsCriteria = new LocationsCriteria(locations: [COORDS], distanceUnit: 'furlongs')
 
         when:
         def (message, status) = locationsCriteria.errors
@@ -68,27 +72,27 @@ class LocationsCriteriaSpec extends Specification {
     def "returns distance in km from venue given km as distance unit"() {
         given:
         def coords = new Coordinates(0.1, 0.2)
-        venue.distanceInKmTo(coords) >> 2.3
-        def locationsCriteria = locationsCriteria().with([location1: coords]).withDistanceUnit('km')
+        venue.distanceTo(coords, KM) >> distance
+        def locationsCriteria = new LocationsCriteria(locations: [coords], distanceUnit: 'km')
 
         when:
         def distances = locationsCriteria.distancesTo(venue)
 
         then:
-        distances == [location1: 2.3]
+        distances == [(coords): distance]
     }
 
     def "returns distance in miles from venue given miles as distance unit"() {
         given:
         def coords = new Coordinates(0.1, 0.2)
-        venue.distanceInMilesTo(coords) >> 1.2
-        def locationsCriteria = locationsCriteria().with(['location1': coords]).withDistanceUnit('miles')
+        venue.distanceTo(coords, MILES) >> distance
+        def locationsCriteria = new LocationsCriteria(locations: [coords], distanceUnit: 'miles')
 
         when:
         def distances = locationsCriteria.distancesTo(venue)
 
         then:
-        distances == [location1: 1.2]
+        distances == [(coords): distance]
     }
 
     def "returns distances to all locations from venue"() {
@@ -96,16 +100,18 @@ class LocationsCriteriaSpec extends Specification {
         def coords1 = new Coordinates(0.1, 0.2)
         def coords2 = new Coordinates(0.2, 0.3)
         def coords3 = new Coordinates(0.3, 0.4)
-        venue.distanceInKmTo(coords1) >> 2.3
-        venue.distanceInKmTo(coords2) >> 5.9
-        venue.distanceInKmTo(coords3) >> 3.4
-        def locationsCriteria = locationsCriteria().with([location1: coords1, location2: coords2, location3: coords3]).withDistanceUnit('km')
+		Distance distance2 = Mock()
+		Distance distance3 = Mock()
+        venue.distanceTo(coords1, KM) >> distance
+        venue.distanceTo(coords2, KM) >> distance2
+        venue.distanceTo(coords3, KM) >> distance3
+        def locationsCriteria = new LocationsCriteria(locations: [coords1, coords2, coords3], distanceUnit: 'km')
 
         when:
         def distances = locationsCriteria.distancesTo(venue)
 
         then:
-        distances == [location1: 2.3, location2: 5.9, location3: 3.4]
+        distances == [(coords1): distance, (coords2): distance2, (coords3): distance3]
     }
 
     void setupSpec() {

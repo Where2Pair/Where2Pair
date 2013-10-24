@@ -5,6 +5,7 @@ import spock.lang.Specification
 
 import static org.where2pair.venue.ObjectUtils.createVenue
 import static org.where2pair.venue.ObjectUtils.createVenueJson
+import static org.where2pair.venue.DistanceUnit.KM
 
 class VenueJsonMarshallerSpec extends Specification {
 
@@ -32,33 +33,42 @@ class VenueJsonMarshallerSpec extends Specification {
         then:
         result == [venueJson]
     }
-
-    def "converts VenueWithDistance to json"() {
+	
+    def "converts VenueWithDistances to json"() {
         given:
-        VenueWithDistances venueWithDistance = new VenueWithDistances(venue: venue, distances: [location1: 10, location2: 10])
-        Map expectedVenueWithDistanceJson = [
-                distance: [average: 10, location1: 10, location2: 10],
-                venue: venueJson]
+		def location1 = new Coordinates(1.0, 0.1)
+		def location2 = new Coordinates(2.0, 0.2)
+        VenueWithDistances venueWithDistances = new VenueWithDistances(venue: venue, distances: [
+			(location1): new Distance(value: 10, unit: KM), 
+			(location2): new Distance(value: 30, unit: KM)])
+        List expectedVenuesWithDistancesJson = [[
+                distances: [
+					[	
+						location: location1,
+						distance: [
+							value: 10.0,
+							unit: "km"
+						]
+					],
+					[
+						location: location2,
+						distance: [
+							value: 30.0,
+							unit: "km"
+						]
+					]
+				],
+				averageDistance: [
+					value: 20.0,
+					unit: "km"
+				],
+                venue: venueJson]]
 
         when:
-        List venuesWithDistanceJson = venueJsonMarshaller.asVenuesWithDistanceJson([venueWithDistance])
+        List venuesWithDistanceJson = venueJsonMarshaller.asVenuesWithDistancesJson([venueWithDistances])
 
         then:
-        venuesWithDistanceJson == [expectedVenueWithDistanceJson]
-    }
-
-    def "ignores average if only one location when converting VenueWithDistance to json"() {
-        given:
-        VenueWithDistances venueWithDistance = new VenueWithDistances(venue: venue, distances: [location1: 10])
-        Map expectedVenueWithDistanceJson = [
-                distance: [location1: 10],
-                venue: venueJson]
-
-        when:
-        List venuesWithDistanceJson = venueJsonMarshaller.asVenuesWithDistanceJson([venueWithDistance])
-
-        then:
-        venuesWithDistanceJson == [expectedVenueWithDistanceJson]
+        venuesWithDistanceJson == expectedVenuesWithDistancesJson
     }
 
     def "renders null string values as empty strings"() {

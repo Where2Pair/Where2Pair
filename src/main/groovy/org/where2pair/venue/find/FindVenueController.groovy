@@ -20,7 +20,7 @@ class FindVenueController {
             OpenTimesCriteria openTimesCriteria = parseOpenTimesCriteriaFromRequest(params)
             FacilitiesCriteria facilitiesCriteria = parseFacilitiesCriteriaFromRequest(params)
             List venues = venueFinder.findNearestTo(openTimesCriteria, facilitiesCriteria, locationsCriteria)
-            return venueJsonMarshaller.asVenuesWithDistanceJson(venues)
+            return venueJsonMarshaller.asVenuesWithDistancesJson(venues)
         } else {
             return handleIllegalLocationsCriteria(locationsCriteria)
         }

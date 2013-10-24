@@ -1,11 +1,15 @@
 package org.where2pair.venue
 
-import org.where2pair.venue.find.FacilitiesCriteria
-import org.where2pair.venue.find.OpenTimesCriteria
-import spock.lang.Specification
-
+import static org.where2pair.venue.DistanceUnit.KM
+import static org.where2pair.venue.DistanceUnit.MILES
 import static org.where2pair.venue.ObjectUtils.createVenue
 import static spock.util.matcher.HamcrestMatchers.closeTo
+import static spock.util.matcher.HamcrestSupport.that
+
+import org.where2pair.venue.find.FacilitiesCriteria
+import org.where2pair.venue.find.OpenTimesCriteria
+
+import spock.lang.Specification
 
 class VenueSpec extends Specification {
 
@@ -15,12 +19,14 @@ class VenueSpec extends Specification {
         Coordinates coordinates = new Coordinates(lat: targetLatitude, lng: targetLongitude)
 
         when:
-        double distanceInKm = venue.distanceInKmTo(coordinates)
-        double distanceInMiles = venue.distanceInMilesTo(coordinates)
+        Distance distanceInKm = venue.distanceTo(coordinates, KM)
+        Distance distanceInMiles = venue.distanceTo(coordinates, MILES)
 
         then:
-        distanceInKm closeTo(expectedDistanceInKm, 0.01)
-        distanceInMiles closeTo(expectedDistanceInKm * 0.62137, 0.01)
+        that distanceInKm.value, closeTo(expectedDistanceInKm, 0.01)
+		distanceInKm.unit == KM
+        that distanceInMiles.value, closeTo(expectedDistanceInKm * 0.62137, 0.01)
+        distanceInMiles.unit == MILES
 
         where:
         venueLatitude | venueLongitude | targetLatitude | targetLongitude | expectedDistanceInKm

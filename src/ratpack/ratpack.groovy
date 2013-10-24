@@ -61,7 +61,8 @@ ratpack {
                 renderResult(response, venues)
             }
             get("nearest") { FindVenueController findVenueController ->
-                def venues = findVenueController.findNearest(request.queryParams)
+				def queryParams = squashLocationQueryParamValuesIntoList(request.queryParams)
+                def venues = findVenueController.findNearest(queryParams)
                 renderResult(response, venues)
             }
         }
@@ -87,4 +88,13 @@ def renderResult(response, ErrorResponse errorResponse) {
 def renderResult(response, result) {
     String json = new JsonBuilder(result).toString()
     response.send("application/json", json)
+}
+
+def squashLocationQueryParamValuesIntoList(queryParams) {
+	queryParams.collectEntries { key, value ->
+		if (key == 'location') {
+			return [(key): queryParams.getAll(key)]
+		}
+		[(key): value]
+	}
 }

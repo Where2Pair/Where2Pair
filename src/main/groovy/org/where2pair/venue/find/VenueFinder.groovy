@@ -22,13 +22,11 @@ class VenueFinder {
     }
 
     private List sortVenuesByDistance(List openVenues, LocationsCriteria locationsCriteria) {
-        List venuesWithDistance = openVenues.collect { Venue venue ->
+        List venuesWithDistances = openVenues.collect { Venue venue ->
             new VenueWithDistances(venue: venue, distances: locationsCriteria.distancesTo(venue))
         }
 
-        venuesWithDistance.sort { VenueWithDistances venue ->
-            venue.averageDistance
-        }
+        venuesWithDistances.sort { it.averageDistance }
     }
 
     private List restrictTo50Results(List venues) {
