@@ -37,7 +37,7 @@ class LocationsCriteriaParserSpec extends Specification {
 
     def "defaults to km distance unit when none supplied"() {
         given:
-        params.'location1' = ['1.0,0.1']
+        params.'location' = ['1.0,0.1']
         def expectedLocationsCriteria = new LocationsCriteria(locations: [new Coordinates(1.0, 0.1)], distanceUnit: 'km')
 
         when:
