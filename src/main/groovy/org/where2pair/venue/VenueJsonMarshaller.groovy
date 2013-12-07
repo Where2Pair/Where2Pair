@@ -2,6 +2,8 @@ package org.where2pair.venue
 
 import org.where2pair.venue.find.LocationsCriteria;
 
+import com.mongodb.util.JSON
+
 class VenueJsonMarshaller {
 
     OpenHoursJsonMarshaller openHoursJsonMarshaller
@@ -64,5 +66,17 @@ class VenueJsonMarshaller {
                 address: new Address(json.address ?: [:]),
                 weeklyOpeningTimes: openHoursJsonMarshaller.asWeeklyOpeningTimes(json.openHours),
                 facilities: json.facilities)
+    }
+
+    Venue asVenue(String json) {
+        asVenue(JSON.parse(json))
+    }
+
+    List asVenues(String json) {
+        List venuesJson = JSON.parse(json)
+
+        venuesJson.collect({
+            asVenue(it)
+        })
     }
 }

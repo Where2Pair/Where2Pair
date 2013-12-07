@@ -6,6 +6,7 @@ import spock.lang.Specification
 import static org.where2pair.venue.ObjectUtils.createVenue
 import static org.where2pair.venue.ObjectUtils.createVenueJson
 import static org.where2pair.venue.DistanceUnit.KM
+import static org.where2pair.venue.ObjectUtils.createVenueJsonString
 
 class VenueJsonMarshallerSpec extends Specification {
 
@@ -97,6 +98,25 @@ class VenueJsonMarshallerSpec extends Specification {
 
         then:
         result == venue
+    }
+
+    def "converts json string to Venue"() {
+        when:
+        Venue result = venueJsonMarshaller.asVenue(createVenueJsonString())
+
+        then:
+        result == venue
+    }
+
+    def "converts json to Venues"() {
+        given:
+        String json = "[${createVenueJsonString()}, ${createVenueJsonString()}]"
+
+        when:
+        List venues = venueJsonMarshaller.asVenues(json)
+
+        then:
+        venues == [venue, venue]
     }
 
     def "converts json to Venue when address is null"() {

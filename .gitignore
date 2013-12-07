@@ -30,3 +30,4 @@ build/*
 classes/*
 /build-eclipse
 /build
+/out
