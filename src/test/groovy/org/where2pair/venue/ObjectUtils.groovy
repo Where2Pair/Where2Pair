@@ -1,5 +1,6 @@
 package org.where2pair.venue
 
+import com.mongodb.util.JSON
 import org.where2pair.venue.DailyOpeningTimes.SimpleTime
 
 import static org.where2pair.venue.DayOfWeek.*
@@ -70,6 +71,10 @@ class ObjectUtils {
                         sunday: []] as LinkedHashMap,
                 facilities: ['wifi', 'mobile payments']
         ]
+    }
+
+    static String createVenueJsonString() {
+        JSON.serialize(createVenueJson())
     }
 
 }
