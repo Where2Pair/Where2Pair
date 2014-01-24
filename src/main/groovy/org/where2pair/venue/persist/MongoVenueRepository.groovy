@@ -19,8 +19,8 @@ class MongoVenueRepository implements VenueRepository {
 
     @Override
     Venue get(long id) {
-        def criteria = '{"id" : "' + id + '"}'
-        def venue = mongoService.findOne(VENUE_COLLECTION, criteria)
+        String criteria = '{"id" : "' + id + '"}'
+        String venue = mongoService.findOne(VENUE_COLLECTION, criteria)
         venueJsonMarshaller.asVenue(venue)
     }
 
@@ -31,9 +31,9 @@ class MongoVenueRepository implements VenueRepository {
 
     @Override
     Venue findByNameAndCoordinates(String name, Coordinates coordinates) {
-        def criteria = '{"name" : "' + name + '","lat" : "' + coordinates.lat + '","lng" : "' + coordinates.lng + '"}'
-        def venue = mongoService.findOne(VENUE_COLLECTION, criteria)
-        venueJsonMarshaller.asVenue(venue)
+        String criteria = '{"name" : "' + name + '","lat" : "' + coordinates.lat + '","lng" : "' + coordinates.lng + '"}'
+        String venueJson = mongoService.findOne(VENUE_COLLECTION, criteria)
+        venueJsonMarshaller.asVenue(venueJson)
     }
 
     @Override

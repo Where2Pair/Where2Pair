@@ -45,8 +45,8 @@ class MongoVenueRepositorySpec extends Specification {
     def "finds venues by name and coordinates"() {
         given:
         Venue venue1 = createVenue()
-        def venue1Json = createVenueJson()
-        def criteria = '{"name" : "' + venue1.name + '","lat" : "' + venue1.location.lat + '","lng" : "' + venue1.location.lng + '"}'
+        String venue1Json = createVenueJson().toString()
+        String criteria = '{"name" : "' + venue1.name + '","lat" : "' + venue1.location.lat + '","lng" : "' + venue1.location.lng + '"}'
         mongoService.findOne(VENUE_COLLECTION, criteria) >> venue1Json
         venueJsonMarshaller.asVenue(venue1Json) >> venue1
 
