@@ -12,7 +12,7 @@ import org.where2pair.venue.save.SaveVenueController
 import org.where2pair.venue.save.VenueSaveOrUpdater
 import org.where2pair.venue.show.ShowVenueController
 
-import static org.ratpackframework.groovy.RatpackScript.ratpack
+import static ratpack.groovy.Groovy.ratpack
 
 class Where2PairModule extends AbstractModule {
     @Provides
