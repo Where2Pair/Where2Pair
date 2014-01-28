@@ -72,7 +72,7 @@ ratpack {
                 renderResult(response, venue)
             }
             post { SaveVenueController saveVenueController ->
-                def json = new JsonSlurper().parseText(request.text)
+                def json = new JsonSlurper().parseText(request.body.text)
                 def venue = saveVenueController.save(json)
                 renderResult(response, venue)
             }
