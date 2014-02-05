@@ -7,6 +7,11 @@ import com.mongodb.util.JSON
 
 class MongoService {
     private DB mongoDb;
+
+    public MongoService(MongoClient client, String dbName) {
+        mongoDb = client.getDB(dbName)
+    }
+
     public MongoService(MongoClient client, String username, String password, String dbName) {
         mongoDb = client.getDB(dbName)
         if (!mongoDb.authenticate(username, password.toCharArray())) {
