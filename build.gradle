@@ -55,7 +55,10 @@ test {
 }
 
 task startApp(type: StartRatpackTask) {
-    runAppTask tasks.run
+}
+
+task startMongoDb(type: StartMongoDbTask) {
+    port 27017
 }
 
 task functionalTest(dependsOn: 'startApp', type: Test) {
@@ -65,8 +68,4 @@ task functionalTest(dependsOn: 'startApp', type: Test) {
 task console(dependsOn: 'classes', type: JavaExec) {
     main 'groovy.ui.Console'
     classpath sourceSets.main.runtimeClasspath
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion '1.7'
 }

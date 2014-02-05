@@ -4,13 +4,12 @@ import java.util.concurrent.*
 import groovyx.net.http.*
 
 class StartRatpackTask extends DefaultTask {
-	def runAppTask
 	def port = '5050'
 	
 	@TaskAction
 	def startApp() {
 		def executor = Executors.newSingleThreadExecutor()
-		executor.submit({ runAppTask.execute() })
+		executor.submit({ project.tasks.run.execute() })
 		waitForAppToStart()
 	}
 	
