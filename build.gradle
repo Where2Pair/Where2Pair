@@ -5,6 +5,8 @@ buildscript {
     }
     dependencies {
         classpath 'io.ratpack:ratpack-gradle:0.9.1-SNAPSHOT'
+        classpath files('libs/EmbedMongoDbPlugin.jar')
+        classpath 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:1.42'
         classpath 'org.codehaus.groovy.modules.http-builder:http-builder:0.5.2'
     }
 }
@@ -12,6 +14,7 @@ buildscript {
 apply plugin: 'ratpack-groovy'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
+apply plugin: 'embedmongodb'
 
 repositories {
     maven { url 'http://oss.jfrog.org/repo' }
@@ -56,11 +59,6 @@ test {
 }
 
 task startApp(type: StartRatpackTask) {
-}
-
-
-task startMongoDb(type: StartMongoDbTask) {
-    port 27017
 }
 
 task integrationTest(dependsOn: 'startMongoDb', type: Test) {
