@@ -8,7 +8,7 @@ import spock.lang.Specification
 
 class MongoServiceIntegrationSpec extends Specification {
 
-    public static final String TEST_COLLECTION = 'ACOLLECTION'
+    public static final String TEST_COLLECTION = 'A_COLLECTION'
     @Shared MongoService mongoService
 
     def setupSpec() {
@@ -18,7 +18,7 @@ class MongoServiceIntegrationSpec extends Specification {
 
     def 'saves and retrieves a document from a collection in mongo db'() {
         when:
-        def id = mongoService.save(TEST_COLLECTION, '{"hello":"world"}' )
+        def id = mongoService.save(TEST_COLLECTION, '{"hello":"world"}')
         def retrievedDocument = mongoService.findById(TEST_COLLECTION, id)
         def parsedRetrievedDocument = JSON.parse(retrievedDocument)
 
@@ -28,18 +28,30 @@ class MongoServiceIntegrationSpec extends Specification {
 
     def 'uses criteria to retrieve a documents from a collection in mongo db'() {
         given:
-        def id = UUID.randomUUID()
-        def anotherId = UUID.randomUUID()
-        mongoService.save(TEST_COLLECTION, "{'_id': '${id}', 'a hello':'a world'}" )
-        mongoService.save(TEST_COLLECTION, "{'_id': '${anotherId}', 'another hello':'another world'}" )
+        def uniqueCriteria = UUID.randomUUID()
+        def anotherUniqueCriteria = UUID.randomUUID()
+        mongoService.save(TEST_COLLECTION, "{'attribute':'$uniqueCriteria'}")
+        mongoService.save(TEST_COLLECTION, "{'attribute':'$anotherUniqueCriteria'}")
 
         when:
-        def foundDocuments = mongoService.find(TEST_COLLECTION, "{'_id': '${id}'}")
+        def foundDocuments = mongoService.find(TEST_COLLECTION, "{'attribute': '$uniqueCriteria'}")
 
         then:
-        println foundDocuments
         def documents = JSON.parse(foundDocuments)
         documents.size() == 1
+    }
 
+    def 'updates an existing document'() {
+        given:
+        def id = mongoService.save(TEST_COLLECTION, "{'attribute':'a world'}")
+
+        when:
+        mongoService.update(TEST_COLLECTION, id, "{'attribute':'another world'}")
+
+        then:
+        def foundDocument = mongoService.findById(TEST_COLLECTION, id)
+        def document = JSON.parse(foundDocument)
+        document != null
+        document.attribute == 'another world'
     }
 }

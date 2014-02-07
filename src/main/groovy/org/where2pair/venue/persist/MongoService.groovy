@@ -57,4 +57,10 @@ class MongoService {
         }
         result
     }
+
+    private void update(String collectionName, String id, String document) {
+        DBObject objectToUpdate = JSON.parse("{'_id': {'\$oid': '${id}'}}") as DBObject
+        DBObject updateWith = JSON.parse(document)
+        mongoDb.getCollection(collectionName).update(objectToUpdate, updateWith)
+    }
 }
