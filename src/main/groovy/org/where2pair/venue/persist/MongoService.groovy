@@ -3,6 +3,7 @@ package org.where2pair.venue.persist
 import com.mongodb.DB
 import com.mongodb.DBObject
 import com.mongodb.MongoClient
+import com.mongodb.WriteResult
 import com.mongodb.util.JSON
 
 class MongoService {
@@ -37,8 +38,14 @@ class MongoService {
         result ? JSON.serialize(result) : null
     }
 
-    public void save(String collectionName, String document) {
-        mongoDb.getCollection(collectionName).save(JSON.parse(document) as DBObject)
+    public String save(String collectionName, String document) {
+        def objectToSave = JSON.parse(document) as DBObject
+        mongoDb.getCollection(collectionName).save(objectToSave)
+        objectToSave._id
+    }
+
+    public String findById(String collectionName, String id) {
+        findOne(collectionName, "{'_id': {'\$oid': '${id}'}}")
     }
 
     private DBObject asDBObject(String jsonString) {

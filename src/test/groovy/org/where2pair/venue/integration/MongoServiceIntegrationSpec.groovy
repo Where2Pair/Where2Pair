@@ -16,28 +16,30 @@ class MongoServiceIntegrationSpec extends Specification {
         mongoService = new MongoService(mongoClient, 'test')
     }
 
-    def 'saves and retrieves a document from mongo db'() {
+    def 'saves and retrieves a document from a collection in mongo db'() {
         when:
-        mongoService.save(TEST_COLLECTION, '{"hello":"world"}' )
+        def id = mongoService.save(TEST_COLLECTION, '{"hello":"world"}' )
+        def retrievedDocument = mongoService.findById(TEST_COLLECTION, id)
+        def parsedRetrievedDocument = JSON.parse(retrievedDocument)
 
         then:
-        def savedDocument = mongoService.findOne(TEST_COLLECTION)
-        def document = JSON.parse(savedDocument)
-        document.hello == 'world'
+        parsedRetrievedDocument.hello == 'world'
     }
 
-    def 'uses criteria to retrieve a collection from mongo db'() {
+    def 'uses criteria to retrieve a documents from a collection in mongo db'() {
         given:
-        mongoService.save(TEST_COLLECTION, '{"a hello":"a world"}' )
-        mongoService.save(TEST_COLLECTION, '{"another hello":"another world"}' )
+        def id = UUID.randomUUID()
+        def anotherId = UUID.randomUUID()
+        mongoService.save(TEST_COLLECTION, "{'_id': '${id}', 'a hello':'a world'}" )
+        mongoService.save(TEST_COLLECTION, "{'_id': '${anotherId}', 'another hello':'another world'}" )
 
         when:
-        def foundDocuments = mongoService.find(TEST_COLLECTION, '{"a hello":"a world"}')
+        def foundDocuments = mongoService.find(TEST_COLLECTION, "{'_id': '${id}'}")
 
         then:
         println foundDocuments
-        def document = JSON.parse(foundDocuments)
-        document['hello'].size() == 1
+        def documents = JSON.parse(foundDocuments)
+        documents.size() == 1
 
     }
 }
