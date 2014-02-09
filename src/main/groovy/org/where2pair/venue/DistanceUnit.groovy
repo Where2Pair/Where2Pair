@@ -26,10 +26,10 @@ enum DistanceUnit {
 		
 		double rawDistanceBetween(Coordinates c1, Coordinates c2) {
 			double earthRadius = 6371
-			double dLat = Math.toRadians(c1.lat - c2.lat)
-			double dLng = Math.toRadians(c1.lng - c2.lng)
+			double dLat = Math.toRadians(c1.latitude - c2.latitude)
+			double dLng = Math.toRadians(c1.longitude - c2.longitude)
 			double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-					Math.cos(Math.toRadians(c1.lat)) * Math.cos(Math.toRadians(c2.lat)) *
+					Math.cos(Math.toRadians(c1.latitude)) * Math.cos(Math.toRadians(c2.latitude)) *
 					Math.sin(dLng / 2) * Math.sin(dLng / 2);
 			double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 			double dist = earthRadius * c

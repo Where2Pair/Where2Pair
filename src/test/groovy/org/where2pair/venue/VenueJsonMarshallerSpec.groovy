@@ -3,23 +3,18 @@ package org.where2pair.venue
 import org.where2pair.venue.find.VenueWithDistances
 import spock.lang.Specification
 
-import static org.where2pair.venue.ObjectUtils.createVenue
-import static org.where2pair.venue.ObjectUtils.createVenueJson
 import static org.where2pair.venue.DistanceUnit.KM
-import static org.where2pair.venue.ObjectUtils.createVenueJsonString
+import static org.where2pair.venue.ObjectUtils.*
 
 class VenueJsonMarshallerSpec extends Specification {
 
     Venue venue = createVenue()
     Map venueJson = createVenueJson()
-    OpenHoursJsonMarshaller openHoursJsonMarshaller = Mock() {
-        asOpenHoursJson(venue.weeklyOpeningTimes) >> venueJson.openHours
-        asWeeklyOpeningTimes(venueJson.openHours) >> venue.weeklyOpeningTimes
-    }
+    OpenHoursJsonMarshaller openHoursJsonMarshaller = new OpenHoursJsonMarshaller()
     VenueJsonMarshaller venueJsonMarshaller = new VenueJsonMarshaller(
             openHoursJsonMarshaller: openHoursJsonMarshaller)
 
-    def "converts Venue to json"() {
+    def 'converts Venue to json'() {
         when:
         Map result = venueJsonMarshaller.asVenueJson(venue)
 
@@ -27,7 +22,7 @@ class VenueJsonMarshallerSpec extends Specification {
         result == venueJson
     }
 
-    def "converts Venues to json"() {
+    def 'converts Venues to json'() {
         when:
         List result = venueJsonMarshaller.asVenuesJson([venue])
 
@@ -35,7 +30,7 @@ class VenueJsonMarshallerSpec extends Specification {
         result == [venueJson]
     }
 	
-    def "converts VenueWithDistances to json"() {
+    def 'converts VenueWithDistances to json'() {
         given:
 		def location1 = new Coordinates(1.0, 0.1)
 		def location2 = new Coordinates(2.0, 0.2)
@@ -72,7 +67,7 @@ class VenueJsonMarshallerSpec extends Specification {
         venuesWithDistanceJson == expectedVenuesWithDistancesJson
     }
 
-    def "renders null string values as empty strings"() {
+    def 'renders null string values as empty strings'() {
         given:
         Venue venue = new Venue(
                 address: new Address(),
@@ -92,7 +87,7 @@ class VenueJsonMarshallerSpec extends Specification {
         venueJson.address.phoneNumber == ""
     }
 
-    def "converts json to Venue"() {
+    def 'converts json to Venue'() {
         when:
         Venue result = venueJsonMarshaller.asVenue(venueJson)
 
@@ -100,7 +95,7 @@ class VenueJsonMarshallerSpec extends Specification {
         result == venue
     }
 
-    def "converts json string to Venue"() {
+    def 'converts json string to Venue'() {
         when:
         Venue result = venueJsonMarshaller.asVenue(createVenueJsonString())
 
@@ -108,7 +103,7 @@ class VenueJsonMarshallerSpec extends Specification {
         result == venue
     }
 
-    def "converts json to Venues"() {
+    def 'converts json to Venues'() {
         given:
         String json = "[${createVenueJsonString()}, ${createVenueJsonString()}]"
 
@@ -119,7 +114,7 @@ class VenueJsonMarshallerSpec extends Specification {
         venues == [venue, venue]
     }
 
-    def "converts json to Venue when address is null"() {
+    def 'converts json to Venue when address is null'() {
         given:
         venueJson.address = null
         venue.address = new Address()
@@ -131,7 +126,7 @@ class VenueJsonMarshallerSpec extends Specification {
         result == venue
     }
 
-    def "converts json to Venue when id is null"() {
+    def 'converts json to Venue when id is null'() {
         given:
         venueJson.id = null
         venue.id = 0
@@ -143,4 +138,12 @@ class VenueJsonMarshallerSpec extends Specification {
         result == venue
     }
 
+    def 'converts venue to json string'() {
+        when:
+        String venueJsonString = venueJsonMarshaller.asVenueJsonString(venue)
+
+        then:
+        Venue unmarshalledVenue = venueJsonMarshaller.asVenue(venueJsonString)
+        unmarshalledVenue == venue
+    }
 }

@@ -15,8 +15,8 @@ class VenueSpec extends Specification {
 
     def "determines distance to supplied coordinates"() {
         given:
-        Venue venue = new Venue(location: new Coordinates(lat: venueLatitude, lng: venueLongitude))
-        Coordinates coordinates = new Coordinates(lat: targetLatitude, lng: targetLongitude)
+        Venue venue = new Venue(location: new Coordinates(latitude: venueLatitude, longitude: venueLongitude))
+        Coordinates coordinates = new Coordinates(latitude: targetLatitude, longitude: targetLongitude)
 
         when:
         Distance distanceInKm = venue.distanceTo(coordinates, KM)

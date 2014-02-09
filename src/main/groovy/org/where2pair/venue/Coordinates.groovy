@@ -4,6 +4,6 @@ import groovy.transform.Immutable
 
 @Immutable
 class Coordinates {
-    double lat
-    double lng
+    double latitude
+    double longitude
 }

@@ -1,8 +1,7 @@
 package org.where2pair.venue
 
-import org.where2pair.venue.find.LocationsCriteria;
-
-import com.mongodb.util.JSON
+import groovy.json.JsonBuilder
+import groovy.json.JsonSlurper
 
 class VenueJsonMarshaller {
 
@@ -13,8 +12,8 @@ class VenueJsonMarshaller {
                 id: venue.id,
                 name: venue.name ?: '',
                 location: [
-						latitude: venue.location.lat,
-						longitude: venue.location.lng
+						latitude: venue.location.latitude,
+						longitude: venue.location.longitude
 				],
                 address: [
                         addressLine1: venue.address.addressLine1 ?: '',
@@ -60,23 +59,48 @@ class VenueJsonMarshaller {
 	}
 	
     Venue asVenue(Map json) {
+        def openHours = openHoursJsonMarshaller.asWeeklyOpeningTimes(json.openHours)
         new Venue(id: json.id ?: 0,
                 name: json.name,
                 location: new Coordinates(json.location.latitude, json.location.longitude),
                 address: new Address(json.address ?: [:]),
-                weeklyOpeningTimes: openHoursJsonMarshaller.asWeeklyOpeningTimes(json.openHours),
+                weeklyOpeningTimes: openHours,
                 facilities: json.facilities)
     }
 
     Venue asVenue(String json) {
-        asVenue(JSON.parse(json))
+        asVenue((Map) new JsonSlurper().parseText(json))
     }
 
     List asVenues(String json) {
-        List venuesJson = JSON.parse(json)
+        List venuesJson = new JsonSlurper().parseText(json)
 
         venuesJson.collect({
             asVenue(it)
         })
+    }
+
+    String asVenueJsonString(Venue venue) {
+        def json = new JsonBuilder()
+        json id: venue.id,
+                name: venue.name,
+                location: [latitude: venue.location.latitude,
+                        longitude: venue.location.longitude],
+                address: [
+                        addressLine1: venue.address.addressLine1,
+                        addressLine2: venue.address.addressLine2,
+                        addressLine3: venue.address.addressLine3,
+                        city: venue.address.city,
+                        postcode: venue.address.postcode,
+                        phoneNumber: venue.address.phoneNumber ],
+                openHours: venue.weeklyOpeningTimes.weeklyOpeningTimes.collectEntries {key, value ->
+                    [(key): value.openPeriods.collect { openPeriod ->
+                            [openHour: openPeriod.start.hour, openMinute: openPeriod.start.minute,
+                            closeHour: openPeriod.end.hour, closeMinute: openPeriod.end.minute]
+                          }
+                    ]},
+                facilities: venue.facilities
+
+        json.toString()
     }
 }

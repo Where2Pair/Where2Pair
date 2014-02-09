@@ -19,19 +19,18 @@ class MongoVenueRepository implements VenueRepository {
 
     @Override
     Venue get(long id) {
-        String criteria = '{"id" : "' + id + '"}'
-        String venue = mongoService.findOne(VENUE_COLLECTION, criteria)
+        String venue = mongoService.findById(VENUE_COLLECTION, "$id")
         venueJsonMarshaller.asVenue(venue)
     }
 
     @Override
     long save(Venue venue) {
-        return 0  //To change body of implemented methods use File | Settings | File Templates.
+        Long.parseLong(mongoService.save(VENUE_COLLECTION, venueJsonMarshaller.asVenueJsonString(venue)))
     }
 
     @Override
     Venue findByNameAndCoordinates(String name, Coordinates coordinates) {
-        String criteria = '{"name" : "' + name + '","lat" : "' + coordinates.lat + '","lng" : "' + coordinates.lng + '"}'
+        String criteria = '{"name" : "' + name + '","latitude" : "' + coordinates.latitude + '","longitude" : "' + coordinates.longitude + '"}'
         String venueJson = mongoService.findOne(VENUE_COLLECTION, criteria)
         venueJsonMarshaller.asVenue(venueJson)
     }

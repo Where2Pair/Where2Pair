@@ -11,6 +11,13 @@ class ObjectUtils {
         WeeklyOpeningTimesBuilder builder = new WeeklyOpeningTimesBuilder()
         builder.addOpenPeriod(MONDAY, new SimpleTime(12, 0), new SimpleTime(18, 30))
         builder.addOpenPeriod(TUESDAY, new SimpleTime(8, 0), new SimpleTime(11, 0))
+        createVenue(builder.build())
+    }
+
+    static Venue createVenue(WeeklyOpeningTimes openingTimes) {
+        WeeklyOpeningTimesBuilder builder = new WeeklyOpeningTimesBuilder()
+        builder.addOpenPeriod(MONDAY, new SimpleTime(12, 0), new SimpleTime(18, 30))
+        builder.addOpenPeriod(TUESDAY, new SimpleTime(8, 0), new SimpleTime(11, 0))
         new Venue(
                 id: 99,
                 name: 'venue name',
@@ -23,7 +30,7 @@ class ObjectUtils {
                         postcode: 'postcode',
                         phoneNumber: '01234567890'
                 ),
-                weeklyOpeningTimes: builder.build(),
+                weeklyOpeningTimes: openingTimes,
                 facilities: ['wifi', 'mobile payments']
         )
     }

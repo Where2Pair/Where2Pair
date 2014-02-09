@@ -13,7 +13,7 @@ class MongoVenueRepositorySpec extends Specification {
     MongoService mongoService = Mock()
     MongoVenueRepository mongoVenueRepository = new MongoVenueRepository(venueJsonMarshaller: venueJsonMarshaller, mongoService: mongoService)
 
-    def "uses the mongo service to retrieve all venues"() {
+    def 'uses the mongo service to retrieve all venues'() {
         given:
         def expectedVenues = [createVenue(), createDifferentVenue()]
         mongoService.find(VENUE_COLLECTION) >> '[{id:1},{id:2}]'
@@ -26,12 +26,11 @@ class MongoVenueRepositorySpec extends Specification {
         venues == expectedVenues
     }
 
-    def "retrieves the venue by id"() {
+    def 'retrieves the venue by id'() {
         given:
-        def criteria = '{"id" : "1234"}'
         def venueJson = '{"id" : "1234", facilities:"wifi,coffee"}'
         def expectedVenue = createVenue()
-        mongoService.findOne(VENUE_COLLECTION, criteria) >> venueJson
+        mongoService.findById(VENUE_COLLECTION, '1234') >> venueJson
         venueJsonMarshaller.asVenue(venueJson) >> expectedVenue
 
         when:
@@ -42,11 +41,11 @@ class MongoVenueRepositorySpec extends Specification {
 
     }
 
-    def "finds venues by name and coordinates"() {
+    def 'finds venues by name and coordinates'() {
         given:
         Venue venue1 = createVenue()
         String venue1Json = createVenueJson().toString()
-        String criteria = '{"name" : "' + venue1.name + '","lat" : "' + venue1.location.lat + '","lng" : "' + venue1.location.lng + '"}'
+        String criteria = '{"name" : "' + venue1.name + '","latitude" : "' + venue1.location.latitude + '","longitude" : "' + venue1.location.longitude + '"}'
         mongoService.findOne(VENUE_COLLECTION, criteria) >> venue1Json
         venueJsonMarshaller.asVenue(venue1Json) >> venue1
 
@@ -55,5 +54,21 @@ class MongoVenueRepositorySpec extends Specification {
 
         then:
         fetchedVenue == venue1
+    }
+
+    def 'saves a venue using mongo service'() {
+        given:
+        Venue venue = createVenue()
+        String venueJson = createVenueJsonString()
+        venueJsonMarshaller.asVenueJsonString(_) >> venueJson
+        mongoService.save(VENUE_COLLECTION, venueJson) >> venue.id
+
+        when:
+        def id = mongoVenueRepository.save(venue)
+
+
+        then:
+        venue.id == id
+
     }
 }
