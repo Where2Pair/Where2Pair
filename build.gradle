@@ -5,8 +5,7 @@ buildscript {
     }
     dependencies {
         classpath 'io.ratpack:ratpack-gradle:0.9.1-SNAPSHOT'
-        classpath files('libs/gradle-mongo-plugin-0.1.0.jar')
-        classpath 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:1.42'
+        classpath 'com.sourcemuse.gradle.plugin:gradle-mongo-plugin:0.1.0'
         classpath 'org.codehaus.groovy.modules.http-builder:http-builder:0.5.2'
     }
 }
