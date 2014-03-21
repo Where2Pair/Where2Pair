@@ -3,14 +3,18 @@ import com.google.inject.Provides
 import com.google.inject.Singleton
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
-import org.where2pair.venue.OpenHoursJsonMarshaller
-import org.where2pair.venue.VenueJsonMarshaller
-import org.where2pair.venue.VenueRepository
-import org.where2pair.venue.find.*
-import org.where2pair.venue.persist.HashMapVenueRepository
-import org.where2pair.venue.save.SaveVenueController
-import org.where2pair.venue.save.VenueSaveOrUpdater
-import org.where2pair.venue.show.ShowVenueController
+import org.where2pair.infra.venue.web.LocationsCriteriaParser
+import org.where2pair.core.venue.TimeProvider
+import org.where2pair.core.venue.VenueFinder
+import org.where2pair.infra.venue.web.ErrorResponse
+import org.where2pair.infra.venue.web.FindVenueController
+import org.where2pair.infra.venue.web.OpenHoursJsonMarshaller
+import org.where2pair.infra.venue.web.VenueJsonMarshaller
+import org.where2pair.core.venue.VenueRepository
+import org.where2pair.infra.venue.persistence.HashMapVenueRepository
+import org.where2pair.infra.venue.web.SaveVenueController
+import org.where2pair.core.venue.VenueSaveOrUpdater
+import org.where2pair.infra.venue.web.ShowVenueController
 
 import static ratpack.groovy.Groovy.ratpack
 
