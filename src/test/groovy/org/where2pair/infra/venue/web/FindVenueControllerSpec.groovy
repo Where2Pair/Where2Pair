@@ -2,10 +2,6 @@ package org.where2pair.infra.venue.web
 
 import org.where2pair.core.venue.*
 import org.where2pair.core.venue.DailyOpeningTimes.SimpleTime
-import org.where2pair.infra.venue.web.ErrorResponse
-import org.where2pair.infra.venue.web.FindVenueController
-import org.where2pair.infra.venue.web.LocationsCriteriaParser
-import org.where2pair.infra.venue.web.VenueJsonMarshaller
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -17,7 +13,7 @@ class FindVenueControllerSpec extends Specification {
     static final TODAY = FRIDAY
     Map params = [:]
     FindVenueController controller = new FindVenueController()
-    VenueFinder venueFinder = Mock()
+    VenueService venueFinder = Mock()
     TimeProvider timeProvider = Mock()
     LocationsCriteria validLocationsCriteria = Mock()
     LocationsCriteriaParser locationsCriteriaParser = Mock()

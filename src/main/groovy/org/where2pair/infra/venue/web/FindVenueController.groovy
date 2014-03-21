@@ -6,13 +6,13 @@ import org.where2pair.core.venue.FacilitiesCriteria
 import org.where2pair.core.venue.LocationsCriteria
 import org.where2pair.core.venue.OpenTimesCriteria
 import org.where2pair.core.venue.TimeProvider
-import org.where2pair.core.venue.VenueFinder
+import org.where2pair.core.venue.VenueService
 
 import static org.where2pair.core.venue.DayOfWeek.parseDayOfWeek
 
 class FindVenueController {
 
-    VenueFinder venueFinder
+    VenueService venueFinder
     LocationsCriteriaParser locationsCriteriaParser
     VenueJsonMarshaller venueJsonMarshaller
     TimeProvider timeProvider

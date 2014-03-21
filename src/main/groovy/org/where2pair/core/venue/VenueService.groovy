@@ -1,6 +1,6 @@
 package org.where2pair.core.venue
 
-class VenueFinder {
+class VenueService {
 
     VenueRepository venueRepository
 
@@ -30,4 +30,15 @@ class VenueFinder {
         venues.size() > 50 ? venues[0..49] : venues
     }
 
+    long save(Venue venue) {
+        Venue existingVenue = venueRepository.findByNameAndCoordinates(venue.name, venue.location)
+
+        if (existingVenue) {
+            venue.id = existingVenue.id
+            venueRepository.update(venue)
+            return venue.id
+        } else {
+            return venueRepository.save(venue)
+        }
+    }
 }

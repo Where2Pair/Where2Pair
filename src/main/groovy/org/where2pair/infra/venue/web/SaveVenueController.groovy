@@ -1,16 +1,16 @@
 package org.where2pair.infra.venue.web
 
 import org.where2pair.core.venue.Venue
-import org.where2pair.core.venue.VenueSaveOrUpdater
+import org.where2pair.core.venue.VenueService
 
 public class SaveVenueController {
 
-    VenueSaveOrUpdater venueSaveOrUpdater
+    VenueService venueService
     VenueJsonMarshaller venueJsonMarshaller
 
     def save(Map json) {
         Venue venue = venueJsonMarshaller.asVenue(json)
-        json.id = venueSaveOrUpdater.save(venue)
+        json.id = venueService.save(venue)
         json
     }
 

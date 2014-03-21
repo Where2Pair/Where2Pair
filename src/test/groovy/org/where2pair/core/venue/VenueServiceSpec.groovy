@@ -5,10 +5,10 @@ import static org.where2pair.core.venue.DistanceUnit.KM
 import spock.lang.Specification
 import spock.lang.Unroll
 
-class VenueFinderSpec extends Specification {
+class VenueServiceSpec extends Specification {
 
     VenueRepository venueRepository = Mock()
-    VenueFinder venueFinder = new VenueFinder(venueRepository: venueRepository)
+    VenueService venueService = new VenueService(venueRepository: venueRepository)
 
     @Unroll("#rationale")
     def "returns correct count of venues"() {
@@ -16,7 +16,7 @@ class VenueFinderSpec extends Specification {
         venueRepository.getAll() >> numberOf.openVenues()
 
         when:
-        List venues = venueFinder.findNearestTo(OPEN_TIMES_CRITERIA, FACILITIES_CRITERIA, USER_LOCATION)
+        List venues = venueService.findNearestTo(OPEN_TIMES_CRITERIA, FACILITIES_CRITERIA, USER_LOCATION)
 
         then:
         venues.size() == expectedVenueCount
@@ -33,7 +33,7 @@ class VenueFinderSpec extends Specification {
         venueRepository.getAll() >> 10.openVenues() + 5.closedVenues()
 
         when:
-        List venues = venueFinder.findNearestTo(OPEN_TIMES_CRITERIA, FACILITIES_CRITERIA, USER_LOCATION)
+        List venues = venueService.findNearestTo(OPEN_TIMES_CRITERIA, FACILITIES_CRITERIA, USER_LOCATION)
 
         then:
         venues.size() == 10
@@ -44,7 +44,7 @@ class VenueFinderSpec extends Specification {
         venueRepository.getAll() >> 15.venuesWithFacilities() + 5.venuesWithoutFacilities()
 
         when:
-        List venues = venueFinder.findNearestTo(OPEN_TIMES_CRITERIA, FACILITIES_CRITERIA, USER_LOCATION)
+        List venues = venueService.findNearestTo(OPEN_TIMES_CRITERIA, FACILITIES_CRITERIA, USER_LOCATION)
 
         then:
         venues.size() == 15
@@ -59,10 +59,37 @@ class VenueFinderSpec extends Specification {
         locationsCriteria.distancesTo(_ as Venue) >>> (99..0).collect { [(new Coordinates(1.0,it)): new Distance(value:it, unit:KM)] }
 
         when:
-        List venues = venueFinder.findNearestTo(OPEN_TIMES_CRITERIA, FACILITIES_CRITERIA, locationsCriteria)
+        List venues = venueService.findNearestTo(OPEN_TIMES_CRITERIA, FACILITIES_CRITERIA, locationsCriteria)
 
         then:
         venues.venue == nearbyVenues.reverse()
+    }
+
+    def "when no matching Venue already exists, then saves new Venue"() {
+        given:
+        Venue venue = new Venue(name: 'name', location: new Coordinates(1.0, 0.1))
+        venueRepository.findByNameAndCoordinates('name', new Coordinates(1.0, 0.1)) >> null
+        venueRepository.save(venue) >> 99
+
+        when:
+        long result = venueService.save(venue)
+
+        then:
+        result == 99
+    }
+
+    def "when matching Venue is found, then updates existing Venue"() {
+        given:
+        Venue venue = new Venue(id: 0, name: 'name', location: new Coordinates(1.0, 0.1))
+        Venue matchingVenue = new Venue(id: 99)
+        venueRepository.findByNameAndCoordinates('name', new Coordinates(1.0, 0.1)) >> matchingVenue
+
+        when:
+        long result = venueService.save(venue)
+
+        then:
+        result == 99
+        1 * venueRepository.update({ it == venue && it.id == 99 })
     }
 
     def assignUniqueIds(List venues) {
@@ -82,7 +109,7 @@ class VenueFinderSpec extends Specification {
     static class VenuesMixin {
         List openVenues() {
             venuesWithTemplate {
-                [isOpen: { openTimesCriteria -> openTimesCriteria == VenueFinderSpec.OPEN_TIMES_CRITERIA },
+                [isOpen: { openTimesCriteria -> openTimesCriteria == VenueServiceSpec.OPEN_TIMES_CRITERIA },
                         hasFacilities: { facilitiesCriteria -> true },
                         distanceTo: { coordinates, distanceUnit -> new Distance(value: 0, unit: KM) }] as Venue
             }
@@ -98,7 +125,7 @@ class VenueFinderSpec extends Specification {
         List venuesWithFacilities() {
             venuesWithTemplate {
                 [isOpen: { openTimesCriteria -> true },
-                        hasFacilities: { facilitiesCriteria -> facilitiesCriteria == VenueFinderSpec.FACILITIES_CRITERIA },
+                        hasFacilities: { facilitiesCriteria -> facilitiesCriteria == VenueServiceSpec.FACILITIES_CRITERIA },
                         distanceTo: { coordinates, distanceUnit -> new Distance(value: 0, unit: KM) }] as Venue
             }
         }

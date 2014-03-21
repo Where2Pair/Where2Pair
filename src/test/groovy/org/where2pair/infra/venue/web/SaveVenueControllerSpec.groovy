@@ -1,15 +1,13 @@
 package org.where2pair.infra.venue.web
 
 import org.where2pair.core.venue.Venue
-import org.where2pair.infra.venue.web.VenueJsonMarshaller
-import org.where2pair.core.venue.VenueSaveOrUpdater
-import org.where2pair.infra.venue.web.SaveVenueController
+import org.where2pair.core.venue.VenueService
 import spock.lang.Specification
 
 class SaveVenueControllerSpec extends Specification {
 
     SaveVenueController controller = new SaveVenueController()
-    VenueSaveOrUpdater venueSaveOrUpdater = Mock()
+    VenueService venueService = Mock()
     VenueJsonMarshaller venueJsonMarshaller = Mock()
 
     def "should save new venues"() {
@@ -34,7 +32,7 @@ class SaveVenueControllerSpec extends Specification {
         ]
         Venue venue = new Venue()
         venueJsonMarshaller.asVenue(venueJson) >> venue
-        venueSaveOrUpdater.save(venue) >> 99
+        venueService.save(venue) >> 99
 
         when:
         Map response = controller.save(venueJson)
@@ -44,7 +42,7 @@ class SaveVenueControllerSpec extends Specification {
     }
 
     def setup() {
-        controller.venueSaveOrUpdater = venueSaveOrUpdater
+        controller.venueService = venueService
         controller.venueJsonMarshaller = venueJsonMarshaller
     }
 
