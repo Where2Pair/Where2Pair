@@ -20,13 +20,13 @@ class HashMapVenueRepository implements VenueRepository {
     }
 
     @Override
-    public Venue get(long id) {
+    public Venue get(String id) {
         find(id)?.clone()
     }
 
     @Override
-    public long save(Venue venue) {
-        venue.id = idGenerator.incrementAndGet()
+    public String save(Venue venue) {
+        venue.id = String.valueOf(idGenerator.incrementAndGet())
         venues[venue.id] = venue.clone()
         venue.id
     }
@@ -43,7 +43,7 @@ class HashMapVenueRepository implements VenueRepository {
         venues.replace(venue.id, venue.clone())
     }
 
-    private Venue find(long id) {
+    private Venue find(String id) {
         venues[id]
     }
 }

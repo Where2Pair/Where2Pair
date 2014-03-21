@@ -7,7 +7,7 @@ class ShowVenueController {
     VenueRepository venueRepository
     VenueJsonMarshaller venueJsonMarshaller
 
-    def show(long id) {
+    def show(String id) {
         Venue venue = venueRepository.get(id)
 
         if (venue) {

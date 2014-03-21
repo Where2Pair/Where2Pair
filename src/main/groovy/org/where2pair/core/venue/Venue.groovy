@@ -8,7 +8,7 @@ import groovy.transform.ToString
 @ToString
 @AutoClone
 class Venue {
-    long id
+    String id
     String name
     Coordinates location
     Address address

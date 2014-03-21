@@ -11,7 +11,7 @@ class ObjectUtils {
         builder.addOpenPeriod(MONDAY, new SimpleTime(12, 0), new SimpleTime(18, 30))
         builder.addOpenPeriod(TUESDAY, new SimpleTime(8, 0), new SimpleTime(11, 0))
         new Venue(
-                id: 99,
+                id: '99',
                 name: 'venue name',
                 location: new Coordinates(1.0, 0.1),
                 address: new Address(
@@ -32,7 +32,7 @@ class ObjectUtils {
         builder.addOpenPeriod(WEDNESDAY, new SimpleTime(13, 30), new SimpleTime(19, 45))
         builder.addOpenPeriod(THURSDAY, new SimpleTime(18, 30), new SimpleTime(30, 0))
         new Venue(
-                id: 66,
+                id: '66',
                 name: 'different venue name',
                 location: new Coordinates(10.0, -0.99),
                 address: new Address(
@@ -50,7 +50,7 @@ class ObjectUtils {
 
     static Map createVenueJson() {
         [
-                id: 99,
+                id: '99',
                 name: 'venue name',
                 location: [latitude: 1.0,
 						longitude: 0.1],

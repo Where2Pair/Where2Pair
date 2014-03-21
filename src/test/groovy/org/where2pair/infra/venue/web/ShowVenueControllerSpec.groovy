@@ -9,7 +9,7 @@ import spock.lang.Specification
 class ShowVenueControllerSpec extends Specification {
 
     static final String VENUE_NAME = 'my venue'
-    static final long VENUE_ID = 1L
+    static final String VENUE_ID = '1'
     ShowVenueController controller = new ShowVenueController()
     VenueRepository venueRepository = Mock()
     VenueJsonMarshaller venueJsonMarshaller = Mock()

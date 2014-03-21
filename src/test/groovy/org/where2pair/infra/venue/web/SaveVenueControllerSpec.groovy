@@ -32,13 +32,13 @@ class SaveVenueControllerSpec extends Specification {
         ]
         Venue venue = new Venue()
         venueJsonMarshaller.asVenue(venueJson) >> venue
-        venueService.save(venue) >> 99
+        venueService.save(venue) >> '99'
 
         when:
         Map response = controller.save(venueJson)
 
         then:
-        response == venueJson + [id: 99]
+        response == venueJson + [id: '99']
     }
 
     def setup() {

@@ -5,9 +5,9 @@ interface VenueRepository {
 
     List getAll()
 
-    Venue get(long id)
+    Venue get(String id)
 
-    long save(Venue venue)
+    String save(Venue venue)
 
     Venue findByNameAndCoordinates(String name, Coordinates coordinates)
 

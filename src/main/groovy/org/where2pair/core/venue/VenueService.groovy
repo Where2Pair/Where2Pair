@@ -30,7 +30,7 @@ class VenueService {
         venues.size() > 50 ? venues[0..49] : venues
     }
 
-    long save(Venue venue) {
+    String save(Venue venue) {
         Venue existingVenue = venueRepository.findByNameAndCoordinates(venue.name, venue.location)
 
         if (existingVenue) {

@@ -78,8 +78,8 @@ class HashMapVenueRepositorySpec extends Specification {
         Venue venue2 = new Venue()
 
         when:
-        long venueId1 = hashMapVenueRepository.save(venue1)
-        long venueId2 = hashMapVenueRepository.save(venue2)
+        String venueId1 = hashMapVenueRepository.save(venue1)
+        String venueId2 = hashMapVenueRepository.save(venue2)
 
         then:
         venueId1 == venue1.id
@@ -103,7 +103,7 @@ class HashMapVenueRepositorySpec extends Specification {
 
     def "returns null when venues don't exist"() {
         when:
-        Venue fetchedVenue = hashMapVenueRepository.get(99)
+        Venue fetchedVenue = hashMapVenueRepository.get('99')
 
         then:
         fetchedVenue == null
