@@ -1,9 +1,9 @@
 package org.where2pair.infra.venue.web
 
-import org.where2pair.core.venue.*
-import org.where2pair.infra.venue.web.ErrorResponse
-import org.where2pair.infra.venue.web.ShowVenueController
-import org.where2pair.infra.venue.web.VenueJsonMarshaller
+import org.where2pair.core.venue.common.Coordinates
+import org.where2pair.core.venue.read.Venue
+import org.where2pair.core.venue.read.VenueRepository
+import org.where2pair.core.venue.read.WeeklyOpeningTimesBuilder
 import spock.lang.Specification
 
 class ShowVenueControllerSpec extends Specification {

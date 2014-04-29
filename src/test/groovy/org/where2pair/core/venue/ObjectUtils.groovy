@@ -1,56 +1,43 @@
 package org.where2pair.core.venue
 
-import org.where2pair.core.venue.DailyOpeningTimes.SimpleTime
-
-import static org.where2pair.core.venue.DayOfWeek.*
+import org.where2pair.core.venue.read.Venue
 
 class ObjectUtils {
 
     static Venue createVenue() {
-        WeeklyOpeningTimesBuilder builder = new WeeklyOpeningTimesBuilder()
-        builder.addOpenPeriod(MONDAY, new SimpleTime(12, 0), new SimpleTime(18, 30))
-        builder.addOpenPeriod(TUESDAY, new SimpleTime(8, 0), new SimpleTime(11, 0))
-        new Venue(
-                id: '99',
-                name: 'venue name',
-                location: new Coordinates(1.0, 0.1),
-                address: new Address(
-                        addressLine1: 'addressLine1',
-                        addressLine2: 'addressLine2',
-                        addressLine3: 'addressLine3',
-                        city: 'city',
-                        postcode: 'postcode',
-                        phoneNumber: '01234567890'
-                ),
-                weeklyOpeningTimes: builder.build(),
-                facilities: ['wifi', 'mobile payments']
-        )
+        null
+//        WeeklyOpeningTimesBuilder builder = new WeeklyOpeningTimesBuilder()
+//        builder.addOpenPeriod(MONDAY, new SimpleTime(12, 0), new SimpleTime(18, 30))
+//        builder.addOpenPeriod(TUESDAY, new SimpleTime(8, 0), new SimpleTime(11, 0))
+//        new Venue(
+//                id: '99',
+//                name: 'venue name',
+//                location: new Coordinates(1.0, 0.1),
+//                address: new Address('addressLine1', 'addressLine2', 'addressLine3', 'city', 'postcode', '01234567890'),
+//                weeklyOpeningTimes: builder.build(),
+//                facilities: ['wifi', 'mobile payments']
+//        )
     }
 
     static Venue createDifferentVenue() {
-        WeeklyOpeningTimesBuilder builder = new WeeklyOpeningTimesBuilder()
-        builder.addOpenPeriod(WEDNESDAY, new SimpleTime(13, 30), new SimpleTime(19, 45))
-        builder.addOpenPeriod(THURSDAY, new SimpleTime(18, 30), new SimpleTime(30, 0))
-        new Venue(
-                id: '66',
-                name: 'different venue name',
-                location: new Coordinates(10.0, -0.99),
-                address: new Address(
-                        addressLine1: 'different addressLine1',
-                        addressLine2: 'different addressLine2',
-                        addressLine3: 'different addressLine3',
-                        city: 'different city',
-                        postcode: 'different postcode',
-                        phoneNumber: 'different 01234567890'
-                ),
-                weeklyOpeningTimes: builder.build(),
-                facilities: ['different wifi', 'different mobile payments']
-        )
+//        WeeklyOpeningTimesBuilder builder = new WeeklyOpeningTimesBuilder()
+//        builder.addOpenPeriod(WEDNESDAY, new SimpleTime(13, 30), new SimpleTime(19, 45))
+//        builder.addOpenPeriod(THURSDAY, new SimpleTime(18, 30), new SimpleTime(30, 0))
+//        new Venue(
+//                id: '66',
+//                name: 'different venue name',
+//                location: new Coordinates(10.0, -0.99),
+//                address: new Address('different addressLine1', 'different addressLine2', 'different addressLine3',
+//                        'different city', 'different postcode', 'different 01234567890'),
+//                weeklyOpeningTimes: builder.build(),
+//                facilities: ['different wifi', 'different mobile payments']
+//        )
+        null
     }
 
     static Map createVenueJson() {
         [
-                id: '99',
+                id: 'venue_name_1.0_0.1_addressLine1',
                 name: 'venue name',
                 location: [latitude: 1.0,
 						longitude: 0.1],

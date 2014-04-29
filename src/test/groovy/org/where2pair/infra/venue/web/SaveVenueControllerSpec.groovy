@@ -1,7 +1,7 @@
 package org.where2pair.infra.venue.web
 
-import org.where2pair.core.venue.Venue
-import org.where2pair.core.venue.VenueService
+import org.where2pair.core.venue.read.Venue
+import org.where2pair.core.venue.read.VenueService
 import spock.lang.Specification
 
 class SaveVenueControllerSpec extends Specification {
@@ -10,7 +10,7 @@ class SaveVenueControllerSpec extends Specification {
     VenueService venueService = Mock()
     VenueJsonMarshaller venueJsonMarshaller = Mock()
 
-    def "should save new venues"() {
+    def "save new venues"() {
         given:
         Map venueJson = [
                 name: 'name',

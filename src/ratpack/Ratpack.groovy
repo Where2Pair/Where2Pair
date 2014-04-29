@@ -3,27 +3,29 @@ import com.google.inject.Provides
 import com.google.inject.Singleton
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
+import org.where2pair.core.venue.write.NewVenueRepository
+import org.where2pair.core.venue.write.NewVenueSavedEventPublisher
+import org.where2pair.core.venue.write.NewVenueService
+import org.where2pair.infra.venue.persistence.AmazonS3NewVenueRepository
+import org.where2pair.infra.venue.persistence.AsyncVenueCachePopulator
 import org.where2pair.infra.venue.web.LocationsCriteriaParser
-import org.where2pair.core.venue.TimeProvider
-import org.where2pair.core.venue.VenueService
+import org.where2pair.core.venue.read.TimeProvider
+import org.where2pair.core.venue.read.VenueService
 import org.where2pair.infra.venue.web.ErrorResponse
 import org.where2pair.infra.venue.web.FindVenueController
-import org.where2pair.infra.venue.web.OpenHoursJsonMarshaller
+
 import org.where2pair.infra.venue.web.VenueJsonMarshaller
-import org.where2pair.core.venue.VenueRepository
-import org.where2pair.infra.venue.persistence.HashMapVenueRepository
+import org.where2pair.core.venue.read.VenueRepository
+import org.where2pair.infra.venue.persistence.HashMapVenueCache
 import org.where2pair.infra.venue.web.SaveVenueController
 
 import org.where2pair.infra.venue.web.ShowVenueController
 
 import static ratpack.groovy.Groovy.ratpack
 
+//TODO how can we split these modules? How can we make common resources available to both modules (i.e. the HashMapVenueCache)?
+//Or do we later say NewVenueSavedEventPublisher.setNewEventSavedListener(...)?
 class Where2PairModule extends AbstractModule {
-    @Provides
-    VenueJsonMarshaller createVenueJsonMarshaller() {
-        OpenHoursJsonMarshaller openHoursJsonMarshaller = new OpenHoursJsonMarshaller()
-        new VenueJsonMarshaller(openHoursJsonMarshaller: openHoursJsonMarshaller)
-    }
 
     @Provides
     ShowVenueController createShowVenueController(VenueRepository venueRepository, VenueJsonMarshaller venueJsonMarshaller) {
@@ -31,9 +33,31 @@ class Where2PairModule extends AbstractModule {
     }
 
     @Provides
-    SaveVenueController createSaveVenueController(VenueRepository venueRepository, VenueJsonMarshaller venueJsonMarshaller) {
-        VenueService venueService = new VenueService(venueRepository: venueRepository)
-        new SaveVenueController(venueService: venueService, venueJsonMarshaller: venueJsonMarshaller)
+    SaveVenueController createSaveVenueController(NewVenueRepository newVenueRepository, NewVenueSavedEventPublisher newVenueSavedEventPublisher) {
+        println 'creating save venue controller'
+        NewVenueService newVenueService = new NewVenueService(newVenueRepository: newVenueRepository, newVenueSavedEventPublisher: newVenueSavedEventPublisher)
+        new SaveVenueController(newVenueService: newVenueService)
+    }
+
+    @Provides
+    NewVenueSavedEventPublisher createNewVenueSavedEventPublisher(AsyncVenueCachePopulator asyncVenueCachePopulator) {
+        println 'creating new venue saved event publisher'
+        println 'creating...'
+        try {
+            NewVenueSavedEventPublisher pub = new NewVenueSavedEventPublisher(asyncVenueCachePopulator)
+            println 'created'
+            return pub
+        }
+        catch (Exception e) {
+            println e.message
+        }
+    }
+
+    @Provides
+    @Singleton
+    AsyncVenueCachePopulator createAsyncVenueCachePopulator(HashMapVenueCache hashMapVenueCache, VenueJsonMarshaller venueJsonMarshaller) {
+        println 'creating cache populator'
+        new AsyncVenueCachePopulator(hashMapVenueCache, venueJsonMarshaller)
     }
 
     @Provides
@@ -46,7 +70,8 @@ class Where2PairModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(VenueRepository).to(HashMapVenueRepository).in(Singleton)
+        bind(NewVenueRepository).to(AmazonS3NewVenueRepository).in(Singleton)
+        bind(VenueRepository).to(HashMapVenueCache).in(Singleton)
     }
 }
 
@@ -76,6 +101,7 @@ ratpack {
                 renderResult(response, venue)
             }
             post { SaveVenueController saveVenueController ->
+                println 'savingVenueController'
                 def json = new JsonSlurper().parseText(request.body.text)
                 def venue = saveVenueController.save(json)
                 renderResult(response, venue)

@@ -1,11 +1,20 @@
 package org.where2pair.infra.venue.web
 
-import org.where2pair.core.venue.*
-import org.where2pair.core.venue.DailyOpeningTimes.SimpleTime
+import org.where2pair.core.venue.read.Address
+import org.where2pair.core.venue.common.Coordinates
+import org.where2pair.core.venue.common.SimpleTime
+import org.where2pair.core.venue.read.FacilitiesCriteria
+import org.where2pair.core.venue.read.LocationsCriteria
+import org.where2pair.core.venue.read.OpenTimesCriteria
+import org.where2pair.core.venue.read.TimeProvider
+import org.where2pair.core.venue.read.Venue
+import org.where2pair.core.venue.read.VenueService
+import org.where2pair.core.venue.read.VenueWithDistances
+import org.where2pair.core.venue.read.WeeklyOpeningTimesBuilder
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import static org.where2pair.core.venue.DayOfWeek.*
+import static org.where2pair.core.venue.read.DayOfWeek.*
 
 class FindVenueControllerSpec extends Specification {
 
@@ -58,8 +67,8 @@ class FindVenueControllerSpec extends Specification {
     @Unroll
     def "given openFrom: #openFromParam openUntil: #openUntilParam openDay: #openDayParam finds venues open during correct time range"() {
         given:
-        if (openFromParam != 'missing') params.'openFrom' = openFromParam
-        if (openUntilParam != 'missing') params.'openUntil' = openUntilParam
+        if (openFromParam != 'missing') params.'from' = openFromParam
+        if (openUntilParam != 'missing') params.'until' = openUntilParam
         if (openDayParam != 'missing') params.'openDay' = openDayParam
 
         when:

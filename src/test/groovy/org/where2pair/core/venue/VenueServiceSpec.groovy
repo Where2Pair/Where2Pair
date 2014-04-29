@@ -1,9 +1,19 @@
 package org.where2pair.core.venue
 
-import static org.where2pair.core.venue.DistanceUnit.KM
-
+import org.where2pair.core.venue.common.VenueId
+import org.where2pair.core.venue.common.Coordinates
+import org.where2pair.core.venue.read.Distance
+import org.where2pair.core.venue.read.FacilitiesCriteria
+import org.where2pair.core.venue.read.LocationsCriteria
+import org.where2pair.core.venue.read.OpenTimesCriteria
+import org.where2pair.core.venue.read.Venue
+import org.where2pair.core.venue.read.VenueRepository
+import org.where2pair.core.venue.read.VenueService
 import spock.lang.Specification
 import spock.lang.Unroll
+
+import static org.where2pair.core.venue.read.DistanceUnit.KM
+import static org.where2pair.core.venue.VenueIdBuilder.aVenueId
 
 class VenueServiceSpec extends Specification {
 
@@ -11,7 +21,7 @@ class VenueServiceSpec extends Specification {
     VenueService venueService = new VenueService(venueRepository: venueRepository)
 
     @Unroll("#rationale")
-    def "returns correct count of venues"() {
+    def "returns correct number of venues"() {
         given:
         venueRepository.getAll() >> numberOf.openVenues()
 
@@ -56,7 +66,7 @@ class VenueServiceSpec extends Specification {
         nearbyVenues = assignUniqueIds(nearbyVenues)
         venueRepository.getAll() >> 50.openVenues() + nearbyVenues
         LocationsCriteria locationsCriteria = Mock()
-        locationsCriteria.distancesTo(_ as Venue) >>> (99..0).collect { [(new Coordinates(1.0,it)): new Distance(value:it, unit:KM)] }
+        locationsCriteria.distancesTo(_ as Venue) >>> (99..0).collect { [(new Coordinates(1.0,0.1)): new Distance(value:it, unit:KM)] }
 
         when:
         List venues = venueService.findNearestTo(OPEN_TIMES_CRITERIA, FACILITIES_CRITERIA, locationsCriteria)
@@ -65,36 +75,22 @@ class VenueServiceSpec extends Specification {
         venues.venue == nearbyVenues.reverse()
     }
 
-    def "when no matching Venue already exists, then saves new Venue"() {
+    def "saves new Venues"() {
         given:
         Venue venue = new Venue(name: 'name', location: new Coordinates(1.0, 0.1))
-        venueRepository.findByNameAndCoordinates('name', new Coordinates(1.0, 0.1)) >> null
-        venueRepository.save(venue) >> '99'
+        VenueId venueId = aVenueId().build()
+        venueRepository.save(venue) >> venueId
 
         when:
-        String result = venueService.save(venue)
+        VenueId result = venueService.save(venue)
 
         then:
-        result == '99'
+        result == venueId
     }
 
-    def "when matching Venue is found, then updates existing Venue"() {
-        given:
-        Venue venue = new Venue(id: 0, name: 'name', location: new Coordinates(1.0, 0.1))
-        Venue matchingVenue = new Venue(id: '99')
-        venueRepository.findByNameAndCoordinates('name', new Coordinates(1.0, 0.1)) >> matchingVenue
-
-        when:
-        String result = venueService.save(venue)
-
-        then:
-        result == '99'
-        1 * venueRepository.update({ it == venue && it.id == '99' })
-    }
-
-    def assignUniqueIds(List venues) {
+    def assignUniqueIds(List<Venue> venues) {
         int idIndex = 0
-        venues.collect { it.id = ++idIndex; it }
+        venues.collect { it.id = aVenueId().withName("${++idIndex}").build(); it }
     }
 
     def setup() {

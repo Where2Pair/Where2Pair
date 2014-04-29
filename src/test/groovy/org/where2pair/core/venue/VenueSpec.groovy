@@ -1,7 +1,14 @@
 package org.where2pair.core.venue
 
-import static org.where2pair.core.venue.DistanceUnit.KM
-import static org.where2pair.core.venue.DistanceUnit.MILES
+import org.where2pair.core.venue.common.Coordinates
+import org.where2pair.core.venue.read.Distance
+import org.where2pair.core.venue.read.FacilitiesCriteria
+import org.where2pair.core.venue.read.OpenTimesCriteria
+import org.where2pair.core.venue.read.Venue
+import org.where2pair.core.venue.read.WeeklyOpeningTimes
+
+import static org.where2pair.core.venue.read.DistanceUnit.KM
+import static org.where2pair.core.venue.read.DistanceUnit.MILES
 import static org.where2pair.core.venue.ObjectUtils.createVenue
 import static spock.util.matcher.HamcrestMatchers.closeTo
 import static spock.util.matcher.HamcrestSupport.that

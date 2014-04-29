@@ -1,8 +1,7 @@
 package org.where2pair.infra.venue.web
 
-import org.where2pair.core.venue.Coordinates
-import org.where2pair.core.venue.LocationsCriteria
-import org.where2pair.infra.venue.web.LocationsCriteriaParser
+import org.where2pair.core.venue.common.Coordinates
+import org.where2pair.core.venue.read.LocationsCriteria
 import spock.lang.Specification
 
 class LocationsCriteriaParserSpec extends Specification {

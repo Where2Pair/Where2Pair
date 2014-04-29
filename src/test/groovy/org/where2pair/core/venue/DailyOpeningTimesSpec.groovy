@@ -1,7 +1,9 @@
 package org.where2pair.core.venue
 
-import org.where2pair.core.venue.DailyOpeningTimes.OpenPeriod
-import org.where2pair.core.venue.DailyOpeningTimes.SimpleTime
+import org.where2pair.core.venue.common.SimpleTime
+import org.where2pair.core.venue.read.DailyOpeningTimes
+import org.where2pair.core.venue.read.DailyOpeningTimes.OpenPeriod
+import org.where2pair.core.venue.common.SimpleTime
 import spock.lang.Specification
 
 class DailyOpeningTimesSpec extends Specification {
@@ -28,7 +30,7 @@ class DailyOpeningTimesSpec extends Specification {
         isOpen == expectedOpen
 
         where:
-        startTime | endTime | openFrom               | openUntil              | expectedOpen
+        startTime | endTime | from               | until              | expectedOpen
         '12:00'   | '12:00' | new SimpleTime(12, 0)  | new SimpleTime(12, 0)  | false
         '12:00'   | '12:01' | new SimpleTime(12, 0)  | new SimpleTime(12, 1)  | true
         '12:00'   | '12:00' | new SimpleTime(12, 1)  | new SimpleTime(12, 1)  | false

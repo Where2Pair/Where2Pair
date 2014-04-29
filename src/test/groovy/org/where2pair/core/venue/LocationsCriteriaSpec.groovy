@@ -1,13 +1,13 @@
 package org.where2pair.core.venue
 
-import org.where2pair.core.venue.LocationsCriteria
+import org.where2pair.core.venue.read.LocationsCriteria
 
-import static org.where2pair.core.venue.DistanceUnit.KM
-import static org.where2pair.core.venue.DistanceUnit.MILES
+import static org.where2pair.core.venue.read.DistanceUnit.KM
+import static org.where2pair.core.venue.read.DistanceUnit.MILES
 
-import org.where2pair.core.venue.Coordinates
-import org.where2pair.core.venue.Distance
-import org.where2pair.core.venue.Venue
+import org.where2pair.core.venue.common.Coordinates
+import org.where2pair.core.venue.read.Distance
+import org.where2pair.core.venue.read.Venue
 
 import spock.lang.Specification
 

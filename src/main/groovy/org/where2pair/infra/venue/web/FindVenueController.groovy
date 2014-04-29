@@ -1,14 +1,14 @@
 package org.where2pair.infra.venue.web
 
-import org.where2pair.core.venue.DailyOpeningTimes.SimpleTime
-import org.where2pair.core.venue.DayOfWeek
-import org.where2pair.core.venue.FacilitiesCriteria
-import org.where2pair.core.venue.LocationsCriteria
-import org.where2pair.core.venue.OpenTimesCriteria
-import org.where2pair.core.venue.TimeProvider
-import org.where2pair.core.venue.VenueService
+import org.where2pair.core.venue.common.SimpleTime
+import org.where2pair.core.venue.read.DayOfWeek
+import org.where2pair.core.venue.read.FacilitiesCriteria
+import org.where2pair.core.venue.read.LocationsCriteria
+import org.where2pair.core.venue.read.OpenTimesCriteria
+import org.where2pair.core.venue.read.TimeProvider
+import org.where2pair.core.venue.read.VenueService
 
-import static org.where2pair.core.venue.DayOfWeek.parseDayOfWeek
+import static DayOfWeek.parseDayOfWeek
 
 class FindVenueController {
 

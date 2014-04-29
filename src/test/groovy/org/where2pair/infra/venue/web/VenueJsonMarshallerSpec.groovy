@@ -1,27 +1,22 @@
 package org.where2pair.infra.venue.web
 
-import org.where2pair.core.venue.Address
-import org.where2pair.core.venue.Coordinates
-import org.where2pair.core.venue.Distance
-import org.where2pair.core.venue.Venue
-import org.where2pair.core.venue.VenueWithDistances
-import org.where2pair.core.venue.WeeklyOpeningTimes
-import org.where2pair.infra.venue.web.OpenHoursJsonMarshaller
-import org.where2pair.infra.venue.web.VenueJsonMarshaller
+import org.where2pair.core.venue.common.Coordinates
+import org.where2pair.core.venue.read.*
 import spock.lang.Specification
 
-import static org.where2pair.core.venue.ObjectUtils.createVenue
-import static org.where2pair.core.venue.ObjectUtils.createVenueJson
-import static org.where2pair.core.venue.DistanceUnit.KM
+import static VenueDetailsBuilder.venueDetails
+import static org.where2pair.core.venue.read.DistanceUnit.KM
 
 class VenueJsonMarshallerSpec extends Specification {
 
-    Venue venue = createVenue()
-    Map venueJson = createVenueJson()
-    OpenHoursJsonMarshaller openHoursJsonMarshaller = Mock() {
-        asOpenHoursJson(venue.weeklyOpeningTimes) >> venueJson.openHours
-        asWeeklyOpeningTimes(venueJson.openHours) >> venue.weeklyOpeningTimes
-    }
+    //When Venue serializeto Json with Id
+
+    Venue venue = VenueBuilder.aVenue().build()
+    Map venueJson = venueDetails().toJson()
+//    OpenHoursJsonMarshaller openHoursJsonMarshaller = Mock() {
+//        asOpenHoursJson(venue.weeklyOpeningTimes) >> venueJson.openHours
+//        asWeeklyOpeningTimes(venueJson.openHours) >> venue.weeklyOpeningTimes
+//    }
     VenueJsonMarshaller venueJsonMarshaller = new VenueJsonMarshaller(
             openHoursJsonMarshaller: openHoursJsonMarshaller)
 
@@ -40,35 +35,35 @@ class VenueJsonMarshallerSpec extends Specification {
         then:
         result == [venueJson]
     }
-	
+
     def "converts VenueWithDistances to json"() {
         given:
-		def location1 = new Coordinates(1.0, 0.1)
-		def location2 = new Coordinates(2.0, 0.2)
+        def location1 = new Coordinates(1.0, 0.1)
+        def location2 = new Coordinates(2.0, 0.2)
         VenueWithDistances venueWithDistances = new VenueWithDistances(venue: venue, distances: [
-			(location1): new Distance(value: 10, unit: KM),
-			(location2): new Distance(value: 30, unit: KM)])
+                (location1): new Distance(value: 10, unit: KM),
+                (location2): new Distance(value: 30, unit: KM)])
         List expectedVenuesWithDistancesJson = [[
                 distances: [
-					[	
-						location: location1,
-						distance: [
-							value: 10.0,
-							unit: "km"
-						]
-					],
-					[
-						location: location2,
-						distance: [
-							value: 30.0,
-							unit: "km"
-						]
-					]
-				],
-				averageDistance: [
-					value: 20.0,
-					unit: "km"
-				],
+                        [
+                                location: location1,
+                                distance: [
+                                        value: 10.0,
+                                        unit: "km"
+                                ]
+                        ],
+                        [
+                                location: location2,
+                                distance: [
+                                        value: 30.0,
+                                        unit: "km"
+                                ]
+                        ]
+                ],
+                averageDistance: [
+                        value: 20.0,
+                        unit: "km"
+                ],
                 venue: venueJson]]
 
         when:

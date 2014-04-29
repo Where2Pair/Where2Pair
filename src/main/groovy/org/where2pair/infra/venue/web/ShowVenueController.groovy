@@ -1,7 +1,7 @@
 package org.where2pair.infra.venue.web
 
-import org.where2pair.core.venue.Venue
-import org.where2pair.core.venue.VenueRepository
+import org.where2pair.core.venue.read.Venue
+import org.where2pair.core.venue.read.VenueRepository
 
 class ShowVenueController {
     VenueRepository venueRepository
