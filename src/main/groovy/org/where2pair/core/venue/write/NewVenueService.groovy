@@ -4,11 +4,11 @@ import org.where2pair.core.venue.common.VenueId
 
 class NewVenueService {
 
-    NewVenueSavedEventPublisher newVenueSavedEventPublisher
+    NewVenueSavedEventSubscribers newVenueSavedEventSubscribers
 
     VenueId save(Map<String, ?> venueJson) {
         NewVenueSavedEvent newVenueSavedEvent = NewVenue.publishNewVenue(venueJson)
-        newVenueSavedEventPublisher.publish(newVenueSavedEvent)
+        newVenueSavedEventSubscribers.publish(newVenueSavedEvent)
         newVenueSavedEvent.venueId
     }
 

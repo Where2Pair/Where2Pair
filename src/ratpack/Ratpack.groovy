@@ -3,10 +3,9 @@ import com.google.inject.Provides
 import com.google.inject.Singleton
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
-import org.where2pair.core.venue.write.NewVenueRepository
-import org.where2pair.core.venue.write.NewVenueSavedEventPublisher
+
 import org.where2pair.core.venue.write.NewVenueService
-import org.where2pair.infra.venue.persistence.AmazonS3NewVenueRepository
+import org.where2pair.infra.venue.write.AmazonS3NewVenueRepository
 import org.where2pair.infra.venue.persistence.AsyncVenueCachePopulator
 import org.where2pair.infra.venue.web.LocationsCriteriaParser
 import org.where2pair.core.venue.read.TimeProvider
@@ -27,31 +26,31 @@ import static ratpack.groovy.Groovy.ratpack
 //Or do we later say NewVenueSavedEventPublisher.setNewEventSavedListener(...)?
 class Where2PairModule extends AbstractModule {
 
-    @Provides
-    ShowVenueController createShowVenueController(VenueRepository venueRepository, VenueJsonMarshaller venueJsonMarshaller) {
-        new ShowVenueController(venueRepository: venueRepository, venueJsonMarshaller: venueJsonMarshaller)
-    }
-
-    @Provides
-    SaveVenueController createSaveVenueController(NewVenueRepository newVenueRepository, NewVenueSavedEventPublisher newVenueSavedEventPublisher) {
-        println 'creating save venue controller'
-        NewVenueService newVenueService = new NewVenueService(newVenueRepository: newVenueRepository, newVenueSavedEventPublisher: newVenueSavedEventPublisher)
-        new SaveVenueController(newVenueService: newVenueService)
-    }
-
-    @Provides
-    NewVenueSavedEventPublisher createNewVenueSavedEventPublisher(AsyncVenueCachePopulator asyncVenueCachePopulator) {
-        println 'creating new venue saved event publisher'
-        println 'creating...'
-        try {
-            NewVenueSavedEventPublisher pub = new NewVenueSavedEventPublisher(asyncVenueCachePopulator)
-            println 'created'
-            return pub
-        }
-        catch (Exception e) {
-            println e.message
-        }
-    }
+//    @Provides
+//    ShowVenueController createShowVenueController(VenueRepository venueRepository, VenueJsonMarshaller venueJsonMarshaller) {
+//        new ShowVenueController(venueRepository: venueRepository, venueJsonMarshaller: venueJsonMarshaller)
+//    }
+//
+//    @Provides
+//    SaveVenueController createSaveVenueController(NewVenueRepository newVenueRepository, NewVenueSavedEventPublisher newVenueSavedEventPublisher) {
+//        println 'creating save venue controller'
+//        NewVenueService newVenueService = new NewVenueService(newVenueRepository: newVenueRepository, newVenueSavedEventSubscribers: newVenueSavedEventPublisher)
+//        new SaveVenueController(newVenueService: newVenueService)
+//    }
+//
+//    @Provides
+//    NewVenueSavedEventPublisher createNewVenueSavedEventPublisher(AsyncVenueCachePopulator asyncVenueCachePopulator) {
+//        println 'creating new venue saved event publisher'
+//        println 'creating...'
+//        try {
+//            NewVenueSavedEventPublisher pub = new NewVenueSavedEventPublisher(asyncVenueCachePopulator)
+//            println 'created'
+//            return pub
+//        }
+//        catch (Exception e) {
+//            println e.message
+//        }
+//    }
 
     @Provides
     @Singleton

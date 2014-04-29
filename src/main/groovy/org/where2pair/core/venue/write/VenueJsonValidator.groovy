@@ -3,7 +3,6 @@ package org.where2pair.core.venue.write
 import org.where2pair.core.venue.common.SimpleTime
 import org.where2pair.core.venue.read.DayOfWeek
 
-
 class VenueJsonValidator {
 
     void validate(Map<String, ?> venueJson) {

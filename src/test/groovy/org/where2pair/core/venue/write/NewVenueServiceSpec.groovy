@@ -7,12 +7,14 @@ import spock.lang.Unroll
 
 import static org.where2pair.core.venue.read.VenueBuilder.aVenue
 
-
-class NewVenueServiceTest extends Specification {
+class NewVenueServiceSpec extends Specification {
 
     Map<String, ?> venueJson = aVenue().toJson()
-    NewVenueSavedEventPublisher newVenueSavedEventPublisher = Mock()
-    NewVenueService newVenueService = new NewVenueService(newVenueSavedEventPublisher: newVenueSavedEventPublisher)
+    NewVenueSavedEventSubscriber subscriberA = Mock()
+    NewVenueSavedEventSubscriber subscriberB = Mock()
+    NewVenueServiceFactory newVenueServiceFactory = new NewVenueServiceFactory()
+    NewVenueService newVenueService = newVenueServiceFactory
+            .createServiceWithEventSubscribers(subscriberA, subscriberB)
 
     def 'publishes new venues, assigns and returns id'() {
         given:
@@ -24,10 +26,18 @@ class NewVenueServiceTest extends Specification {
         VenueId venueId = newVenueService.save(venueJson)
 
         then:
-        1 * newVenueSavedEventPublisher.publish { NewVenueSavedEvent newVenueSavedEvent ->
+        1 * subscriberA.notifyNewVenueSaved { NewVenueSavedEvent newVenueSavedEvent ->
             newVenueSavedEvent.newVenue == new NewVenue(venueJson) &&
                     newVenueSavedEvent.venueId == expectedVenueId
         }
+
+        then:
+        1 * subscriberB.notifyNewVenueSaved { NewVenueSavedEvent newVenueSavedEvent ->
+            newVenueSavedEvent.newVenue == new NewVenue(venueJson) &&
+                    newVenueSavedEvent.venueId == expectedVenueId
+        }
+
+        and:
         venueId == expectedVenueId
     }
 

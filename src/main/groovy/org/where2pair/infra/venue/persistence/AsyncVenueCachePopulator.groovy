@@ -4,9 +4,9 @@ import org.where2pair.core.venue.read.JsonToVenueDetailsMapper
 import org.where2pair.core.venue.read.Venue
 import org.where2pair.core.venue.read.VenueDetails
 import org.where2pair.core.venue.write.NewVenueSavedEvent
-import org.where2pair.core.venue.write.NewVenueSavedEventListener
+import org.where2pair.core.venue.write.NewVenueSavedEventSubscriber
 
-class AsyncVenueCachePopulator implements NewVenueSavedEventListener {
+class AsyncVenueCachePopulator implements NewVenueSavedEventSubscriber {
 
     final HashMapVenueCache venueCache
     final JsonToVenueDetailsMapper jsonToVenueDetailsMapper
