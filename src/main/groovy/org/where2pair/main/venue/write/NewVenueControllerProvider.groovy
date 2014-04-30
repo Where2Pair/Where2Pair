@@ -1,4 +1,4 @@
-package org.where2pair.main.venue
+package org.where2pair.main.venue.write
 
 import com.google.inject.Inject
 import com.google.inject.Provider
@@ -39,24 +39,4 @@ class NewVenueControllerProvider implements Provider<NewVenueController> {
         new VenueCachePopulator(venueCache, new JsonToVenueDetailsMapper())
     }
 
-    private static class AsyncNewVenueSavedEventSubscriber implements NewVenueSavedEventSubscriber {
-        private static final ExecutorService executorService = newCachedThreadPool()
-        private final NewVenueSavedEventSubscriber subscriber
-
-        static NewVenueSavedEventSubscriber asAsyncSubscriber(NewVenueSavedEventSubscriber newVenueSavedEventSubscriber) {
-            new AsyncNewVenueSavedEventSubscriber(newVenueSavedEventSubscriber)
-        }
-
-        private AsyncNewVenueSavedEventSubscriber(NewVenueSavedEventSubscriber subscriber) {
-            this.subscriber == subscriber
-        }
-
-        @Override
-        void notifyNewVenueSaved(NewVenueSavedEvent newVenueSavedEvent) {
-            GParsExecutorsPool.withExistingPool(executorService) {
-                    Closure notify = {subscriber.notifyNewVenueSaved(newVenueSavedEvent)}
-                    notify.callAsync()
-            }
-        }
-    }
 }
