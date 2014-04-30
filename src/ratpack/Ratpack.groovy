@@ -17,6 +17,7 @@ import org.where2pair.infra.venue.persistence.HashMapVenueCache
 import org.where2pair.infra.venue.write.NewVenueController
 
 import org.where2pair.infra.venue.web.ShowVenueController
+import org.where2pair.main.venue.write.GuiceWriteModule
 
 import static ratpack.groovy.Groovy.ratpack
 
@@ -75,6 +76,7 @@ class Where2PairModule extends AbstractModule {
 ratpack {
     modules {
         register new Where2PairModule()
+        register new GuiceWriteModule()
     }
 
     handlers {
