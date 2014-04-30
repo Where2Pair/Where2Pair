@@ -1,6 +1,9 @@
-package org.where2pair.core.venue.read
+package org.where2pair.core.venue.read.mappingfromjson
 
 import org.where2pair.core.venue.common.SimpleTime
+import org.where2pair.core.venue.read.DayOfWeek
+import org.where2pair.core.venue.read.WeeklyOpeningTimes
+import org.where2pair.core.venue.read.mappingtojson.WeeklyOpeningTimesBuilder
 
 class JsonToOpenHoursMapper {
 

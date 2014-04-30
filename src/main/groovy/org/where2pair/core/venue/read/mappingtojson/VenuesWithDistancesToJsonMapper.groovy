@@ -1,7 +1,9 @@
-package org.where2pair.core.venue.read
+package org.where2pair.core.venue.read.mappingtojson
 
 import groovy.transform.Immutable
 import org.where2pair.core.venue.common.Coordinates
+import org.where2pair.core.venue.read.Distance
+import org.where2pair.core.venue.read.VenueWithDistances
 
 @Immutable
 class VenuesWithDistancesToJsonMapper {

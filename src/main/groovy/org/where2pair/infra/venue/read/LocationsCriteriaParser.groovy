@@ -1,4 +1,4 @@
-package org.where2pair.infra.venue.web
+package org.where2pair.infra.venue.read
 
 import org.where2pair.core.venue.common.Coordinates
 import org.where2pair.core.venue.read.LocationsCriteria

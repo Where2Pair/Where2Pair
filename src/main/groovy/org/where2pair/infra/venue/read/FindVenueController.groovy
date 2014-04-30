@@ -1,11 +1,10 @@
-package org.where2pair.infra.venue.web
+package org.where2pair.infra.venue.read
 
 import org.where2pair.core.venue.common.SimpleTime
 import org.where2pair.core.venue.read.DayOfWeek
 import org.where2pair.core.venue.read.FacilitiesCriteria
 import org.where2pair.core.venue.read.LocationsCriteria
 import org.where2pair.core.venue.read.OpenTimesCriteria
-import org.where2pair.core.venue.read.TimeProvider
 import org.where2pair.core.venue.read.VenueService
 
 import static DayOfWeek.parseDayOfWeek

@@ -1,10 +1,9 @@
-package org.where2pair.core.venue
+package org.where2pair.infra.venue.read
 
 import org.joda.time.DateTime
 import org.where2pair.core.venue.common.SimpleTime
-import org.where2pair.core.venue.common.SimpleTime
 import org.where2pair.core.venue.read.DayOfWeek
-import org.where2pair.core.venue.read.TimeProvider
+import org.where2pair.infra.venue.read.TimeProvider
 import spock.lang.Specification
 
 import static spock.util.matcher.HamcrestMatchers.closeTo

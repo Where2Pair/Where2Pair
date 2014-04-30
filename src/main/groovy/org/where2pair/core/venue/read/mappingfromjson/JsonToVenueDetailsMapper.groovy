@@ -1,6 +1,9 @@
-package org.where2pair.core.venue.read
+package org.where2pair.core.venue.read.mappingfromjson
 
 import org.where2pair.core.venue.common.Coordinates
+import org.where2pair.core.venue.read.Address
+import org.where2pair.core.venue.read.VenueDetails
+import org.where2pair.core.venue.read.WeeklyOpeningTimes
 
 class JsonToVenueDetailsMapper {
 

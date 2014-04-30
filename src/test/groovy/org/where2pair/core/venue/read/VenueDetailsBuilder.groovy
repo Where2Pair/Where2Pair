@@ -2,6 +2,8 @@ package org.where2pair.core.venue.read
 
 import org.where2pair.core.venue.common.Coordinates
 import org.where2pair.core.venue.common.SimpleTime
+import org.where2pair.core.venue.read.mappingtojson.OpenHoursToJsonMapper
+import org.where2pair.core.venue.read.mappingtojson.WeeklyOpeningTimesBuilder
 
 import static org.where2pair.core.venue.read.DayOfWeek.MONDAY
 import static org.where2pair.core.venue.read.DayOfWeek.TUESDAY

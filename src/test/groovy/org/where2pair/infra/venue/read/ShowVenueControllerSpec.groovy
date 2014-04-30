@@ -1,9 +1,10 @@
-package org.where2pair.infra.venue.web
+package org.where2pair.infra.venue.read
 
 import org.where2pair.core.venue.common.Coordinates
 import org.where2pair.core.venue.read.Venue
 import org.where2pair.core.venue.read.VenueRepository
-import org.where2pair.core.venue.read.WeeklyOpeningTimesBuilder
+import org.where2pair.core.venue.read.mappingtojson.WeeklyOpeningTimesBuilder
+import org.where2pair.infra.venue.read.ShowVenueController
 import spock.lang.Specification
 
 class ShowVenueControllerSpec extends Specification {

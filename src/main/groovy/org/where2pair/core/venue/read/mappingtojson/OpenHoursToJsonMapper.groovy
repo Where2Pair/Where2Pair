@@ -1,4 +1,8 @@
-package org.where2pair.core.venue.read
+package org.where2pair.core.venue.read.mappingtojson
+
+import org.where2pair.core.venue.read.DailyOpeningTimes
+import org.where2pair.core.venue.read.DayOfWeek
+import org.where2pair.core.venue.read.WeeklyOpeningTimes
 
 import static org.where2pair.core.venue.read.DayOfWeek.MONDAY
 import static org.where2pair.core.venue.read.DayOfWeek.SUNDAY

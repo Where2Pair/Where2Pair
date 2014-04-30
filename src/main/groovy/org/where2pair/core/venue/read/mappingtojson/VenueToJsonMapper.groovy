@@ -1,6 +1,8 @@
-package org.where2pair.core.venue.read
+package org.where2pair.core.venue.read.mappingtojson
 
 import groovy.transform.Immutable
+import org.where2pair.core.venue.read.Venue
+import org.where2pair.core.venue.read.mappingtojson.OpenHoursToJsonMapper
 
 @Immutable
 class VenueToJsonMapper {

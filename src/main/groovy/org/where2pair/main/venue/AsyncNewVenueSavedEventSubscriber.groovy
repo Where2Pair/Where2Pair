@@ -1,4 +1,4 @@
-package org.where2pair.main.venue.write
+package org.where2pair.main.venue
 
 import groovyx.gpars.GParsExecutorsPool
 import org.where2pair.core.venue.write.NewVenueSavedEvent

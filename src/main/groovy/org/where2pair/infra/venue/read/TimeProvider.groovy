@@ -1,7 +1,8 @@
-package org.where2pair.core.venue.read
+package org.where2pair.infra.venue.read
 
 import org.joda.time.DateTime
 import org.where2pair.core.venue.common.SimpleTime
+import org.where2pair.core.venue.read.DayOfWeek
 
 class TimeProvider {
 

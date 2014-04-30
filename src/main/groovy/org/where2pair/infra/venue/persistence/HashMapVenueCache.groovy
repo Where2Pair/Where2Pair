@@ -3,11 +3,10 @@ package org.where2pair.infra.venue.persistence
 import org.where2pair.core.venue.common.VenueId
 import org.where2pair.core.venue.read.Venue
 import org.where2pair.core.venue.read.VenueRepository
-import org.where2pair.infra.venue.write.VenueCache
 
 import java.util.concurrent.ConcurrentHashMap
 
-class HashMapVenueCache implements VenueRepository, VenueCache {
+class HashMapVenueCache implements VenueRepository {
 
     final ConcurrentHashMap venues = [:]
 

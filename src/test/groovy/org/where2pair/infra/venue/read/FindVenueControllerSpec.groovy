@@ -1,4 +1,4 @@
-package org.where2pair.infra.venue.web
+package org.where2pair.infra.venue.read
 
 import org.where2pair.core.venue.read.Address
 import org.where2pair.core.venue.common.Coordinates
@@ -6,11 +6,13 @@ import org.where2pair.core.venue.common.SimpleTime
 import org.where2pair.core.venue.read.FacilitiesCriteria
 import org.where2pair.core.venue.read.LocationsCriteria
 import org.where2pair.core.venue.read.OpenTimesCriteria
-import org.where2pair.core.venue.read.TimeProvider
+import org.where2pair.infra.venue.read.FindVenueController
+import org.where2pair.infra.venue.read.LocationsCriteriaParser
+import org.where2pair.infra.venue.read.TimeProvider
 import org.where2pair.core.venue.read.Venue
 import org.where2pair.core.venue.read.VenueService
 import org.where2pair.core.venue.read.VenueWithDistances
-import org.where2pair.core.venue.read.WeeklyOpeningTimesBuilder
+import org.where2pair.core.venue.read.mappingtojson.WeeklyOpeningTimesBuilder
 import spock.lang.Specification
 import spock.lang.Unroll
 
