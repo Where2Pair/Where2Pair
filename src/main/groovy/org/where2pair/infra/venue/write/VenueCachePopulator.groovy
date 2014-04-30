@@ -1,14 +1,16 @@
-package org.where2pair.infra.venue.persistence
+package org.where2pair.infra.venue.write
 
 import org.where2pair.core.venue.read.JsonToVenueDetailsMapper
 import org.where2pair.core.venue.read.Venue
 import org.where2pair.core.venue.read.VenueDetails
+import org.where2pair.core.venue.write.NewVenue
 import org.where2pair.core.venue.write.NewVenueSavedEvent
 import org.where2pair.core.venue.write.NewVenueSavedEventSubscriber
+import org.where2pair.infra.venue.persistence.HashMapVenueCache
 
-class VenueCachePopulator implements NewVenueSavedEventSubscriber {
+class VenueCachePopulator {
 
-    final HashMapVenueCache venueCache
+    final VenueCache venueCache
     final JsonToVenueDetailsMapper jsonToVenueDetailsMapper
 
     public VenueCachePopulator(HashMapVenueCache venueCache, JsonToVenueDetailsMapper jsonToVenueDetailsMapper) {
@@ -17,8 +19,8 @@ class VenueCachePopulator implements NewVenueSavedEventSubscriber {
     }
 
     @Override
-    public void notifyNewVenueSaved(NewVenueSavedEvent newVenueSavedEvent) {
-        VenueDetails venueDetails = jsonToVenueDetailsMapper.toVenueDetails(newVenueSavedEvent.newVenue.venueJson)
+    public void put(NewVenue newVenue) {
+        VenueDetails venueDetails = jsonToVenueDetailsMapper.toVenueDetails(newVenue.venueJson)
         Venue venue = new Venue(newVenueSavedEvent.venueId, venueDetails)
         venueCache.put(venue)
     }

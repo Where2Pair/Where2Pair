@@ -4,7 +4,7 @@ import com.google.inject.Singleton
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import org.where2pair.infra.venue.write.AmazonS3NewVenueRepository
-import org.where2pair.infra.venue.persistence.VenueCachePopulator
+import org.where2pair.infra.venue.write.VenueCachePopulator
 import org.where2pair.infra.venue.web.LocationsCriteriaParser
 import org.where2pair.core.venue.read.TimeProvider
 import org.where2pair.core.venue.read.VenueService
