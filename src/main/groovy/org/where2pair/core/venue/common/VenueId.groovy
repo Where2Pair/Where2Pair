@@ -8,11 +8,10 @@ class VenueId {
     Coordinates location
     String addressLine1
 
-//    @Override
-//    String toString() {
-//        String nameComponent = venueName.replaceAll(' ', '_')
-//        String coordinatesComponent = "${location.lat}_${location.lng}"
-//        String addressLine1Component = addressLine1
-//        "${nameComponent}_${coordinatesComponent}_${addressLine1Component}"
-//    }
+    @Override
+    String toString() {
+        String nameComponent = venueName.replaceAll(' ', '_')
+        String addressLine1Component = addressLine1.replaceAll(' ', '_')
+        "${nameComponent}|${location.lat}|${location.lng}|${addressLine1Component}"
+    }
 }

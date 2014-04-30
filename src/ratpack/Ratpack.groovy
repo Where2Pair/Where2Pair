@@ -3,10 +3,8 @@ import com.google.inject.Provides
 import com.google.inject.Singleton
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
-
-import org.where2pair.core.venue.write.NewVenueService
 import org.where2pair.infra.venue.write.AmazonS3NewVenueRepository
-import org.where2pair.infra.venue.persistence.AsyncVenueCachePopulator
+import org.where2pair.infra.venue.persistence.VenueCachePopulator
 import org.where2pair.infra.venue.web.LocationsCriteriaParser
 import org.where2pair.core.venue.read.TimeProvider
 import org.where2pair.core.venue.read.VenueService
@@ -16,7 +14,7 @@ import org.where2pair.infra.venue.web.FindVenueController
 import org.where2pair.infra.venue.web.VenueJsonMarshaller
 import org.where2pair.core.venue.read.VenueRepository
 import org.where2pair.infra.venue.persistence.HashMapVenueCache
-import org.where2pair.infra.venue.web.SaveVenueController
+import org.where2pair.infra.venue.write.NewVenueController
 
 import org.where2pair.infra.venue.web.ShowVenueController
 
@@ -32,14 +30,14 @@ class Where2PairModule extends AbstractModule {
 //    }
 //
 //    @Provides
-//    SaveVenueController createSaveVenueController(NewVenueRepository newVenueRepository, NewVenueSavedEventPublisher newVenueSavedEventPublisher) {
+//    NewVenueController createSaveVenueController(NewVenueRepository newVenueRepository, NewVenueSavedEventPublisher newVenueSavedEventPublisher) {
 //        println 'creating save venue controller'
 //        NewVenueService newVenueService = new NewVenueService(newVenueRepository: newVenueRepository, newVenueSavedEventSubscribers: newVenueSavedEventPublisher)
-//        new SaveVenueController(newVenueService: newVenueService)
+//        new NewVenueController(newVenueService: newVenueService)
 //    }
 //
 //    @Provides
-//    NewVenueSavedEventPublisher createNewVenueSavedEventPublisher(AsyncVenueCachePopulator asyncVenueCachePopulator) {
+//    NewVenueSavedEventPublisher createNewVenueSavedEventPublisher(VenueCachePopulator asyncVenueCachePopulator) {
 //        println 'creating new venue saved event publisher'
 //        println 'creating...'
 //        try {
@@ -54,9 +52,9 @@ class Where2PairModule extends AbstractModule {
 
     @Provides
     @Singleton
-    AsyncVenueCachePopulator createAsyncVenueCachePopulator(HashMapVenueCache hashMapVenueCache, VenueJsonMarshaller venueJsonMarshaller) {
+    VenueCachePopulator createAsyncVenueCachePopulator(HashMapVenueCache hashMapVenueCache, VenueJsonMarshaller venueJsonMarshaller) {
         println 'creating cache populator'
-        new AsyncVenueCachePopulator(hashMapVenueCache, venueJsonMarshaller)
+        new VenueCachePopulator(hashMapVenueCache, venueJsonMarshaller)
     }
 
     @Provides
@@ -99,7 +97,7 @@ ratpack {
                 def venue = showVenueController.show(Long.parseLong(pathTokens.venueId))
                 renderResult(response, venue)
             }
-            post { SaveVenueController saveVenueController ->
+            post { NewVenueController saveVenueController ->
                 println 'savingVenueController'
                 def json = new JsonSlurper().parseText(request.body.text)
                 def venue = saveVenueController.save(json)

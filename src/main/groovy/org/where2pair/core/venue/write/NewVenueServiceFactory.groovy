@@ -8,5 +8,5 @@ class NewVenueServiceFactory {
         def subscribers = new NewVenueSavedEventSubscribers(subscribers: newVenueSavedEventSubscribers)
         new NewVenueService(newVenueSavedEventSubscribers: subscribers)
     }
-    
+
 }

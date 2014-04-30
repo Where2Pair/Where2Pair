@@ -12,7 +12,21 @@ class CoordinatesBuilder {
         new CoordinatesBuilder().build()
     }
 
-    def build() {
+    static CoordinatesBuilder coordinates() {
+        new CoordinatesBuilder()
+    }
+
+    CoordinatesBuilder withLatitude(double latitude) {
+        this.latitude = latitude
+        this
+    }
+
+    CoordinatesBuilder withLongitude(double longitude) {
+        this.longitude = longitude
+        this
+    }
+
+    Coordinates build() {
         new Coordinates(latitude, longitude)
     }
 }

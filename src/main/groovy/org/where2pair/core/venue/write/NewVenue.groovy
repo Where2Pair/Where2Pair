@@ -8,7 +8,7 @@ import org.where2pair.core.venue.common.VenueId
 class NewVenue {
     final Map<String, ?> venueJson
 
-    static NewVenueSavedEvent publishNewVenue(Map<String, ?> venueJson) {
+    static NewVenueSavedEvent publishNewVenue(Map<String, ?> venueJson) throws InvalidVenueJsonException {
         new VenueJsonValidator().validate(venueJson)
         new NewVenueSavedEvent(venueIdFrom(venueJson), newVenue(venueJson))
     }
