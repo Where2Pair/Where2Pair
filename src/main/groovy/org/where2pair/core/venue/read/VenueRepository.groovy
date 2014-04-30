@@ -5,7 +5,7 @@ import org.where2pair.core.venue.common.VenueId
 
 interface VenueRepository {
 
-    List getAll()
+    List<Venue> getAll()
 
     Venue get(VenueId id)
 

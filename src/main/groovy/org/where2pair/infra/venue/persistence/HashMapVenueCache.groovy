@@ -8,10 +8,10 @@ import java.util.concurrent.ConcurrentHashMap
 
 class HashMapVenueCache implements VenueRepository {
 
-    final ConcurrentHashMap venues = [:]
+    final ConcurrentHashMap<VenueId, Venue> venues = [:]
 
     @Override
-    List getAll() {
+    List<Venue> getAll() {
         venues.collect { id, venue ->
             venue.clone()
         }.asImmutable()

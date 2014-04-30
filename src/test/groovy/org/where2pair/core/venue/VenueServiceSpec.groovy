@@ -17,11 +17,11 @@ import static org.where2pair.core.venue.VenueIdBuilder.aVenueId
 
 class VenueServiceSpec extends Specification {
 
-    VenueRepository venueRepository = Mock()
-    VenueService venueService = new VenueService(venueRepository: venueRepository)
+    def venueRepository = Mock(VenueRepository)
+    def venueService = new VenueService(venueRepository: venueRepository)
 
-    @Unroll("#rationale")
-    def "returns correct number of venues"() {
+    @Unroll('#rationale')
+    def 'returns correct number of venues'() {
         given:
         venueRepository.getAll() >> numberOf.openVenues()
 
@@ -33,12 +33,12 @@ class VenueServiceSpec extends Specification {
 
         where:
         rationale                                          | numberOf | expectedVenueCount
-        "should return at most 50 venues"                  | 100      | 50
-        "given less than 50 venues then return all venues" | 49       | 49
-        "given 0 venues then return 0 venues"              | 0        | 0
+        'should return at most 50 venues'                  | 100      | 50
+        'given less than 50 venues then return all venues' | 49       | 49
+        'given 0 venues then return 0 venues'              | 0        | 0
     }
 
-    def "only returns open venues"() {
+    def 'only returns open venues'() {
         given:
         venueRepository.getAll() >> 10.openVenues() + 5.closedVenues()
 
@@ -49,7 +49,7 @@ class VenueServiceSpec extends Specification {
         venues.size() == 10
     }
 
-    def "only returns venues that meet facilities criteria"() {
+    def 'only returns venues that meet facilities criteria'() {
         given:
         venueRepository.getAll() >> 15.venuesWithFacilities() + 5.venuesWithoutFacilities()
 
@@ -60,7 +60,7 @@ class VenueServiceSpec extends Specification {
         venues.size() == 15
     }
 
-    def "returns 50 closest venues, ordered ascending by distance"() {
+    def 'returns 50 closest venues, ordered ascending by distance'() {
         given:
         List nearbyVenues = 50.openVenues()
         nearbyVenues = assignUniqueIds(nearbyVenues)
@@ -75,22 +75,9 @@ class VenueServiceSpec extends Specification {
         venues.venue == nearbyVenues.reverse()
     }
 
-    def "saves new Venues"() {
-        given:
-        Venue venue = new Venue(name: 'name', location: new Coordinates(1.0, 0.1))
-        VenueId venueId = aVenueId().build()
-        venueRepository.save(venue) >> venueId
-
-        when:
-        VenueId result = venueService.save(venue)
-
-        then:
-        result == venueId
-    }
-
     def assignUniqueIds(List<Venue> venues) {
         int idIndex = 0
-        venues.collect { it.id = aVenueId().withName("${++idIndex}").build(); it }
+        venues.collect { it.id = aVenueId().withName('${++idIndex}').build(); it }
     }
 
     def setup() {
