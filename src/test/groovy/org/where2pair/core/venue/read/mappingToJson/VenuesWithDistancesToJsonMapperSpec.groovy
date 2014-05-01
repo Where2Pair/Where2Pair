@@ -10,9 +10,7 @@ import static org.where2pair.core.venue.read.VenueWithDistancesBuilder.aVenue
 
 class VenuesWithDistancesToJsonMapperSpec extends Specification {
 
-    OpenHoursToJsonMapper openHoursToJsonMapper = new OpenHoursToJsonMapper()
-    VenueToJsonMapper venueToJsonMapper = new VenueToJsonMapper(openHoursToJsonMapper)
-    VenuesWithDistancesToJsonMapper venueWithDistancesToJsonMapper = new VenuesWithDistancesToJsonMapper(venueToJsonMapper)
+    VenuesWithDistancesToJsonMapper venueWithDistancesToJsonMapper = new VenuesWithDistancesToJsonMapper()
 
     def 'converts VenueWithDistances to json'() {
         given:

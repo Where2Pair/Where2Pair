@@ -7,7 +7,8 @@ import org.where2pair.core.venue.read.VenueWithDistances
 
 @Immutable
 class VenuesWithDistancesToJsonMapper {
-    final VenueToJsonMapper venueToJsonMapper
+
+    private VenueToJsonMapper venueToJsonMapper = new VenueToJsonMapper()
 
     List<Map<String, ?>> toJson(List<VenueWithDistances> venuesWithDistances) {
         venuesWithDistances.collect {
