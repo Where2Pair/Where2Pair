@@ -14,7 +14,7 @@ class OpenTimesCriteria {
     DayOfWeek dayOfWeek
 
     static OpenTimesCriteria openAnyTime() {
-        new OpenTimesCriteria(new SimpleTime(0, 0), new SimpleTime(23, 59), MONDAY)
+        new OpenTimesCriteria(new SimpleTime(23, 59), new SimpleTime(0, 0), MONDAY)
     }
 
     TimeWindow getTimeRange() {
