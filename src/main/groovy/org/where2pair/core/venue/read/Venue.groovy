@@ -5,6 +5,8 @@ import groovy.transform.ToString
 import org.where2pair.core.venue.common.Coordinates
 import org.where2pair.core.venue.common.VenueId
 
+import static org.where2pair.core.venue.read.FacilityStatus.AVAILABLE
+
 @Immutable
 @ToString
 class Venue {
@@ -29,9 +31,8 @@ class Venue {
     }
 
     boolean hasFacilities(FacilitiesCriteria facilitiesCriteria) {
-        Set upperCaseAvailableFacilities = facilities.collect { it.toUpperCase() }
-        Set upperCaseRequestedFacilities = facilitiesCriteria.requestedFacilities.collect { it.toUpperCase() }
-        upperCaseRequestedFacilities.every { it in upperCaseAvailableFacilities }
+        Set<Facility> availableFacilities = facilities.findAll { it.value == AVAILABLE }.keySet()
+        facilitiesCriteria.requestedFacilities.every { it in availableFacilities }
     }
 
     Distance distanceTo(Coordinates coordinates, DistanceUnit distanceUnit) {

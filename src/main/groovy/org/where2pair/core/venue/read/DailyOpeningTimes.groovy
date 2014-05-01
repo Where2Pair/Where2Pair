@@ -21,7 +21,7 @@ class DailyOpeningTimes {
         TimeWindow openTimeWindow
 
         boolean isOpen(TimeWindow timeWindow) {
-            openTimeWindow.intersects(timeWindow)
+            openTimeWindow.supersetOf(timeWindow)
         }
 
         SimpleTime getOpenFrom() {

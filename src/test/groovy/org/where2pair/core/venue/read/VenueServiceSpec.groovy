@@ -13,6 +13,7 @@ import static org.where2pair.core.venue.read.DayOfWeek.MONDAY
 import static org.where2pair.core.venue.read.Facility.WIFI
 import static org.where2pair.core.venue.read.OpenPeriodBuilder.on
 import static org.where2pair.core.venue.read.VenueBuilder.aVenue
+import static org.where2pair.core.venue.read.VenueDetailsBuilder.venueDetails
 
 class VenueServiceSpec extends Specification {
 
@@ -44,8 +45,8 @@ class VenueServiceSpec extends Specification {
     def 'finds only open venues'() {
         given:
         def openTimesCriteria = new OpenTimesCriteria(dayOfWeek: MONDAY, openFrom: new SimpleTime(12, 15), openUntil: new SimpleTime(12, 45))
-        def openVenue = aVenue().withOpenPeriod(on(MONDAY).from(12).until(13)).build()
-        def closedVenue = aVenue().withOpenPeriod(on(FRIDAY).from(18).until(19)).build()
+        def openVenue = aVenue().with(venueDetails().withOpenPeriod(on(MONDAY).from(12).until(13))).build()
+        def closedVenue = aVenue().with(venueDetails().withOpenPeriod(on(FRIDAY).from(18).until(19))).build()
         venueRepository.getAll() >> five(openVenue) + ten(closedVenue) + five(openVenue)
 
         when:
@@ -57,9 +58,9 @@ class VenueServiceSpec extends Specification {
 
     def 'finds only venues with requested facilities'() {
         given:
-        def facilitiesCriteria = new FacilitiesCriteria([WIFI])
-        def venueWithWifi = aVenue().withFacilities(WIFI).build()
-        def venueWithoutWifi = aVenue().withNoFacilities().build()
+        def facilitiesCriteria = new FacilitiesCriteria([WIFI] as HashSet)
+        def venueWithWifi = aVenue().with(venueDetails().withFacilities(WIFI)).build()
+        def venueWithoutWifi = aVenue().with(venueDetails().withNoFacilities()).build()
         venueRepository.getAll() >> ten(venueWithWifi) + ten(venueWithoutWifi) + five(venueWithWifi)
 
         when:
@@ -72,14 +73,14 @@ class VenueServiceSpec extends Specification {
     def 'finds venues ordered ascending by distance'() {
         given:
         def expectedVenueOrdering = create100VenuesOrderedAscendingByDistanceFrom(SINGLE_LOCATION)
-        def jumbledVenues = expectedVenueOrdering.sort { new Random().nextInt() }
+        def jumbledVenues = expectedVenueOrdering.clone().sort { new Random().nextInt() }
         venueRepository.getAll() >> jumbledVenues
 
         when:
         List<VenueWithDistances> venues = venueService.find(OPEN_ANY_TIME, ANY_FACILITIES, SINGLE_LOCATION)
 
         then:
-        venues.venue == expectedVenueOrdering
+        venues.venue == expectedVenueOrdering[0..49]
     }
 
     List<Venue> five(Venue venue) {
@@ -94,7 +95,7 @@ class VenueServiceSpec extends Specification {
         Coordinates location = locationsCriteria.locations[0]
         List<Venue> venues = []
         (0..99).each {
-            venues << aVenue().withLocation(coordinates().withLatitude(location.lat + it).withLongitude(location.lng)).build()
+            venues << aVenue().with(venueDetails().withLocation(coordinates().withLatitude(location.lat + it).withLongitude(location.lng))).build()
         }
         venues
     }

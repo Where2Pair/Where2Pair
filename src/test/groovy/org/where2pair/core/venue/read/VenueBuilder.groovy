@@ -3,8 +3,6 @@ package org.where2pair.core.venue.read
 import org.where2pair.core.venue.common.Coordinates
 import org.where2pair.core.venue.common.VenueId
 
-import static org.where2pair.core.venue.read.Venue.newVenue
-
 
 class VenueBuilder {
     private VenueId venueId = new VenueId('venue-name', new Coordinates(1.0, 0.1), 'address-line-1')
@@ -22,7 +20,7 @@ class VenueBuilder {
         this
     }
 
-    VenueBuilder withVenueDetails(VenueDetailsBuilder venueDetailsBuilder) {
+    VenueBuilder with(VenueDetailsBuilder venueDetailsBuilder) {
         this.venueDetailsBuilder = venueDetailsBuilder
         this
     }

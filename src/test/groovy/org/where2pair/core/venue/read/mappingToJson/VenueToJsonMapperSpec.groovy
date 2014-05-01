@@ -23,7 +23,7 @@ class VenueToJsonMapperSpec extends Specification {
 
     def 'converts Venues to json'() {
         given:
-        def venueBuilder = aVenue().withVenueDetails(venueDetails().withName('another venue name'))
+        def venueBuilder = aVenue().with(venueDetails().withName('another venue name'))
         Venue anotherVenue = venueBuilder.build()
         Map<String, ?> anotherVenueJson = venueBuilder.toJson()
 

@@ -9,7 +9,7 @@ class TimeWindow {
     SimpleTime from
     SimpleTime until
 
-    boolean intersects(TimeWindow timeWindow) {
-        from >= timeWindow.from && from < timeWindow.until && until <= timeWindow.until
+    boolean supersetOf(TimeWindow timeWindow) {
+        from <= timeWindow.from && until >= timeWindow.until
     }
 }

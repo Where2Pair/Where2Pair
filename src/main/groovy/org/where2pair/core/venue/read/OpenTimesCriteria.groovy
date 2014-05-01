@@ -4,6 +4,8 @@ import groovy.transform.Immutable
 import groovy.transform.ToString
 import org.where2pair.core.venue.common.SimpleTime
 
+import static org.where2pair.core.venue.read.DayOfWeek.MONDAY
+
 @Immutable
 @ToString
 class OpenTimesCriteria {
@@ -12,7 +14,7 @@ class OpenTimesCriteria {
     DayOfWeek dayOfWeek
 
     static OpenTimesCriteria openAnyTime() {
-        null
+        new OpenTimesCriteria(new SimpleTime(0, 0), new SimpleTime(23, 59), MONDAY)
     }
 
     TimeWindow getTimeRange() {

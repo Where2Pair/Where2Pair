@@ -51,6 +51,7 @@ class VenueDetailsBuilder {
     }
 
     VenueDetailsBuilder withOpenPeriod(OpenPeriodBuilder openPeriodBuilder) {
+        this.weeklyOpeningTimesBuilder = new WeeklyOpeningTimesBuilder()
         this.weeklyOpeningTimesBuilder.addOpenPeriod(openPeriodBuilder.dayOfWeek, openPeriodBuilder.openTime, openPeriodBuilder.closeTime)
         this
     }
