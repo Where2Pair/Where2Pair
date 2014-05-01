@@ -7,7 +7,7 @@ import org.where2pair.core.venue.read.mappingtojson.OpenHoursToJsonMapper
 @Immutable
 class VenueToJsonMapper {
 
-    OpenHoursToJsonMapper openHoursToJsonMapper
+    private OpenHoursToJsonMapper openHoursToJsonMapper = new OpenHoursToJsonMapper()
 
     Map<String, ?> toJson(Venue venue) {
         [

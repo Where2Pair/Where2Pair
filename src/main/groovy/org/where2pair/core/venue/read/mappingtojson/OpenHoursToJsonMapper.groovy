@@ -11,6 +11,7 @@ import groovy.transform.Immutable
 
 @Immutable
 class OpenHoursToJsonMapper {
+
     Map<String, ?> asOpenHoursJson(WeeklyOpeningTimes weeklyOpeningTimes) {
         Map openHours = (MONDAY..SUNDAY).collectEntries { [dayToString(it), []] }
 
