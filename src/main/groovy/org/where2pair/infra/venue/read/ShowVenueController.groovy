@@ -5,7 +5,6 @@ import org.where2pair.core.venue.read.VenueRepository
 
 class ShowVenueController {
     VenueRepository venueRepository
-    VenueJsonMarshaller venueJsonMarshaller
 
     def show(String id) {
         Venue venue = venueRepository.get(id)
@@ -14,7 +13,7 @@ class ShowVenueController {
             Map venueJson = venueJsonMarshaller.asVenueJson(venue)
             return venueJson
         } else {
-            return new ErrorResponse(message: "Venue with id $id could not be found", status: 404)
+            return null
         }
     }
 

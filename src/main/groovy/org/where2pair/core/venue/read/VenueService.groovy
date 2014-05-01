@@ -4,7 +4,7 @@ class VenueService {
 
     VenueRepository venueRepository
 
-    List<VenueWithDistances> findNearestTo(OpenTimesCriteria openTimesCriteria,
+    List<VenueWithDistances> find(OpenTimesCriteria openTimesCriteria,
                                            FacilitiesCriteria facilitiesCriteria,
                                            LocationsCriteria locationsCriteria) {
         List<Venue> openVenues = findOpenVenues(openTimesCriteria)

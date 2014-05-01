@@ -1,11 +1,7 @@
 package org.where2pair.infra.venue.read
 
 import org.where2pair.core.venue.common.SimpleTime
-import org.where2pair.core.venue.read.DayOfWeek
-import org.where2pair.core.venue.read.FacilitiesCriteria
-import org.where2pair.core.venue.read.LocationsCriteria
-import org.where2pair.core.venue.read.OpenTimesCriteria
-import org.where2pair.core.venue.read.VenueService
+import org.where2pair.core.venue.read.*
 
 import static DayOfWeek.parseDayOfWeek
 
@@ -13,7 +9,6 @@ class FindVenueController {
 
     VenueService venueFinder
     LocationsCriteriaParser locationsCriteriaParser
-    VenueJsonMarshaller venueJsonMarshaller
     TimeProvider timeProvider
 
     def findNearest(Map params) {
@@ -22,8 +17,8 @@ class FindVenueController {
         if (!locationsCriteria.errors) {
             OpenTimesCriteria openTimesCriteria = parseOpenTimesCriteriaFromRequest(params)
             FacilitiesCriteria facilitiesCriteria = parseFacilitiesCriteriaFromRequest(params)
-            List venues = venueFinder.findNearestTo(openTimesCriteria, facilitiesCriteria, locationsCriteria)
-            return venueJsonMarshaller.asVenuesWithDistancesJson(venues)
+            List venues = venueFinder.find(openTimesCriteria, facilitiesCriteria, locationsCriteria)
+            return null
         } else {
             return handleIllegalLocationsCriteria(locationsCriteria)
         }
@@ -50,8 +45,8 @@ class FindVenueController {
         new FacilitiesCriteria(requestedFacilities: requestedFacilities)
     }
 
-    private ErrorResponse handleIllegalLocationsCriteria(LocationsCriteria suppliedLocations) {
+    private def handleIllegalLocationsCriteria(LocationsCriteria suppliedLocations) {
         def (errorMessage, status) = suppliedLocations.errors
-        new ErrorResponse(message: errorMessage, status: status)
+        null
     }
 }

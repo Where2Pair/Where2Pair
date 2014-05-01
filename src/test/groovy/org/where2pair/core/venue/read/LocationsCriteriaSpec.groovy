@@ -1,4 +1,4 @@
-package org.where2pair.core.venue
+package org.where2pair.core.venue.read
 
 import org.where2pair.core.venue.read.LocationsCriteria
 

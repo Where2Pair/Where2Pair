@@ -6,9 +6,6 @@ import org.where2pair.core.venue.common.SimpleTime
 import org.where2pair.core.venue.read.FacilitiesCriteria
 import org.where2pair.core.venue.read.LocationsCriteria
 import org.where2pair.core.venue.read.OpenTimesCriteria
-import org.where2pair.infra.venue.read.FindVenueController
-import org.where2pair.infra.venue.read.LocationsCriteriaParser
-import org.where2pair.infra.venue.read.TimeProvider
 import org.where2pair.core.venue.read.Venue
 import org.where2pair.core.venue.read.VenueService
 import org.where2pair.core.venue.read.VenueWithDistances
@@ -28,14 +25,13 @@ class FindVenueControllerSpec extends Specification {
     TimeProvider timeProvider = Mock()
     LocationsCriteria validLocationsCriteria = Mock()
     LocationsCriteriaParser locationsCriteriaParser = Mock()
-    VenueJsonMarshaller venueJsonMarshaller = Mock()
 
     def "finds venues based on valid locations criteria"() {
         when:
         controller.findNearest(params)
 
         then:
-        1 * venueFinder.findNearestTo(_, _, validLocationsCriteria)
+        1 * venueFinder.find(_, _, validLocationsCriteria)
     }
 
     def "rejects requests with invalid locations criteria"() {
@@ -46,7 +42,7 @@ class FindVenueControllerSpec extends Specification {
         locationsCriteriaParser.parse(invalidParams) >> invalidLocationsCriteria
 
         when:
-        ErrorResponse response = controller.findNearest(invalidParams)
+        def response = controller.findNearest(invalidParams)
 
         then:
         response.message == "errorMessage"
@@ -61,7 +57,7 @@ class FindVenueControllerSpec extends Specification {
         controller.findNearest(params)
 
         then:
-        1 * venueFinder.findNearestTo(_, { FacilitiesCriteria criteria ->
+        1 * venueFinder.find(_, { FacilitiesCriteria criteria ->
             criteria.requestedFacilities == ['wifi', 'baby_changing'] as HashSet
         }, _)
     }
@@ -77,7 +73,7 @@ class FindVenueControllerSpec extends Specification {
         controller.findNearest(params)
 
         then:
-        1 * venueFinder.findNearestTo({ OpenTimesCriteria criteria ->
+        1 * venueFinder.find({ OpenTimesCriteria criteria ->
             criteria.openFrom == expectedOpenFrom
             criteria.openUntil == expectedOpenUntil
             criteria.dayOfWeek == expectedOpenDay

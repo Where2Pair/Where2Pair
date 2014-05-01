@@ -43,12 +43,12 @@ ratpack {
     }
 }
 
-def renderResult(response, ErrorResponse errorResponse) {
+def renderResult(response, errorResponse) {
     response.status(errorResponse.status, errorResponse.message)
     response.send(errorResponse.message)
 }
 
-def renderResult(response, result) {
+def renderJResult(response, result) {
     String json = new JsonBuilder(result).toString()
     response.send("application/json", json)
 }

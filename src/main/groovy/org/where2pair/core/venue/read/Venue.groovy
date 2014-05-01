@@ -13,7 +13,7 @@ class Venue {
     Coordinates location
     Address address
     WeeklyOpeningTimes weeklyOpeningTimes
-    Set<String> facilities
+    Map<Facility, FacilityStatus> facilities
 
     static Venue newInstance(VenueId venueId, VenueDetails venueDetails) {
         new Venue(id: venueId,

@@ -1,11 +1,9 @@
 package org.where2pair.core.venue
 
+import org.where2pair.core.venue.common.CoordinatesBuilder
 import org.where2pair.core.venue.common.VenueId
-import org.where2pair.core.venue.common.Coordinates
 
-import static org.where2pair.core.venue.CoordinatesBuilder.coordinates
-import static org.where2pair.core.venue.CoordinatesBuilder.someCoordinates
-
+import static org.where2pair.core.venue.common.CoordinatesBuilder.coordinates
 
 class VenueIdBuilder {
 

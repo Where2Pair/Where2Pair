@@ -9,5 +9,5 @@ class VenueDetails {
     Coordinates location
     Address address
     WeeklyOpeningTimes weeklyOpeningTimes
-    LinkedHashSet<String> facilities
+    Map<Facility, FacilityStatus> facilities
 }

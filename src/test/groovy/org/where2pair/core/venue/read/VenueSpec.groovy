@@ -1,23 +1,17 @@
-package org.where2pair.core.venue
+package org.where2pair.core.venue.read
 
 import org.where2pair.core.venue.common.Coordinates
-import org.where2pair.core.venue.read.Distance
-import org.where2pair.core.venue.read.FacilitiesCriteria
-import org.where2pair.core.venue.read.OpenTimesCriteria
-import org.where2pair.core.venue.read.Venue
-import org.where2pair.core.venue.read.WeeklyOpeningTimes
+import org.where2pair.core.venue.read.*
+import spock.lang.Specification
 
 import static org.where2pair.core.venue.read.DistanceUnit.KM
 import static org.where2pair.core.venue.read.DistanceUnit.MILES
-import static org.where2pair.core.venue.ObjectUtils.createVenue
 import static spock.util.matcher.HamcrestMatchers.closeTo
 import static spock.util.matcher.HamcrestSupport.that
 
-import spock.lang.Specification
-
 class VenueSpec extends Specification {
 
-    def "determines distance to supplied coordinates"() {
+    def 'determines distance to supplied coordinates'() {
         given:
         Venue venue = new Venue(location: new Coordinates(lat: venueLatitude, lng: venueLongitude))
         Coordinates coordinates = new Coordinates(lat: targetLatitude, lng: targetLongitude)
@@ -28,7 +22,7 @@ class VenueSpec extends Specification {
 
         then:
         that distanceInKm.value, closeTo(expectedDistanceInKm, 0.01)
-		distanceInKm.unit == KM
+        distanceInKm.unit == KM
         that distanceInMiles.value, closeTo(expectedDistanceInKm * 0.62137, 0.01)
         distanceInMiles.unit == MILES
 
@@ -40,7 +34,7 @@ class VenueSpec extends Specification {
         51.530800     | -0.097933      | -33.868135     | 151.210327      | 16990.86
     }
 
-    def "determines whether venue is open"() {
+    def 'determines whether venue is open'() {
         given:
         OpenTimesCriteria openTimesCriteria = new OpenTimesCriteria()
         WeeklyOpeningTimes weeklyOpenTimes = Mock()
@@ -57,7 +51,7 @@ class VenueSpec extends Specification {
         expectedOpenStatus << [true, false]
     }
 
-    def "determines whether venue has facilities"() {
+    def 'determines whether venue has facilities'() {
         given:
         Venue venue = new Venue(facilities: facilities.split(','))
         FacilitiesCriteria facilitiesCriteria = new FacilitiesCriteria(requestedFacilities: requestedFacilities.split(','))
@@ -74,18 +68,6 @@ class VenueSpec extends Specification {
         'a,b,c'    | 'd'                 | false
         ''         | ''                  | true
         'a,B,c'    | 'A,b,C'             | true
-    }
-
-    def "is cloneable"() {
-        given:
-        Venue venue = createVenue()
-
-        when:
-        Venue newVenue = venue.clone()
-
-        then:
-        newVenue == venue
-        !newVenue.is(venue)
     }
 
 }

@@ -13,7 +13,6 @@ class ShowVenueControllerSpec extends Specification {
     static final String VENUE_ID = '1'
     ShowVenueController controller = new ShowVenueController()
     VenueRepository venueRepository = Mock()
-    VenueJsonMarshaller venueJsonMarshaller = Mock()
 
     def "should show the specified venue"() {
         given:
@@ -34,7 +33,7 @@ class ShowVenueControllerSpec extends Specification {
         venueRepository.get(VENUE_ID) >> null
 
         when:
-        ErrorResponse response = controller.show(VENUE_ID)
+        def response = controller.show(VENUE_ID)
 
         then:
         response.status == 404

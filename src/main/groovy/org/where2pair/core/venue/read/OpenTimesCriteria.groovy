@@ -11,6 +11,10 @@ class OpenTimesCriteria {
     SimpleTime openUntil
     DayOfWeek dayOfWeek
 
+    static OpenTimesCriteria openAnyTime() {
+        null
+    }
+
     TimeWindow getTimeRange() {
         new TimeWindow(openFrom, openUntil)
     }

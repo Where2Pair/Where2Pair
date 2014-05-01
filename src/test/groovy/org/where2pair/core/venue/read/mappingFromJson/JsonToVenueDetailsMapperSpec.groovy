@@ -1,5 +1,6 @@
-package org.where2pair.core.venue.read
+package org.where2pair.core.venue.read.mappingFromJson
 
+import org.where2pair.core.venue.read.VenueDetails
 import org.where2pair.core.venue.read.mappingfromjson.JsonToVenueDetailsMapper
 import spock.lang.Specification
 

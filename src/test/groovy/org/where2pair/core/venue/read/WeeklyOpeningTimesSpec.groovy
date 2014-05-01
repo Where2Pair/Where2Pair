@@ -1,4 +1,4 @@
-package org.where2pair.core.venue
+package org.where2pair.core.venue.read
 
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
@@ -13,7 +13,7 @@ import static org.where2pair.core.venue.read.DayOfWeek.*
 
 class WeeklyOpeningTimesSpec extends Specification {
 
-    def "should check daily opening times with correct day, hour and minute"() {
+    def 'should check daily opening times with correct day, hour and minute'() {
         given:
         Map weeklyOpeningTimesMap = openOnlyBetween(openFrom, openUntil, openDay)
         WeeklyOpeningTimes weeklyOpeningTimes = new WeeklyOpeningTimes(weeklyOpeningTimes: weeklyOpeningTimesMap)

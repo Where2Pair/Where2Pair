@@ -4,5 +4,9 @@ import groovy.transform.Immutable
 
 @Immutable
 class FacilitiesCriteria {
-    Set requestedFacilities
+    Set<Facility> requestedFacilities
+
+    static FacilitiesCriteria anyFacilities() {
+        new FacilitiesCriteria(requestedFacilities: [])
+    }
 }

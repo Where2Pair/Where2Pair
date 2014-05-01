@@ -1,12 +1,9 @@
-package org.where2pair.core.venue
-
-import org.where2pair.core.venue.common.Coordinates
-
+package org.where2pair.core.venue.common
 
 class CoordinatesBuilder {
 
-    private double latitude
-    private double longitude
+    private double latitude = 1.0
+    private double longitude = 0.1
 
     static Coordinates someCoordinates() {
         new CoordinatesBuilder().build()
