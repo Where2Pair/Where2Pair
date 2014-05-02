@@ -1,14 +1,11 @@
 package org.where2pair.core.venue.read
 
-import groovy.transform.AutoClone
-import groovy.transform.EqualsAndHashCode
 import groovy.transform.Immutable
 import groovy.transform.ToString
 import org.where2pair.core.venue.common.SimpleTime
 
-@EqualsAndHashCode
+@Immutable
 @ToString
-@AutoClone
 class DailyOpeningTimes {
     List<OpenPeriod> openPeriods = []
 

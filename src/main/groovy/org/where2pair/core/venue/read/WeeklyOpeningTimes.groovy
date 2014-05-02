@@ -1,12 +1,10 @@
 package org.where2pair.core.venue.read
 
-import groovy.transform.AutoClone
 import groovy.transform.Immutable
 import groovy.transform.ToString
 
 @Immutable
 @ToString
-@AutoClone
 class WeeklyOpeningTimes {
 
     Map<DayOfWeek, DailyOpeningTimes> weeklyOpeningTimes
