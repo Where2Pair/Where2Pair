@@ -11,7 +11,6 @@ import static org.where2pair.core.venue.read.DayOfWeek.TUESDAY
 import static org.where2pair.core.venue.read.Facility.MOBILE_PAYMENTS
 import static org.where2pair.core.venue.read.Facility.WIFI
 import static org.where2pair.core.venue.read.FacilityStatus.AVAILABLE
-import static org.where2pair.core.venue.read.FacilityStatus.UNAVAILABLE
 
 class VenueDetailsBuilder {
     private String name = 'venue name'
@@ -57,9 +56,7 @@ class VenueDetailsBuilder {
     }
 
     VenueDetailsBuilder withFacilities(Facility... facilities) {
-        this.facilities = Facility.values().collectEntries {
-            [it, (it in facilities) ? AVAILABLE : UNAVAILABLE]
-        }
+        this.facilities = Facility.statusesFor(facilities)
         this
     }
 
@@ -93,7 +90,7 @@ class VenueDetailsBuilder {
                         phoneNumber: address.phoneNumber ?: ''
                 ],
                 openHours: openHoursToJsonMapper.asOpenHoursJson(weeklyOpeningTimesBuilder.build()),
-                facilities: facilities.collect()
+                facilities: facilities.findAll { it.value == AVAILABLE }.keySet()
         ]
     }
 }

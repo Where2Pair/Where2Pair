@@ -13,13 +13,13 @@ class HashMapVenueCache implements VenueRepository {
     @Override
     List<Venue> getAll() {
         venues.collect { id, venue ->
-            venue.clone()
+            venue
         }.asImmutable()
     }
 
     @Override
     Venue get(VenueId id) {
-        venues[id]?.clone()
+        venues[id]
     }
 
     @Override

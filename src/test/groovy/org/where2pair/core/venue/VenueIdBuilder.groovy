@@ -3,6 +3,8 @@ package org.where2pair.core.venue
 import org.where2pair.core.venue.common.CoordinatesBuilder
 import org.where2pair.core.venue.common.VenueId
 
+import static java.util.UUID.randomUUID
+import static java.util.UUID.randomUUID
 import static org.where2pair.core.venue.common.CoordinatesBuilder.coordinates
 
 class VenueIdBuilder {
@@ -13,6 +15,14 @@ class VenueIdBuilder {
 
     static VenueIdBuilder aVenueId() {
         new VenueIdBuilder()
+    }
+
+    static VenueId aRandomVenueId() {
+        aVenueId().withName(randomUUID() as String)
+                .withLongitude(new Random().nextDouble())
+                .withLatitude(new Random().nextDouble())
+                .withAddressLine1(randomUUID() as String)
+                .build()
     }
 
     VenueIdBuilder withName(String name) {

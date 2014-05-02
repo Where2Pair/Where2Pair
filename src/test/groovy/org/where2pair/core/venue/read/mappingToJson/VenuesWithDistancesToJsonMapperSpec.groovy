@@ -1,7 +1,5 @@
 package org.where2pair.core.venue.read.mappingToJson
 
-import org.where2pair.core.venue.read.mappingtojson.OpenHoursToJsonMapper
-import org.where2pair.core.venue.read.mappingtojson.VenueToJsonMapper
 import org.where2pair.core.venue.read.mappingtojson.VenuesWithDistancesToJsonMapper
 import spock.lang.Specification
 
