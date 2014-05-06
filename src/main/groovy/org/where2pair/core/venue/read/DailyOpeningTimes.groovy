@@ -7,7 +7,7 @@ import org.where2pair.core.venue.common.SimpleTime
 @Immutable
 @ToString
 class DailyOpeningTimes {
-    List<OpenPeriod> openPeriods = []
+    private List<OpenPeriod> openPeriods = []
 
     boolean isOpen(TimeWindow timeWindow) {
         openPeriods.find { it.isOpen(timeWindow) }
@@ -15,7 +15,7 @@ class DailyOpeningTimes {
 
     @Immutable
     static class OpenPeriod {
-        TimeWindow openTimeWindow
+        private TimeWindow openTimeWindow
 
         boolean isOpen(TimeWindow timeWindow) {
             openTimeWindow.supersetOf(timeWindow)

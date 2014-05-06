@@ -52,7 +52,7 @@ class VenueSpec extends Specification {
 
     def 'determines whether venue has facilities'() {
         given:
-        Venue venue = new Venue(availableFacilities: facilities.split(','))
+        Venue venue = new Venue(facilities: facilities.split(','))
         FacilitiesCriteria facilitiesCriteria = new FacilitiesCriteria(requestedFacilities: requestedFacilities.split(','))
 
         when:

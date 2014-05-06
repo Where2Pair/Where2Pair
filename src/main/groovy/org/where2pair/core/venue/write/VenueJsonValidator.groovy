@@ -162,6 +162,6 @@ class VenueJsonValidator {
     static final OPEN_HOURS_STRUCTURE_ERROR_MESSAGE = "Expected openHours to map day to a list of open periods e.g. ['monday': [['openHour': 12, 'openMinute': 0, 'closeHour': 18, 'closeMinute': 30]],\n'tuesday': [['openHour': 8, 'openMinute': 0, 'closeHour': 11, 'closeMinute': 0]],\n...\n]"
     static final FACILITIES_STRUCTURE_ERROR_MESSAGE = "Expected facilities to map facilities to either 'Y' or 'N' e.g. ['wifi': 'N', 'power': 'Y']"
 
-    static final UNRECOGNIZED_FACILITY_ERROR_MESSAGE = ""//"Supported availableFacilities are: ${Facility.values().collect { it.toString().toLowerCase() }}"
+    static final UNRECOGNIZED_FACILITY_ERROR_MESSAGE = ""//"Supported facilities are: ${Facility.values().collect { it.toString().toLowerCase() }}"
     static final INVALID_FACILITY_STATUS_ERROR_MESSAGE = "The status of a facility can either be 'Y' or 'N'"
 }

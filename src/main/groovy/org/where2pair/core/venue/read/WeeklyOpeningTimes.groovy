@@ -1,13 +1,13 @@
 package org.where2pair.core.venue.read
 
-import groovy.transform.Immutable
+import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
-@Immutable
+@EqualsAndHashCode
 @ToString
 class WeeklyOpeningTimes {
 
-    Map<DayOfWeek, DailyOpeningTimes> weeklyOpeningTimes
+    private Map<DayOfWeek, DailyOpeningTimes> weeklyOpeningTimes
 
     boolean isOpen(OpenTimesCriteria openTimesCriteria) {
         weeklyOpeningTimes[openTimesCriteria.dayOfWeek].isOpen(openTimesCriteria.timeRange)

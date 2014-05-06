@@ -19,4 +19,8 @@ class FacilityStatuses {
         new FacilityStatuses(facilityStatuses: (available + unavailable))
     }
 
+    boolean hasFacilities(FacilitiesCriteria facilitiesCriteria) {
+        def statusesForRequestFacilities = facilityStatuses.findAll { it.facility in facilitiesCriteria.requestedFacilities }
+        statusesForRequestFacilities.every { it.available }
+    }
 }

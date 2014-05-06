@@ -3,6 +3,9 @@ package org.where2pair.core.venue.read
 import org.where2pair.core.venue.common.Facility
 import groovy.transform.Immutable
 
+import static org.where2pair.core.venue.read.FacilityStatus.Status.AVAILABLE
+import static org.where2pair.core.venue.read.FacilityStatus.Status.UNAVAILABLE
+
 @Immutable
 class FacilityStatus {
 
@@ -10,11 +13,15 @@ class FacilityStatus {
     Status status
 
     static FacilityStatus facilityAvailable(Facility facility) {
-        new FacilityStatus(facility, Status.AVAILABLE)
+        new FacilityStatus(facility, AVAILABLE)
     }
 
     static FacilityStatus facilityUnavailable(Facility facility) {
-        new FacilityStatus(facility, Status.UNAVAILABLE)
+        new FacilityStatus(facility, UNAVAILABLE)
+    }
+
+    boolean isAvailable() {
+        this.status == AVAILABLE
     }
 
     static enum Status {

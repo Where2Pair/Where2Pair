@@ -70,7 +70,7 @@ class VenueDetailsBuilder {
                 location: location,
                 address: address,
                 weeklyOpeningTimes: weeklyOpeningTimesBuilder.build(),
-                availableFacilities: facilityStatuses
+                facilities: facilityStatuses
         )
     }
 

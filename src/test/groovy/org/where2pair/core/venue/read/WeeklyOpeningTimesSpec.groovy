@@ -1,6 +1,7 @@
 package org.where2pair.core.venue.read
 
 import org.where2pair.core.venue.common.SimpleTime
+import org.where2pair.core.venue.read.mappingtojson.WeeklyOpeningTimesBuilder
 import spock.lang.Specification
 
 import static org.where2pair.core.venue.read.DayOfWeek.*
@@ -9,8 +10,7 @@ class WeeklyOpeningTimesSpec extends Specification {
 
     def 'should check daily opening times with correct day, hour and minute'() {
         given:
-        Map weeklyOpeningTimesMap = openOnlyBetween(from, until, openDay)
-        WeeklyOpeningTimes weeklyOpeningTimes = new WeeklyOpeningTimes(weeklyOpeningTimes: weeklyOpeningTimesMap)
+        WeeklyOpeningTimes weeklyOpeningTimes = openOnlyBetween(from, until, openDay)
         OpenTimesCriteria openTimesCriteria = new OpenTimesCriteria(openFrom: from, openUntil: until, dayOfWeek: openDay)
 
         when:
@@ -31,10 +31,10 @@ class WeeklyOpeningTimesSpec extends Specification {
 
     }
 
-    private static Map openOnlyBetween(SimpleTime openFrom, SimpleTime openUntil, DayOfWeek openDay) {
-        Map openingTimes = (MONDAY..SUNDAY).collectEntries { [it, [isOpen: false]] }
-        openingTimes[openDay] = [isOpen: { from, until -> from == openFrom && until == openUntil }]
-        openingTimes
+    private static WeeklyOpeningTimes openOnlyBetween(SimpleTime openFrom, SimpleTime openUntil, DayOfWeek openDay) {
+        WeeklyOpeningTimesBuilder weeklyOpeningTimesBuilder = new WeeklyOpeningTimesBuilder()
+        weeklyOpeningTimesBuilder.addOpenPeriod(openDay, openFrom, openUntil)
+        weeklyOpeningTimesBuilder.build()
     }
 
 }
