@@ -9,5 +9,5 @@ class VenueDetails {
     Coordinates location
     Address address
     WeeklyOpeningTimes weeklyOpeningTimes
-    Map<Facility, FacilityStatus> facilities
+    FacilityStatuses availableFacilities
 }

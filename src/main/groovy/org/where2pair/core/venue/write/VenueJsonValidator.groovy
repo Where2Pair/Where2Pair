@@ -2,6 +2,7 @@ package org.where2pair.core.venue.write
 
 import org.where2pair.core.venue.common.SimpleTime
 import org.where2pair.core.venue.read.DayOfWeek
+import org.where2pair.core.venue.common.Facility
 
 class VenueJsonValidator {
 
@@ -11,40 +12,46 @@ class VenueJsonValidator {
         }
     }
 
-    private static final Map REQUIRED_FIELD_CHECKS = [
+    private static final REQUIRED_FIELD_CHECKS = [
             { it.name }: 'Venue \'name\' must be provided',
             { it.location }: 'Venue \'location\' must be provided',
             { it.address }: 'Venue \'address\' must be provided',
             { it.openHours }: 'Venue \'openHours\' must be provided'
     ]
 
-    private static final Map EXPECTED_STRUCTURE_CHECKS = [
+    private static final EXPECTED_STRUCTURE_CHECKS = [
             {
                 it.address instanceof Map
-            }: 'Expected address to be a map e.g. [addressLine1: \'9 Appold Street\', city: \'London\'...]',
-            { it.location instanceof Map }: 'Expected location to be a map e.g. [latitude: 1.0, longitude: 0.1]',
+            }: ADDRESS_STRUCTURE_ERROR_MESSAGE,
+            {
+                it.location instanceof Map
+            }: LOCATION_STRUCTURE_ERROR_MESSAGE,
             {
                 it.openHours instanceof Map
-            }: 'Expected openHours to map day to a list of open periods e.g. [monday: [[openHour: 12, openMinute: 0, closeHour: 18, closeMinute: 30]],\ntuesday: [[openHour: 8, openMinute: 0, closeHour: 11, closeMinute: 0]],\n...\n]',
+            }: OPEN_HOURS_STRUCTURE_ERROR_MESSAGE,
             {
                 it.openHours.every { day, dailyOpeningTimes ->
-                    dailyOpeningTimes instanceof List && dailyOpeningTimes.every { it instanceof Map }
+                    dailyOpeningTimes instanceof List &&
+                            dailyOpeningTimes.every { it instanceof Map }
                 }
-            }: 'Expected openHours to map day to a list of open periods e.g. [monday: [[openHour: 12, openMinute: 0, closeHour: 18, closeMinute: 30]],\ntuesday: [[openHour: 8, openMinute: 0, closeHour: 11, closeMinute: 0]],\n...\n]'
+            }: OPEN_HOURS_STRUCTURE_ERROR_MESSAGE,
+            {
+                it.facilities instanceof Map
+            }: FACILITIES_STRUCTURE_ERROR_MESSAGE
     ]
 
-    private static final Map LOCATION_CHECKS = [
+    private static final LOCATION_CHECKS = [
             { it.location.latitude }: 'Venue \'location.latitude\' must be provided',
             { it.location.longitude }: 'Venue \'location.longitude\' must be provided'
     ]
 
-    private static final Map ADDRESS_CHECKS = [
+    private static final ADDRESS_CHECKS = [
             { it.address.addressLine1 }: 'Venue \'address.addressLine1\' must be provided',
             { it.address.city }: 'Venue \'address.city\' must be provided',
             { it.address.postcode }: 'Venue \'address.postcode\' must be provided'
     ]
 
-    private static final Map OPEN_HOURS_CHECKS = [
+    private static final OPEN_HOURS_CHECKS = [
             {
                 it.openHours.any { day, dailyOpenHours ->
                     day in daysOfWeek()
@@ -121,18 +128,40 @@ class VenueJsonValidator {
             }: 'Daily venue \'openHours\' must close after opening time'
     ]
 
+    private static final FACILITIES_CHECKS = [
+            {
+                it.facilities.every { it.key.toUpperCase() in allFacilities() }
+            }: UNRECOGNIZED_FACILITY_ERROR_MESSAGE,
+            {
+                it.facilities.every { it.value.toUpperCase() in ['Y', 'N']}
+            }: INVALID_FACILITY_STATUS_ERROR_MESSAGE
+    ]
+
     private static Set<String> daysOfWeek() {
         DayOfWeek.values().collect { it.toString().toLowerCase() }
+    }
+
+    private static Set<String> allFacilities() {
+        Facility.values().collect { it.toString() }
     }
 
     private static Map<String, ?> allValidOpenHours(Map<String, ?> openHours) {
         openHours.subMap(daysOfWeek().intersect(openHours.keySet()))
     }
 
-    private static final Map ALL_VALIDATION_CHECKS =
+    private static final ALL_VALIDATION_CHECKS =
             REQUIRED_FIELD_CHECKS +
                     EXPECTED_STRUCTURE_CHECKS +
                     LOCATION_CHECKS +
                     ADDRESS_CHECKS +
-                    OPEN_HOURS_CHECKS
+                    OPEN_HOURS_CHECKS +
+                    FACILITIES_CHECKS
+
+    static final ADDRESS_STRUCTURE_ERROR_MESSAGE = "Expected address to be a map e.g. ['addressLine1': '9 Appold Street', city: 'London'...]"
+    static final LOCATION_STRUCTURE_ERROR_MESSAGE = "Expected location to be a map e.g. ['latitude': 1.0, 'longitude': 0.1]"
+    static final OPEN_HOURS_STRUCTURE_ERROR_MESSAGE = "Expected openHours to map day to a list of open periods e.g. ['monday': [['openHour': 12, 'openMinute': 0, 'closeHour': 18, 'closeMinute': 30]],\n'tuesday': [['openHour': 8, 'openMinute': 0, 'closeHour': 11, 'closeMinute': 0]],\n...\n]"
+    static final FACILITIES_STRUCTURE_ERROR_MESSAGE = "Expected facilities to map facilities to either 'Y' or 'N' e.g. ['wifi': 'N', 'power': 'Y']"
+
+    static final UNRECOGNIZED_FACILITY_ERROR_MESSAGE = ""//"Supported availableFacilities are: ${Facility.values().collect { it.toString().toLowerCase() }}"
+    static final INVALID_FACILITY_STATUS_ERROR_MESSAGE = "The status of a facility can either be 'Y' or 'N'"
 }

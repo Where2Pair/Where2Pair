@@ -2,7 +2,6 @@ package org.where2pair.core.venue.read.mappingtojson
 
 import groovy.transform.Immutable
 import org.where2pair.core.venue.read.Venue
-import org.where2pair.core.venue.read.mappingtojson.OpenHoursToJsonMapper
 
 @Immutable
 class VenueToJsonMapper {
@@ -26,7 +25,7 @@ class VenueToJsonMapper {
                     phoneNumber: venue.address.phoneNumber ?: ''
             ],
             openHours: openHoursToJsonMapper.asOpenHoursJson(venue.weeklyOpeningTimes),
-            facilities: venue.facilities.collect()
+            facilities: venue.availableFacilities.collect()
         ]
     }
 

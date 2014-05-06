@@ -1,11 +1,18 @@
 package org.where2pair.core.venue.write
 
 import org.where2pair.core.venue.common.VenueId
+import org.where2pair.core.venue.common.Facility
 import org.where2pair.core.venue.read.Venue
 import spock.lang.Specification
 import spock.lang.Unroll
 
 import static org.where2pair.core.venue.read.VenueBuilder.aVenue
+import static org.where2pair.core.venue.write.VenueJsonValidator.ADDRESS_STRUCTURE_ERROR_MESSAGE
+import static org.where2pair.core.venue.write.VenueJsonValidator.INVALID_FACILITY_STATUS_ERROR_MESSAGE
+import static org.where2pair.core.venue.write.VenueJsonValidator.LOCATION_STRUCTURE_ERROR_MESSAGE
+import static org.where2pair.core.venue.write.VenueJsonValidator.OPEN_HOURS_STRUCTURE_ERROR_MESSAGE
+import static org.where2pair.core.venue.write.VenueJsonValidator.UNRECOGNIZED_FACILITY_ERROR_MESSAGE
+import static org.where2pair.core.venue.write.VenueJsonValidator.getFACILITIES_STRUCTURE_ERROR_MESSAGE
 
 class NewVenueServiceSpec extends Specification {
 
@@ -22,7 +29,6 @@ class NewVenueServiceSpec extends Specification {
         VenueId expectedVenueId = new VenueId(venue.name, venue.location, venue.address.addressLine1)
 
         when:
-        println venueJson
         VenueId venueId = newVenueService.save(venueJson)
 
         then:
@@ -79,12 +85,13 @@ class NewVenueServiceSpec extends Specification {
         exceptionThrown.message == expectedReason
 
         where:
-        property             | value            | expectedReason
-        'address'            | ['addressLine1'] | 'Expected address to be a map e.g. [addressLine1: \'9 Appold Street\', city: \'London\'...]'
-        'location'           | 'somewhere'      | 'Expected location to be a map e.g. [latitude: 1.0, longitude: 0.1]'
-        'openHours'          | 12               | 'Expected openHours to map day to a list of open periods e.g. [monday: [[openHour: 12, openMinute: 0, closeHour: 18, closeMinute: 30]],\ntuesday: [[openHour: 8, openMinute: 0, closeHour: 11, closeMinute: 0]],\n...\n]'
-        'openHours.monday'   | [openHour: 12]   | 'Expected openHours to map day to a list of open periods e.g. [monday: [[openHour: 12, openMinute: 0, closeHour: 18, closeMinute: 30]],\ntuesday: [[openHour: 8, openMinute: 0, closeHour: 11, closeMinute: 0]],\n...\n]'
-        'openHours.monday.0' | [12, 0, 15, 0]   | 'Expected openHours to map day to a list of open periods e.g. [monday: [[openHour: 12, openMinute: 0, closeHour: 18, closeMinute: 30]],\ntuesday: [[openHour: 8, openMinute: 0, closeHour: 11, closeMinute: 0]],\n...\n]'
+        property             | value             | expectedReason
+        'address'            | ['addressLine1']  | ADDRESS_STRUCTURE_ERROR_MESSAGE
+        'location'           | 'somewhere'       | LOCATION_STRUCTURE_ERROR_MESSAGE
+        'openHours'          | 12                | OPEN_HOURS_STRUCTURE_ERROR_MESSAGE
+        'openHours.monday'   | [openHour: 12]    | OPEN_HOURS_STRUCTURE_ERROR_MESSAGE
+        'openHours.monday.0' | [12, 0, 15, 0]    | OPEN_HOURS_STRUCTURE_ERROR_MESSAGE
+        'facilities'         | ['wifi', 'power'] | FACILITIES_STRUCTURE_ERROR_MESSAGE
     }
 
     def 'rejects venue json if there are no open hours for Monday-Sunday'() {
@@ -121,6 +128,29 @@ class NewVenueServiceSpec extends Specification {
         openHoursWithCloseMinuteLessThan0        | '\'closeMinute\' can not be negative'
         openHoursWithCloseHourGreaterThan23      | '\'closeHour\' must be less than 24'
         openHoursWithCloseMinuteGreaterThan59    | '\'closeMinute\' must be less than 60'
+    }
+
+    @Unroll
+    def 'rejects venue json if facilities have invalid values'() {
+        when:
+        newVenueService.save(invalidJson)
+
+        then:
+        def exceptionThrown = thrown InvalidVenueJsonException
+        exceptionThrown.message == expectedReason
+
+        where:
+        invalidJson            | expectedReason
+        unrecognizedFacility() | UNRECOGNIZED_FACILITY_ERROR_MESSAGE
+        invalidStatus()        | INVALID_FACILITY_STATUS_ERROR_MESSAGE
+    }
+
+    Map<String, ?> invalidStatus() {
+        aVenue().toJson() + [facilities: [(Facility.values()[0].toString()): 'Yeah']]
+    }
+
+    Map<String, ?> unrecognizedFacility() {
+        aVenue().toJson() + [facilities: [Teleporter: 'Y']]
     }
 
     Map<String, ?> venueJsonMissing(String property) {

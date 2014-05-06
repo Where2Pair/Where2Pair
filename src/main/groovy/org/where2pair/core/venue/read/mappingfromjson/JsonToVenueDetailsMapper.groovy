@@ -2,7 +2,7 @@ package org.where2pair.core.venue.read.mappingfromjson
 
 import org.where2pair.core.venue.common.Coordinates
 import org.where2pair.core.venue.read.Address
-import org.where2pair.core.venue.read.Facility
+import org.where2pair.core.venue.common.Facility
 import org.where2pair.core.venue.read.FacilityStatus
 import org.where2pair.core.venue.read.VenueDetails
 import org.where2pair.core.venue.read.WeeklyOpeningTimes

@@ -1,7 +1,6 @@
 package org.where2pair.core.venue.read
 
 import org.where2pair.core.venue.common.Coordinates
-import org.where2pair.core.venue.read.*
 import spock.lang.Specification
 
 import static org.where2pair.core.venue.read.DistanceUnit.KM
@@ -53,7 +52,7 @@ class VenueSpec extends Specification {
 
     def 'determines whether venue has facilities'() {
         given:
-        Venue venue = new Venue(facilities: facilities.split(','))
+        Venue venue = new Venue(availableFacilities: facilities.split(','))
         FacilitiesCriteria facilitiesCriteria = new FacilitiesCriteria(requestedFacilities: requestedFacilities.split(','))
 
         when:

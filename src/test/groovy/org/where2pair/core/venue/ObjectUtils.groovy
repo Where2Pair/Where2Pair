@@ -15,7 +15,7 @@ class ObjectUtils {
 //                location: new Coordinates(1.0, 0.1),
 //                address: new Address('addressLine1', 'addressLine2', 'addressLine3', 'city', 'postcode', '01234567890'),
 //                weeklyOpeningTimes: builder.build(),
-//                facilities: ['wifi', 'mobile payments']
+//                availableFacilities: ['wifi', 'mobile payments']
 //        )
     }
 
@@ -30,7 +30,7 @@ class ObjectUtils {
 //                address: new Address('different addressLine1', 'different addressLine2', 'different addressLine3',
 //                        'different city', 'different postcode', 'different 01234567890'),
 //                weeklyOpeningTimes: builder.build(),
-//                facilities: ['different wifi', 'different mobile payments']
+//                availableFacilities: ['different wifi', 'different mobile payments']
 //        )
         null
     }

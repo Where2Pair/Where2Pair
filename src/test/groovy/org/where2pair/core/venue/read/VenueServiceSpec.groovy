@@ -10,7 +10,7 @@ import static CoordinatesBuilder.coordinates
 import static CoordinatesBuilder.someCoordinates
 import static org.where2pair.core.venue.read.DayOfWeek.FRIDAY
 import static org.where2pair.core.venue.read.DayOfWeek.MONDAY
-import static org.where2pair.core.venue.read.Facility.WIFI
+import static org.where2pair.core.venue.common.Facility.WIFI
 import static org.where2pair.core.venue.read.OpenPeriodBuilder.on
 import static org.where2pair.core.venue.read.VenueBuilder.aVenue
 import static org.where2pair.core.venue.read.VenueDetailsBuilder.venueDetails
