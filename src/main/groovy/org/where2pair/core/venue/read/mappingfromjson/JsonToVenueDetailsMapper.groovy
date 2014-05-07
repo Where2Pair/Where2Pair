@@ -2,10 +2,12 @@ package org.where2pair.core.venue.read.mappingfromjson
 
 import org.where2pair.core.venue.common.Coordinates
 import org.where2pair.core.venue.read.Address
-import org.where2pair.core.venue.common.Facility
 import org.where2pair.core.venue.read.FacilityStatus
+import org.where2pair.core.venue.read.FacilityStatuses
 import org.where2pair.core.venue.read.VenueDetails
 import org.where2pair.core.venue.read.WeeklyOpeningTimes
+
+import static org.where2pair.core.venue.read.FacilityStatuses.facilityStatusesFor
 
 class JsonToVenueDetailsMapper {
 
@@ -16,8 +18,14 @@ class JsonToVenueDetailsMapper {
         Coordinates location = coordinatesFrom(json.location)
         Address address = addressFrom(json.address)
         WeeklyOpeningTimes weeklyOpeningTimes = jsonToOpenHoursMapper.asWeeklyOpeningTimes(json.openHours)
-        Map<Facility, FacilityStatus> facilities = Facility.statusesFor(json.facilities)
-        new VenueDetails(name, location, address, weeklyOpeningTimes, facilities)
+        FacilityStatuses facilityStatuses = facilityStatusesFor(asFacilityStatuses(json.facilities))
+        new VenueDetails(name, location, address, weeklyOpeningTimes, facilityStatuses)
+    }
+
+    private Set<FacilityStatus> asFacilityStatuses(Map<String, String> json) {
+        json.collect { facility, status ->
+            new FacilityStatus(facility: facility.toUpperCase(), status: FacilityStatus.Status.fromString(status))
+        }
     }
 
     private Coordinates coordinatesFrom(Map<String, ?> json) {

@@ -33,40 +33,4 @@ class VenueSpec extends Specification {
         51.530800     | -0.097933      | -33.868135     | 151.210327      | 16990.86
     }
 
-    def 'determines whether venue is open'() {
-        given:
-        OpenTimesCriteria openTimesCriteria = new OpenTimesCriteria()
-        WeeklyOpeningTimes weeklyOpenTimes = Mock()
-        weeklyOpenTimes.isOpen(openTimesCriteria) >> expectedOpenStatus
-        Venue venue = new Venue(weeklyOpeningTimes: weeklyOpenTimes)
-
-        when:
-        boolean openStatus = venue.isOpen(openTimesCriteria)
-
-        then:
-        openStatus == expectedOpenStatus
-
-        where:
-        expectedOpenStatus << [true, false]
-    }
-
-    def 'determines whether venue has facilities'() {
-        given:
-        Venue venue = new Venue(facilities: facilities.split(','))
-        FacilitiesCriteria facilitiesCriteria = new FacilitiesCriteria(requestedFacilities: requestedFacilities.split(','))
-
-        when:
-        boolean hasFacilities = venue.hasFacilities(facilitiesCriteria)
-
-        then:
-        hasFacilities == expectedResult
-
-        where:
-        facilities | requestedFacilities | expectedResult
-        'a,b,c'    | 'a,b'               | true
-        'a,b,c'    | 'd'                 | false
-        ''         | ''                  | true
-        'a,B,c'    | 'A,b,C'             | true
-    }
-
 }

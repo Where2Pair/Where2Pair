@@ -1,10 +1,9 @@
 package org.where2pair.core.venue.read
 
-import org.where2pair.core.venue.common.Facility
 import groovy.transform.Immutable
+import org.where2pair.core.venue.common.Facility
 
-import static org.where2pair.core.venue.read.FacilityStatus.Status.AVAILABLE
-import static org.where2pair.core.venue.read.FacilityStatus.Status.UNAVAILABLE
+import static org.where2pair.core.venue.read.FacilityStatus.Status.STATUS_UNKNOWN
 
 @Immutable
 class FacilityStatus {
@@ -12,32 +11,34 @@ class FacilityStatus {
     Facility facility
     Status status
 
-    static FacilityStatus facilityAvailable(Facility facility) {
-        new FacilityStatus(facility, AVAILABLE)
-    }
-
-    static FacilityStatus facilityUnavailable(Facility facility) {
-        new FacilityStatus(facility, UNAVAILABLE)
+    static FacilityStatus facilityStatusUnknown(Facility facility) {
+        new FacilityStatus(facility, STATUS_UNKNOWN)
     }
 
     boolean isAvailable() {
-        this.status == AVAILABLE
+        status.isAvailable()
     }
 
-    static enum Status {
-        AVAILABLE('Y'),
-        UNAVAILABLE('N'),
-        STATUS_UNKNOWN('UNKNOWN')
+    enum Status {
 
-        private String label
+        AVAILABLE('Y', true),
+        UNAVAILABLE('N', false),
+        STATUS_UNKNOWN('UNKNOWN', false)
 
-        private Status(String label) {
+        final String label
+        final boolean available
+
+        private Status(String label, boolean available) {
             this.label = label
+            this.available = available
         }
 
-        @Override
-        public String toString() {
-            label
+        static Status fromString(String label) {
+            Status status = values().find { it.label == label.toUpperCase() }
+
+            if (status == null) throw new IllegalArgumentException("Unrecognized status: $label")
+
+            status
         }
     }
 

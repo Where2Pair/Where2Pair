@@ -1,9 +1,9 @@
 package org.where2pair.core.venue.read
 
-import groovy.transform.EqualsAndHashCode
+import groovy.transform.Immutable
 import groovy.transform.ToString
 
-@EqualsAndHashCode
+@Immutable
 @ToString
 class WeeklyOpeningTimes {
 

@@ -133,7 +133,7 @@ class VenueJsonValidator {
                 it.facilities.every { it.key.toUpperCase() in allFacilities() }
             }: UNRECOGNIZED_FACILITY_ERROR_MESSAGE,
             {
-                it.facilities.every { it.value.toUpperCase() in ['Y', 'N']}
+                it.facilities.every { it.value.toUpperCase() in ['Y', 'N', 'UNKNOWN']}
             }: INVALID_FACILITY_STATUS_ERROR_MESSAGE
     ]
 
@@ -163,5 +163,5 @@ class VenueJsonValidator {
     static final FACILITIES_STRUCTURE_ERROR_MESSAGE = "Expected facilities to map facilities to either 'Y' or 'N' e.g. ['wifi': 'N', 'power': 'Y']"
 
     static final UNRECOGNIZED_FACILITY_ERROR_MESSAGE = ""//"Supported facilities are: ${Facility.values().collect { it.toString().toLowerCase() }}"
-    static final INVALID_FACILITY_STATUS_ERROR_MESSAGE = "The status of a facility can either be 'Y' or 'N'"
+    static final INVALID_FACILITY_STATUS_ERROR_MESSAGE = "The status of a facility can be either 'Y', 'N' or 'UNKNOWN"
 }

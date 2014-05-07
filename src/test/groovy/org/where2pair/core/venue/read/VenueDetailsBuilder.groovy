@@ -7,11 +7,10 @@ import org.where2pair.core.venue.common.SimpleTime
 import org.where2pair.core.venue.read.mappingtojson.OpenHoursToJsonMapper
 import org.where2pair.core.venue.read.mappingtojson.WeeklyOpeningTimesBuilder
 
-import static org.where2pair.core.venue.common.Facility.MOBILE_PAYMENTS
-import static org.where2pair.core.venue.common.Facility.WIFI
+import static org.where2pair.core.venue.common.Facility.*
 import static org.where2pair.core.venue.read.DayOfWeek.MONDAY
 import static org.where2pair.core.venue.read.DayOfWeek.TUESDAY
-import static org.where2pair.core.venue.read.FacilityStatuses.statusesFor
+import static org.where2pair.core.venue.read.FacilityStatuses.facilityStatusesFor
 
 class VenueDetailsBuilder {
     private String name = 'venue name'
@@ -19,7 +18,7 @@ class VenueDetailsBuilder {
     private Coordinates location = new Coordinates(1.0, 0.1)
     private OpenHoursToJsonMapper openHoursToJsonMapper = new OpenHoursToJsonMapper()
     private WeeklyOpeningTimesBuilder weeklyOpeningTimesBuilder = new WeeklyOpeningTimesBuilder()
-    private FacilityStatuses facilityStatuses = statusesFor([WIFI, MOBILE_PAYMENTS])
+    private FacilityStatuses facilityStatuses = asAvailableFacilities(WIFI, MOBILE_PAYMENTS)
 
     private VenueDetailsBuilder() {
         weeklyOpeningTimesBuilder.addOpenPeriod(MONDAY, new SimpleTime(12, 0), new SimpleTime(18, 30))
@@ -56,12 +55,19 @@ class VenueDetailsBuilder {
     }
 
     VenueDetailsBuilder withFacilities(Facility... facilities) {
-        this.facilityStatuses = statusesFor(facilities as Collection<Facility>)
+        this.facilityStatuses = asAvailableFacilities(facilities)
         this
     }
 
     VenueDetailsBuilder withNoFacilities() {
         withFacilities()
+    }
+
+    private FacilityStatuses asAvailableFacilities(Facility... facilities) {
+        Set<FacilityStatus> availableFacilities = facilities.collect {
+            new FacilityStatus(it, FacilityStatus.Status.AVAILABLE)
+        }
+        facilityStatusesFor(availableFacilities)
     }
 
     VenueDetails build() {
@@ -90,7 +96,7 @@ class VenueDetailsBuilder {
                         phoneNumber: address.phoneNumber ?: ''
                 ],
                 openHours: openHoursToJsonMapper.asOpenHoursJson(weeklyOpeningTimesBuilder.build()),
-                facilities: facilityStatuses.collectEntries { [it.facility.toString(), it.status.toString() ] }
+                facilities: facilityStatuses.facilityStatuses.collectEntries { [it.facility.toString(), it.status.label ] }
         ]
     }
 }

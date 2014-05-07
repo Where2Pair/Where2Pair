@@ -3,20 +3,19 @@ package org.where2pair.core.venue.read
 import groovy.transform.Immutable
 import org.where2pair.core.venue.common.Facility
 
-import static org.where2pair.core.venue.read.FacilityStatus.facilityAvailable
-import static org.where2pair.core.venue.read.FacilityStatus.facilityUnavailable
+import static org.where2pair.core.venue.read.FacilityStatus.facilityStatusUnknown
 
 @Immutable
 class FacilityStatuses {
-    @Delegate private List<FacilityStatus> facilityStatuses
+    Set<FacilityStatus> facilityStatuses
 
-    static FacilityStatuses statusesFor(Collection<Facility> availableFacilities) {
-        Collection<Facility> unavailableFacilities = Facility.values() - availableFacilities
+    static FacilityStatuses facilityStatusesFor(Set<FacilityStatus> facilityStatuses) {
+        Set<Facility> unknownStatusFacilities = Facility.values() - facilityStatuses.facility
+        Set<FacilityStatus> unknownStatusFacilityStatuses = unknownStatusFacilities.collect {
+            facilityStatusUnknown(it)
+        }
 
-        List<FacilityStatus> available = availableFacilities.collect { facilityAvailable(it) }
-        List<FacilityStatus> unavailable = unavailableFacilities.collect { facilityUnavailable(it) }
-
-        new FacilityStatuses(facilityStatuses: (available + unavailable))
+        new FacilityStatuses(facilityStatuses: facilityStatuses + unknownStatusFacilityStatuses)
     }
 
     boolean hasFacilities(FacilitiesCriteria facilitiesCriteria) {
