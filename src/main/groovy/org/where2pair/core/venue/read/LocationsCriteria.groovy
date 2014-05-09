@@ -10,7 +10,7 @@ import static org.where2pair.core.venue.read.DistanceUnit.MILES
 @ToString
 class LocationsCriteria {
 
-    List<Coordinates> locations
+    Collection<Coordinates> locations
     DistanceUnit distanceUnit
 
     static LocationsCriteria distanceInMilesTo(Coordinates... coordinates) {

@@ -1,83 +1,55 @@
 package org.where2pair.infra.venue.read
 
-import org.where2pair.core.venue.common.Coordinates
-import org.where2pair.core.venue.read.Venue
+import groovy.json.JsonOutput
 import org.where2pair.core.venue.read.VenueRepository
-import org.where2pair.core.venue.read.mappingtojson.WeeklyOpeningTimesBuilder
-import org.where2pair.infra.venue.read.ShowVenueController
+import org.where2pair.core.venue.read.mappingtojson.VenueToJsonMapper
+import org.where2pair.infra.venue.web.StatusCode
 import spock.lang.Specification
+
+import static org.where2pair.core.venue.VenueIdBuilder.aRandomVenueId
+import static org.where2pair.core.venue.read.VenueBuilder.aVenue
 
 class ShowVenueControllerSpec extends Specification {
 
-    static final String VENUE_NAME = 'my venue'
-    static final String VENUE_ID = '1'
-    ShowVenueController controller = new ShowVenueController()
-    VenueRepository venueRepository = Mock()
+    def venueRepository = Mock(VenueRepository)
+    def venueToJsonMapper = new VenueToJsonMapper()
+    ShowVenueController controller = new ShowVenueController(venueRepository, venueToJsonMapper)
 
-    def "should show the specified venue"() {
+    def 'looks up and renders venues as json'() {
         given:
-        Venue venue = new Venue(name: VENUE_NAME)
-        Map venueJson = [name: VENUE_NAME]
-        venueRepository.get(VENUE_ID) >> venue
-        venueJsonMarshaller.asVenueJson(venue) >> venueJson
+        def venueId = aRandomVenueId()
+        def venue = aVenue().build()
+        venueRepository.get(venueId) >> venue
+        def expectedVenueJson = venueToJsonMapper.toJson(venue)
 
         when:
-        Map response = controller.show(VENUE_ID)
+        def response = controller.show(venueId.toString())
 
         then:
-        response == venueJson
+        response.responseBody == JsonOutput.toJson(expectedVenueJson)
+        response.statusCode == StatusCode.OK
     }
 
-    def "should show 404 if venue not found"() {
-        Venue venue = new Venue(name: VENUE_NAME)
-        venueRepository.get(VENUE_ID) >> null
+    def 'shows 404 error response if venue was not found'() {
+        def venueId = aRandomVenueId()
+        venueRepository.get(venueId) >> null
 
         when:
-        def response = controller.show(VENUE_ID)
+        def response = controller.show(venueId.toString())
 
         then:
-        response.status == 404
-        response.message == "Venue with id $VENUE_ID could not be found"
+        response.responseBody == JsonOutput.toJson([error: "Venue with id ${venueId.toString()} could not be found"])
+        response.statusCode == StatusCode.NOT_FOUND
     }
 
-    def "should show all venues"() {
-        given:
-        List venues = 100.venues()
-        List venuesJson = 100.venuesJson()
-        venueRepository.getAll() >> venues
-        venueJsonMarshaller.asVenuesJson(venues) >> venuesJson
+    def 'shows 404 error response even if venue id is malformed'() {
+        def venueId = 'invalid-venue-id'
 
         when:
-        List response = controller.showAll()
+        def response = controller.show(venueId)
 
         then:
-        response == venuesJson
-    }
-
-    def setup() {
-        controller.venueRepository = venueRepository
-        controller.venueJsonMarshaller = venueJsonMarshaller
-        Integer.mixin(VenuesMixin)
-    }
-
-    def cleanup() {
-        String.metaClass = null
-        Integer.metaClass = null
-    }
-
-    @Category(Integer)
-    static class VenuesMixin {
-        List venues() {
-            (0..this).collect {
-                new Venue(location: new Coordinates(1.0, 0.5),
-                        weeklyOpeningTimes: new WeeklyOpeningTimesBuilder().build())
-            }
-        }
-
-        List venuesJson() {
-            (0..this).collect {
-                [:]
-            }
-        }
+        response.responseBody == JsonOutput.toJson([error: "Venue with id ${venueId.toString()} could not be found"])
+        response.statusCode == StatusCode.NOT_FOUND
     }
 }
