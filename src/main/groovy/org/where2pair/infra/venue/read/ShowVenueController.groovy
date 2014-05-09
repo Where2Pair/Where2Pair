@@ -16,17 +16,27 @@ class ShowVenueController {
     VenueToJsonMapper venueToJsonMapper
 
     JsonResponse show(String id) {
+        def venueId
         try {
-            def venueId = VenueId.from(id)
-            def venue = venueRepository.get(venueId)
-
-            if (venue) {
-                return validJsonResponse(venueToJsonMapper.toJson(venue))
-            } else {
-                return resourceNotFound("Venue with id $id could not be found")
-            }
+            venueId = VenueId.from(id)
         } catch (MalformedVenueIdException e) {
-            return resourceNotFound("Venue with id $id could not be found")
+            return venueNotFoundResponse(id)
         }
+
+        lookupVenue(venueId)
+    }
+
+    private JsonResponse lookupVenue(VenueId venueId) {
+        def venue = venueRepository.get(venueId)
+
+        if (venue) {
+            return validJsonResponse(venueToJsonMapper.toJson(venue))
+        } else {
+            return venueNotFoundResponse(venueId.toString())
+        }
+    }
+
+    private static JsonResponse venueNotFoundResponse(String id) {
+        resourceNotFound("Venue with id $id could not be found")
     }
 }
