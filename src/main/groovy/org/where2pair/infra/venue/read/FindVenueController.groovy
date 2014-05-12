@@ -1,26 +1,33 @@
 package org.where2pair.infra.venue.read
 
+import groovy.json.JsonOutput
+import groovy.transform.TupleConstructor
+import org.where2pair.core.venue.common.Facility
 import org.where2pair.core.venue.common.SimpleTime
 import org.where2pair.core.venue.read.*
+import org.where2pair.infra.venue.web.JsonResponse
 
 import static DayOfWeek.parseDayOfWeek
+import static groovy.json.JsonOutput.toJson
+import static org.where2pair.infra.venue.web.JsonResponse.badRequest
+import static org.where2pair.infra.venue.web.JsonResponse.validJsonResponse
 
+@TupleConstructor
 class FindVenueController {
 
-    VenueService venueFinder
+    VenueService venueService
     LocationsCriteriaParser locationsCriteriaParser
     TimeProvider timeProvider
 
-    def findNearest(Map params) {
-        LocationsCriteria locationsCriteria = locationsCriteriaParser.parse(params)
-
-        if (!locationsCriteria.errors) {
-            OpenTimesCriteria openTimesCriteria = parseOpenTimesCriteriaFromRequest(params)
-            FacilitiesCriteria facilitiesCriteria = parseFacilitiesCriteriaFromRequest(params)
-            List venues = venueFinder.find(openTimesCriteria, facilitiesCriteria, locationsCriteria)
-            return null
-        } else {
-            return handleIllegalLocationsCriteria(locationsCriteria)
+    JsonResponse findNearest(Map params) {
+        try {
+            def openTimesCriteria = parseOpenTimesCriteriaFromRequest(params)
+            def facilitiesCriteria = parseFacilitiesCriteriaFromRequest(params)
+            def locationsCriteria = locationsCriteriaParser.parse(params)
+            List venues = venueService.find(openTimesCriteria, facilitiesCriteria, locationsCriteria)
+            return validJsonResponse(venues)
+        } catch (QueryParseException e) {
+            return badRequest(e.message)
         }
     }
 
@@ -41,12 +48,7 @@ class FindVenueController {
     }
 
     private FacilitiesCriteria parseFacilitiesCriteriaFromRequest(Map params) {
-        Set requestedFacilities = params.withFacilities ? params.withFacilities.split(',') : []
-        new FacilitiesCriteria(requestedFacilities: requestedFacilities)
-    }
-
-    private def handleIllegalLocationsCriteria(LocationsCriteria suppliedLocations) {
-        def (errorMessage, status) = suppliedLocations.errors
-        null
+        Set<String> requestedFacilities = params.withFacilities ? params.withFacilities.split(',') : []
+        new FacilitiesCriteria(requestedFacilities: requestedFacilities.collect { it.toUpperCase() as Facility })
     }
 }
