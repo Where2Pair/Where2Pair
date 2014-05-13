@@ -22,14 +22,14 @@ class LocationsCriteriaParser {
         def distanceUnit = parseDistanceUnit(params)
 
         if (!distanceUnitValid(distanceUnit)) {
-            throw new QueryParseException("Distance unit '$distanceUnit' is invalid. Use either 'km' or 'miles' (omitting distanceUnit altogether defaults to 'km').")
+            throw new QueryParseException("Distance unit '$distanceUnit' is invalid. Use either 'KM' or 'MILES' (omitting distanceUnit altogether defaults to 'KM').")
         }
 
         new LocationsCriteria(locations, distanceUnit as DistanceUnit)
     }
 
     private static String parseDistanceUnit(Map params) {
-        (params.distanceUnit as String).toUpperCase() ?: 'KM'
+        params.distanceUnit ? (params.distanceUnit as String).toUpperCase() : 'KM'
     }
 
     private static boolean distanceUnitValid(String distanceUnit) {
