@@ -1,10 +1,9 @@
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
-
-import org.where2pair.infra.venue.read.FindVenueController
-import org.where2pair.infra.venue.read.ShowVenueController
-import org.where2pair.infra.venue.write.NewVenueController
-import org.where2pair.main.venue.GuiceWhere2PairModule
+import org.where2pair.main.GuiceWhere2PairModule
+import org.where2pair.read.venue.FindVenueController
+import org.where2pair.read.venue.ShowVenueController
+import org.where2pair.write.venue.NewVenueController
 import ratpack.util.MultiValueMap
 
 import static ratpack.groovy.Groovy.ratpack

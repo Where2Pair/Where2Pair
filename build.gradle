@@ -21,6 +21,23 @@ repositories {
     maven { url 'http://repo.springsource.org/repo' } // for springloaded
 }
 
+sourceSets {
+    main {
+        groovy {
+            srcDir 'src/main/groovy/core'
+            srcDir 'src/main/groovy/infra'
+            srcDir 'src/main/groovy/main'
+        }
+    }
+    test {
+        groovy {
+            srcDir 'src/test/groovy/core'
+            srcDir 'src/test/groovy/infra'
+            srcDir 'src/test/groovy/main'
+        }
+    }
+}
+
 configurations.all {
     resolutionStrategy.cacheDynamicVersionsFor 7, 'days'
     resolutionStrategy.cacheChangingModulesFor 7, 'days'
