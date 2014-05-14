@@ -3,6 +3,7 @@ package org.where2pair.infra.venue.read
 import org.where2pair.core.venue.common.Coordinates
 import org.where2pair.core.venue.common.Facility
 import org.where2pair.core.venue.common.SimpleTime
+import org.where2pair.core.venue.read.DistanceUnit
 import org.where2pair.core.venue.read.FacilitiesCriteria
 import org.where2pair.core.venue.read.LocationsCriteria
 import org.where2pair.core.venue.read.OpenTimesCriteria
@@ -15,6 +16,8 @@ import static org.where2pair.core.venue.common.Facility.POWER
 import static org.where2pair.core.venue.common.Facility.WIFI
 import static org.where2pair.core.venue.read.DayOfWeek.*
 import static org.where2pair.core.venue.read.DistanceUnit.KM
+import static org.where2pair.core.venue.read.DistanceUnit.KM
+import static org.where2pair.core.venue.read.DistanceUnit.MILES
 import static org.where2pair.core.venue.read.VenueBuilder.aVenue
 import static org.where2pair.infra.venue.web.StatusCode.BAD_REQUEST
 import static org.where2pair.infra.venue.web.StatusCode.OK
@@ -32,7 +35,7 @@ class FindVenueControllerSpec extends Specification {
         given:
         def openTimesParams = [openFrom: '13.30', openUntil: '14.30', openDay: 'Tuesday']
         def facilitiesParams = [withFacilities: 'wifi,power']
-        def locationsParams = [location: '1.0,0.1', distanceUnit: 'km']
+        def locationsParams = [location: ['1.0,0.1'], distanceUnit: 'km']
         def expectedOpenTimesCriteria = new OpenTimesCriteria(openFrom: new SimpleTime(13, 30), openUntil: new SimpleTime(14, 30), dayOfWeek: TUESDAY)
         def expectedFacilitiesCriteria = new FacilitiesCriteria(requestedFacilities: [WIFI, POWER])
         def expectedLocationsCriteria = new LocationsCriteria(locations: [new Coordinates(1.0, 0.1)], distanceUnit: KM)
@@ -60,9 +63,9 @@ class FindVenueControllerSpec extends Specification {
 
         then:
         1 * venueService.find({ OpenTimesCriteria criteria ->
-            criteria.openFrom == expectedOpenFrom
-            criteria.openUntil == expectedOpenUntil
-            criteria.dayOfWeek == expectedOpenDay
+            criteria.openFrom == expectedOpenFrom &&
+                    criteria.openUntil == expectedOpenUntil &&
+                    criteria.dayOfWeek == expectedOpenDay
         }, _, _)
 
         where:
@@ -75,6 +78,32 @@ class FindVenueControllerSpec extends Specification {
         'missing'     | '18.45'        | 'wednesday'  | TIME_NOW               | new SimpleTime(18, 45) | WEDNESDAY
         '13.30'       | '18.45'        | 'thursday'   | new SimpleTime(13, 30) | new SimpleTime(18, 45) | THURSDAY
         'missing'     | 'missing'      | 'sunday'     | new SimpleTime(0, 0)   | new SimpleTime(35, 59) | SUNDAY
+    }
+
+    def 'supports multiple supplied locations'() {
+        given:
+        def params = [:]
+        params.location = ['1.0,0.1', '2.0,0.2']
+        params.distanceUnit = 'miles'
+        def expectedLocationsCriteria = new LocationsCriteria([new Coordinates(1.0, 0.1), new Coordinates(2.0, 0.2)], MILES)
+
+        when:
+        controller.findNearest(params)
+
+        then:
+        1 * venueService.find(_, _, expectedLocationsCriteria)
+    }
+
+    def 'defaults to km distance unit when none supplied'() {
+        given:
+        def params = [location: ['1.0,0.1']]
+        def expectedLocationsCriteria = new LocationsCriteria([new Coordinates(1.0, 0.1)], KM)
+
+        when:
+        controller.findNearest(params)
+
+        then:
+        1 * venueService.find(_, _, expectedLocationsCriteria)
     }
 
     @Unroll
@@ -98,6 +127,7 @@ class FindVenueControllerSpec extends Specification {
         [openDay: 'abcday']    | "'openDay' not recognized. Expected to be a day from Monday-Sunday"
     }
 
+
     def 'rejects requests with invalid facilities'() {
         given:
         def params = getMinimumRequiredParams() + invalidParams
@@ -110,7 +140,7 @@ class FindVenueControllerSpec extends Specification {
         response.statusCode == BAD_REQUEST
 
         where:
-        invalidParams            | expectedErrorMessage
+        invalidParams                 | expectedErrorMessage
         [withFacilities: 'gymnasium'] | "Unrecognized facility requested. Facilities should be comma-separated values from the following list: ${Facility.values()}"
     }
 
@@ -123,13 +153,13 @@ class FindVenueControllerSpec extends Specification {
         response.statusCode == BAD_REQUEST
 
         where:
-        invalidParams                                   | expectedErrorMessage
-        [no_location_specified: true]                   | 'Missing locations from request parameters. Query expected to be in the form: nearest?location1=x1,y1&location2=x2,y2...'
-        [location: '1.0,0.1', distanceUnit: 'Furlongs'] | "Distance unit 'FURLONGS' is invalid. Use either 'KM' or 'MILES' (omitting distanceUnit altogether defaults to 'KM')."
+        invalidParams                                     | expectedErrorMessage
+        [no_location_specified: true]                     | 'Missing locations from request parameters. Query expected to be in the form: nearest?location1=x1,y1&location2=x2,y2...'
+        [location: ['1.0,0.1'], distanceUnit: 'Furlongs'] | "Distance unit 'FURLONGS' is invalid. Use either 'KM' or 'MILES' (omitting distanceUnit altogether defaults to 'KM')."
     }
 
     Map<String, String> getMinimumRequiredParams() {
-        [location: '1.0,0.1']
+        [location: ['1.0,0.1']]
     }
 
     def setup() {

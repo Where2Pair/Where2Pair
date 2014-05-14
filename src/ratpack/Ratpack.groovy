@@ -5,6 +5,7 @@ import org.where2pair.infra.venue.read.FindVenueController
 import org.where2pair.infra.venue.read.ShowVenueController
 import org.where2pair.infra.venue.write.NewVenueController
 import org.where2pair.main.venue.GuiceWhere2PairModule
+import ratpack.util.MultiValueMap
 
 import static ratpack.groovy.Groovy.ratpack
 
@@ -53,7 +54,7 @@ def renderJResult(response, result) {
     response.send("application/json", json)
 }
 
-def squashLocationQueryParamValuesIntoList(queryParams) {
+def squashLocationQueryParamValuesIntoList(MultiValueMap<String, String> queryParams) {
     queryParams.collectEntries { key, value ->
         if (key == 'location') {
             return [(key): queryParams.getAll(key)]

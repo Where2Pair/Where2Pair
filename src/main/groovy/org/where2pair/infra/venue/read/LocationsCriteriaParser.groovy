@@ -8,10 +8,10 @@ import static java.lang.Double.parseDouble
 
 class LocationsCriteriaParser {
 
-    LocationsCriteria parse(Map params) {
-        def locationParams = params.findAll { it.key == 'location' }
+    LocationsCriteria parse(Map<String, ?> params) {
+        List<String> locationParams = params.location ?: []
         List locations = locationParams?.collect {
-            def (lat, lng) = it.value.split(',').collect { parseDouble(it) }
+            def (lat, lng) = it.split(',').collect { parseDouble(it) }
             new Coordinates(lat, lng)
         }
 
@@ -28,7 +28,7 @@ class LocationsCriteriaParser {
         new LocationsCriteria(locations, distanceUnit as DistanceUnit)
     }
 
-    private static String parseDistanceUnit(Map params) {
+    private static String parseDistanceUnit(Map<String, ?> params) {
         params.distanceUnit ? (params.distanceUnit as String).toUpperCase() : 'KM'
     }
 
