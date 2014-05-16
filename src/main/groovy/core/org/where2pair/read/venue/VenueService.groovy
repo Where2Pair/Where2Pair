@@ -20,7 +20,7 @@ class VenueService {
 
     private List<Venue> findOpenVenues(OpenTimesCriteria openTimesCriteria) {
         venueRepository.getAll().findAll { Venue venue ->
-            venue.isOpen(openTimesCriteria)
+            openTimesCriteria.satisfiedBy(venue)
         }
     }
 

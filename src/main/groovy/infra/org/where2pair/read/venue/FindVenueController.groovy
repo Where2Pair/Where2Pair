@@ -5,6 +5,7 @@ import org.where2pair.common.venue.JsonResponse
 import org.where2pair.common.venue.SimpleTime
 import org.where2pair.read.venue.find.FacilitiesCriteria
 import org.where2pair.read.venue.find.OpenTimesCriteria
+import org.where2pair.read.venue.find.OpenTimesCriteriaFactory
 
 import static DayOfWeek.parseDayOfWeek
 import static org.where2pair.common.venue.JsonResponse.badRequest
@@ -16,7 +17,7 @@ class FindVenueController {
 
     VenueService venueService
     LocationsCriteriaParser locationsCriteriaParser
-    TimeProvider timeProvider
+    OpenTimesCriteriaFactory openTimesCriteriaFactory
 
     JsonResponse findNearest(Map<String, ?> params) {
         try {
@@ -35,15 +36,15 @@ class FindVenueController {
         SimpleTime openUntil = params.openUntil ? parseSimpleTime(params, 'openUntil') : openFrom
 
         try {
-            DayOfWeek dayOfWeek = params.openDay ? parseDayOfWeek(params.openDay) : timeProvider.today()
-            return new OpenTimesCriteria(openFrom: openFrom, openUntil: openUntil, dayOfWeek: dayOfWeek)
+            DayOfWeek dayOfWeek = params.openDay ? parseDayOfWeek(params.openDay) : null
+            return openTimesCriteriaFactory.createOpenTimesCriteria(openFrom, openUntil, dayOfWeek)
         } catch (IllegalArgumentException e) {
             throw new QueryParseException("'openDay' not recognized. Expected to be a day from Monday-Sunday")
         }
     }
 
     private SimpleTime parseOpenFromTimeFromRequest(Map<String, ?> params) {
-        params.openFrom ? parseSimpleTime(params, 'openFrom') : timeProvider.timeNow()
+        params.openFrom ? parseSimpleTime(params, 'openFrom') : null
     }
 
     private static SimpleTime parseSimpleTime(Map<String, ?> params, String paramName) {

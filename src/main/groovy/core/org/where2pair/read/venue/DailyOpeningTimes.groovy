@@ -9,16 +9,28 @@ import org.where2pair.common.venue.SimpleTime
 class DailyOpeningTimes {
     private List<OpenPeriod> openPeriods = []
 
-    boolean isOpen(TimeWindow timeWindow) {
-        openPeriods.find { it.isOpen(timeWindow) }
+    boolean isOpenBetween(TimeWindow timeWindow) {
+        openPeriods.find { it.isOpenBetween(timeWindow) }
+    }
+
+    boolean isOpenAt(SimpleTime time) {
+        openPeriods.find { it.isOpenAt(time) }
+    }
+
+    boolean isOpen() {
+        openPeriods.size() > 0
     }
 
     @Immutable
     static class OpenPeriod {
         private TimeWindow openTimeWindow
 
-        boolean isOpen(TimeWindow timeWindow) {
+        boolean isOpenBetween(TimeWindow timeWindow) {
             openTimeWindow.supersetOf(timeWindow)
+        }
+
+        boolean isOpenAt(SimpleTime time) {
+            openTimeWindow.contains(time)
         }
 
         SimpleTime getOpenFrom() {

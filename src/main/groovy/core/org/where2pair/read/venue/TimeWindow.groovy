@@ -12,4 +12,8 @@ class TimeWindow {
     boolean supersetOf(TimeWindow timeWindow) {
         from <= timeWindow.from && until >= timeWindow.until
     }
+
+    boolean contains(SimpleTime time) {
+        from <= time && until >= time
+    }
 }

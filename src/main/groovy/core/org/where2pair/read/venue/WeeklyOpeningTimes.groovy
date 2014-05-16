@@ -11,16 +11,18 @@ class WeeklyOpeningTimes {
     private Map<DayOfWeek, DailyOpeningTimes> weeklyOpeningTimes
 
     boolean isOpen(OpenTimesCriteria openTimesCriteria) {
-        weeklyOpeningTimes[openTimesCriteria.dayOfWeek].isOpen(openTimesCriteria.timeRange)
+        weeklyOpeningTimes[openTimesCriteria.dayOfWeek].isOpenBetween(openTimesCriteria.timeRange)
     }
 
     def getAt(key) {
         weeklyOpeningTimes[key]
     }
 
-    @Override
     void each(Closure c) {
         weeklyOpeningTimes.each(c)
     }
 
+    void any(Closure c) {
+        weeklyOpeningTimes.values().any(c)
+    }
 }

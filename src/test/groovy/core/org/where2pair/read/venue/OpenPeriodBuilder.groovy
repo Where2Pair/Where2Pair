@@ -25,4 +25,14 @@ class OpenPeriodBuilder {
         this.closeTime = new SimpleTime(hour, 0)
         this
     }
+
+    OpenPeriodBuilder from(SimpleTime openTime) {
+        this.openTime = openTime
+        this
+    }
+
+    OpenPeriodBuilder until(SimpleTime closeTime) {
+        this.closeTime = closeTime
+        this
+    }
 }

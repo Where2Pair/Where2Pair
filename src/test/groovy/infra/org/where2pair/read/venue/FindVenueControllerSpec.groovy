@@ -6,6 +6,8 @@ import org.where2pair.common.venue.StatusCode
 import org.where2pair.read.venue.find.FacilitiesCriteria
 import org.where2pair.read.venue.find.LocationsCriteria
 import org.where2pair.read.venue.find.OpenTimesCriteria
+import org.where2pair.read.venue.find.OpenTimesCriteriaFactory
+import spock.lang.Ignore
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -17,11 +19,14 @@ import static org.where2pair.read.venue.DayOfWeek.MONDAY
 import static org.where2pair.read.venue.DayOfWeek.SUNDAY
 import static org.where2pair.read.venue.DayOfWeek.THURSDAY
 import static org.where2pair.read.venue.DayOfWeek.TUESDAY
+import static org.where2pair.read.venue.DayOfWeek.TUESDAY
 import static org.where2pair.read.venue.DayOfWeek.WEDNESDAY
 import static org.where2pair.read.venue.DistanceUnit.KM
 import static org.where2pair.read.venue.DistanceUnit.MILES
 import static org.where2pair.read.venue.Facility.POWER
 import static org.where2pair.read.venue.Facility.WIFI
+import static org.where2pair.read.venue.OpenPeriodBuilder.on
+import static org.where2pair.read.venue.VenueBuilder.aVenue
 import static org.where2pair.read.venue.VenueBuilder.aVenue
 
 class FindVenueControllerSpec extends Specification {
@@ -29,16 +34,17 @@ class FindVenueControllerSpec extends Specification {
     static final TIME_NOW = new SimpleTime(1, 2)
     static final TODAY = FRIDAY
     def venueService = Mock(VenueService)
-    def timeProvider = Mock(TimeProvider)
+    def openTimesCriteriaFactory = Mock(OpenTimesCriteriaFactory)
     def locationsCriteriaParser = new LocationsCriteriaParser()
-    def controller = new FindVenueController(venueService, locationsCriteriaParser, timeProvider)
+    def controller = new FindVenueController(venueService, locationsCriteriaParser, openTimesCriteriaFactory)
 
     def 'finds venues that match criteria and returns as json'() {
         given:
         def openTimesParams = [openFrom: '13.30', openUntil: '14.30', openDay: 'Tuesday']
         def facilitiesParams = [withFacilities: 'wifi,power']
         def locationsParams = [location: ['1.0,0.1'], distanceUnit: 'km']
-        def expectedOpenTimesCriteria = new OpenTimesCriteria(openFrom: new SimpleTime(13, 30), openUntil: new SimpleTime(14, 30), dayOfWeek: TUESDAY)
+        def expectedOpenTimesCriteria = Mock(OpenTimesCriteria)
+        openTimesCriteriaFactory.createOpenTimesCriteria(new SimpleTime(13, 30), new SimpleTime(14, 30), TUESDAY) >> expectedOpenTimesCriteria
         def expectedFacilitiesCriteria = new FacilitiesCriteria(requestedFacilities: [WIFI, POWER])
         def expectedLocationsCriteria = new LocationsCriteria(locations: [new Coordinates(1.0, 0.1)], distanceUnit: KM)
         def venuesFound = [aVenue().build()]
@@ -50,36 +56,6 @@ class FindVenueControllerSpec extends Specification {
         then:
         jsonResponse.responseBody == toJson(venuesFound)
         jsonResponse.statusCode == OK
-    }
-
-    @Unroll
-    def 'given openFrom: #openFromParam openUntil: #openUntilParam openDay: #openDayParam finds venues open during correct time range'() {
-        given:
-        def params = getMinimumRequiredParams()
-        if (openFromParam != 'missing') params.openFrom = openFromParam
-        if (openUntilParam != 'missing') params.openUntil = openUntilParam
-        if (openDayParam != 'missing') params.openDay = openDayParam
-
-        when:
-        controller.findNearest(params)
-
-        then:
-        1 * venueService.find({ OpenTimesCriteria criteria ->
-            criteria.openFrom == expectedOpenFrom &&
-                    criteria.openUntil == expectedOpenUntil &&
-                    criteria.dayOfWeek == expectedOpenDay
-        }, _, _)
-
-        where:
-        openFromParam | openUntilParam | openDayParam | expectedOpenFrom       | expectedOpenUntil      | expectedOpenDay
-        'missing'     | 'missing'      | 'missing'    | TIME_NOW               | TIME_NOW               | TODAY
-        '13.30'       | 'missing'      | 'missing'    | new SimpleTime(13, 30) | new SimpleTime(13, 30) | TODAY
-        'missing'     | '13.30'        | 'missing'    | TIME_NOW               | new SimpleTime(13, 30) | TODAY
-        '13.30'       | '18.45'        | 'missing'    | new SimpleTime(13, 30) | new SimpleTime(18, 45) | TODAY
-        '13.30'       | 'missing'      | 'monday'     | new SimpleTime(13, 30) | new SimpleTime(13, 30) | MONDAY
-        'missing'     | '18.45'        | 'wednesday'  | TIME_NOW               | new SimpleTime(18, 45) | WEDNESDAY
-        '13.30'       | '18.45'        | 'thursday'   | new SimpleTime(13, 30) | new SimpleTime(18, 45) | THURSDAY
-        'missing'     | 'missing'      | 'sunday'     | new SimpleTime(0, 0)   | new SimpleTime(35, 59) | SUNDAY
     }
 
     def 'supports multiple supplied locations'() {
@@ -162,11 +138,6 @@ class FindVenueControllerSpec extends Specification {
 
     Map<String, String> getMinimumRequiredParams() {
         [location: ['1.0,0.1']]
-    }
-
-    def setup() {
-        timeProvider.timeNow() >> TIME_NOW
-        timeProvider.today() >> TODAY
     }
 
 }
