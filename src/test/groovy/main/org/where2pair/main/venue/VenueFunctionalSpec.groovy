@@ -3,10 +3,19 @@ package org.where2pair.main.venue
 import groovy.json.JsonSlurper
 import groovyx.net.http.ContentType
 import groovyx.net.http.RESTClient
+import ratpack.groovy.launch.GroovyScriptFileHandlerFactory
+import ratpack.groovy.test.LocalScriptApplicationUnderTest
+import ratpack.groovy.test.TestHttpClient
 import spock.lang.Specification
+
+import static ratpack.groovy.launch.GroovyScriptFileHandlerFactory.SCRIPT_PROPERTY_NAME
+import static ratpack.groovy.test.TestHttpClients.testHttpClient
 
 class VenueFunctionalSpec extends Specification {
     static final String VENUE_NAME = randomName()
+
+    LocalScriptApplicationUnderTest aut = new LocalScriptApplicationUnderTest()
+    @Delegate TestHttpClient client = testHttpClient(aut)
 
     def 'store and retrieve venue though the REST api'() {
         given:
@@ -29,7 +38,7 @@ class VenueFunctionalSpec extends Specification {
     }
 
     private String storeAndRetrieve(venueJson) {
-        def where2pair = new RESTClient('http://localhost:5050/')
+        def where2pair =  new RESTClient(aut.address)//new RESTClient('http://localhost:5050/')
         //where2pair.auth.basic('testUser', 'password')
 
         def putResponse = where2pair.post(path: 'venue', body: venueJson, requestContentType: ContentType.JSON)
@@ -40,6 +49,10 @@ class VenueFunctionalSpec extends Specification {
 
         def getResponse = where2pair.get(path: "venue/$savedVenueId", requestContentType: ContentType.URLENC)
         getResponse.data.text
+    }
+
+    def cleanup() {
+        aut.stop()
     }
 
     private String parsePropertyFromResponse(String property, String response) {
