@@ -17,19 +17,18 @@ import static org.where2pair.write.venue.VenueJsonValidator.getFACILITIES_STRUCT
 class NewVenueServiceSpec extends Specification {
 
     Map<String, ?> venueJson = aVenue().toJson()
-    NewVenueSavedEventSubscriber subscriberA = Mock()
-    NewVenueSavedEventSubscriber subscriberB = Mock()
-    NewVenueServiceFactory newVenueServiceFactory = new NewVenueServiceFactory()
-    NewVenueService newVenueService = newVenueServiceFactory
-            .createServiceWithEventSubscribers(subscriberA, subscriberB)
+    def subscriberA = Mock(NewVenueSavedEventSubscriber)
+    def subscriberB = Mock(NewVenueSavedEventSubscriber)
+    def newVenueServiceFactory = new NewVenueServiceFactory()
+    def newVenueService = newVenueServiceFactory.createServiceWithEventSubscribers(subscriberA, subscriberB)
 
     def 'publishes new venues, assigns and returns id'() {
         given:
-        Venue venue = aVenue().build()
-        VenueId expectedVenueId = new VenueId(venue.name, venue.location, venue.address.addressLine1)
+        def venue = aVenue().build()
+        def expectedVenueId = new VenueId(venue.name, venue.location, venue.address.addressLine1)
 
         when:
-        VenueId venueId = newVenueService.save(venueJson)
+        def venueId = newVenueService.save(venueJson)
 
         then:
         1 * subscriberA.notifyNewVenueSaved { NewVenueSavedEvent newVenueSavedEvent ->
@@ -45,6 +44,18 @@ class NewVenueServiceSpec extends Specification {
 
         and:
         venueId == expectedVenueId
+    }
+
+    def 'facilities are optional'() {
+        given:
+        def venueWithoutFacilities = aVenue().toJson()
+        venueWithoutFacilities.remove('facilities')
+
+        when:
+        newVenueService.save(venueWithoutFacilities)
+
+        then:
+        noExceptionThrown()
     }
 
     @Unroll

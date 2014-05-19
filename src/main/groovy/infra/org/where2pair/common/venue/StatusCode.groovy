@@ -12,4 +12,8 @@ public enum StatusCode {
     private StatusCode(int statusCode) {
         this.statusCode = statusCode
     }
+
+    int getValue() {
+        statusCode
+    }
 }

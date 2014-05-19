@@ -1,6 +1,7 @@
 package org.where2pair.common.venue
 
 import groovy.transform.Immutable
+import groovy.transform.ToString
 
 import static java.lang.Double.parseDouble
 

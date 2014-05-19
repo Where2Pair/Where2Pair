@@ -1,12 +1,15 @@
 package org.where2pair.write.venue
 
+import groovy.transform.TupleConstructor
 import org.where2pair.common.venue.JsonResponse
 import org.where2pair.common.venue.VenueId
 
+@TupleConstructor
 public class NewVenueController {
 
     NewVenueService newVenueService
 
+    //TODO Map or String??
     JsonResponse save(Map<String, ?> venueJson) {
         try {
             VenueId venueId = newVenueService.save(venueJson)

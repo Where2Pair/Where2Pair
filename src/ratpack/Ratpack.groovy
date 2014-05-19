@@ -1,9 +1,10 @@
-import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
+import org.where2pair.common.venue.JsonResponse
 import org.where2pair.main.GuiceWhere2PairModule
 import org.where2pair.read.venue.FindVenueController
 import org.where2pair.read.venue.ShowVenueController
 import org.where2pair.write.venue.NewVenueController
+import ratpack.http.Response
 import ratpack.util.MultiValueMap
 
 import static ratpack.groovy.Groovy.ratpack
@@ -15,42 +16,44 @@ ratpack {
 
     handlers {
         get {
-            response.send "Welcome to Where2Pair!!! Your installation is working. For a list of the endpoints available, please see the documentation."
+            response.send 'Welcome to Where2Pair!!! Your installation is working. For a list of the endpoints available, please see the documentation.'
         }
-        prefix("venues") {
-            get { ShowVenueController showVenueController ->
-                def venues = showVenueController.showAll()
-                renderResult(response, venues)
-            }
-            get("nearest") { FindVenueController findVenueController ->
+        prefix('venues') {
+            get('nearest') { FindVenueController findVenueController ->
                 def queryParams = squashLocationQueryParamValuesIntoList(request.queryParams)
                 def venues = findVenueController.findNearest(queryParams)
                 renderResult(response, venues)
             }
         }
-        prefix("venue") {
-            get(":venueId") { ShowVenueController showVenueController ->
-                def venue = showVenueController.show(Long.parseLong(pathTokens.venueId))
-                renderResult(response, venue)
+        prefix('venue') {
+            get(':venueId') { ShowVenueController showVenueController ->
+                println 'finding'
+                println pathTokens.venueId.getClass()
+                try {
+                    def venue = showVenueController.show(pathTokens.venueId)
+                    renderResult(response, venue)
+                } catch (any) {
+                    any.printStackTrace()
+                }
             }
-            post { NewVenueController saveVenueController ->
-                println 'savingVenueController'
+            post { NewVenueController newVenueController ->
+                println 'posting'
                 def json = new JsonSlurper().parseText(request.body.text)
-                def venue = saveVenueController.save(json)
-                renderResult(response, venue)
+                try {
+                def venueId = newVenueController.save(json)
+                println venueId.responseBody
+                renderResult(response, venueId)
+                } catch (any) {
+                    any.printStackTrace()
+                }
             }
         }
     }
 }
 
-def renderResult(response, errorResponse) {
-    response.status(errorResponse.status, errorResponse.message)
-    response.send(errorResponse.message)
-}
-
-def renderJResult(response, result) {
-    String json = new JsonBuilder(result).toString()
-    response.send("application/json", json)
+def renderResult(Response response, JsonResponse jsonResponse) {
+    response.status(jsonResponse.statusCode.value, jsonResponse.responseBody)
+    response.send(jsonResponse.responseBody)
 }
 
 def squashLocationQueryParamValuesIntoList(MultiValueMap<String, String> queryParams) {

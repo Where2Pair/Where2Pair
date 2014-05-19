@@ -1,9 +1,11 @@
 package org.where2pair.read.venue
 
+import groovy.transform.TupleConstructor
 import org.where2pair.read.venue.find.FacilitiesCriteria
 import org.where2pair.read.venue.find.LocationsCriteria
 import org.where2pair.read.venue.find.OpenTimesCriteria
 
+@TupleConstructor
 class VenueService {
 
     VenueRepository venueRepository

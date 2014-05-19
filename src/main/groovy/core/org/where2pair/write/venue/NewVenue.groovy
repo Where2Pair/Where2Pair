@@ -1,12 +1,18 @@
 package org.where2pair.write.venue
 
+import groovy.transform.EqualsAndHashCode
 import groovy.transform.Immutable
 import org.where2pair.common.venue.Coordinates
 import org.where2pair.common.venue.VenueId
 
-@Immutable
+
+@EqualsAndHashCode
 class NewVenue {
     final Map<String, ?> venueJson
+
+    NewVenue(Map<String, ?> venueJson) {
+        this.venueJson = venueJson
+    }
 
     static NewVenueSavedEvent publishNewVenue(Map<String, ?> venueJson) throws InvalidVenueJsonException {
         new VenueJsonValidator().validate(venueJson)

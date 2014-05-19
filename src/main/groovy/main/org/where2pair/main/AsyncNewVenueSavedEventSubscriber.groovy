@@ -19,13 +19,19 @@ class AsyncNewVenueSavedEventSubscriber implements NewVenueSavedEventSubscriber 
     }
 
     private AsyncNewVenueSavedEventSubscriber(NewVenueSavedEventSubscriber subscriber) {
-        this.subscriber == subscriber
+        this.subscriber = subscriber
     }
 
     @Override
     void notifyNewVenueSaved(NewVenueSavedEvent newVenueSavedEvent) {
+        println 'notifying 1'
         GParsExecutorsPool.withExistingPool(executorService) {
-            Closure notify = { subscriber.notifyNewVenueSaved(newVenueSavedEvent) }
+        println 'notifying 2'
+        println 'notifying 2.1'
+            Closure notify = {
+                println 'notifying 2.5'
+                println subscriber.getClass()
+                subscriber.notifyNewVenueSaved(newVenueSavedEvent) }
             notify.callAsync()
         }
     }
