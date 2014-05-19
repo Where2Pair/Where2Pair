@@ -16,7 +16,7 @@ ratpack {
 
     handlers {
         get {
-            response.send 'Welcome to Where2Pair!!! Your installation is working. For a list of the endpoints available, please see the documentation.'
+            response.send 'Welcome to Where2Pair! Your installation is working. For a list of the endpoints available, please see the documentation.'
         }
         prefix('venues') {
             get('nearest') { FindVenueController findVenueController ->
@@ -27,25 +27,13 @@ ratpack {
         }
         prefix('venue') {
             get(':venueId') { ShowVenueController showVenueController ->
-                println 'finding'
-                println pathTokens.venueId.getClass()
-                try {
-                    def venue = showVenueController.show(pathTokens.venueId)
-                    renderResult(response, venue)
-                } catch (any) {
-                    any.printStackTrace()
-                }
+                def venue = showVenueController.show(pathTokens.venueId)
+                renderResult(response, venue)
             }
             post { NewVenueController newVenueController ->
-                println 'posting'
                 def json = new JsonSlurper().parseText(request.body.text)
-                try {
                 def venueId = newVenueController.save(json)
-                println venueId.responseBody
                 renderResult(response, venueId)
-                } catch (any) {
-                    any.printStackTrace()
-                }
             }
         }
     }

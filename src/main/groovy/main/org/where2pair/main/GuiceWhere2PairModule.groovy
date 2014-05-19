@@ -23,7 +23,6 @@ class GuiceWhere2PairModule extends AbstractModule {
     @Provides
     @Singleton
     NewVenueController createNewVenueController(VenueCachePopulator venueCachePopulator) {
-        println 'creating controller'
         def venueRepository = new AmazonS3NewVenueRepository()
 
         List<NewVenueSavedEvent> venues = venueRepository.getAll()
@@ -32,8 +31,6 @@ class GuiceWhere2PairModule extends AbstractModule {
         def newVenueService = new NewVenueServiceFactory().createServiceWithEventSubscribers(
                 asAsyncSubscriber(venueRepository),
                 asAsyncSubscriber(venueCachePopulator))
-
-        println 'returning'
 
         new NewVenueController(newVenueService)
     }

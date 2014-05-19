@@ -23,7 +23,6 @@ class HashMapVenueCache implements VenueRepository {
     }
 
     void put(Venue venue) {
-        println "putting!"
         venues[venue.id] = venue
     }
 }
