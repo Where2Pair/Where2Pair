@@ -31,8 +31,7 @@ ratpack {
                 renderResult(response, venue)
             }
             post { NewVenueController newVenueController ->
-                def json = new JsonSlurper().parseText(request.body.text)
-                def venueId = newVenueController.save(json)
+                def venueId = newVenueController.save(request.body.text)
                 renderResult(response, venueId)
             }
         }
