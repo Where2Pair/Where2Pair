@@ -79,15 +79,6 @@ test {
     exclude '**/*FunctionalSpec.*'
 }
 
-task startApp(type: StartRatpackTask) {
-    runAppTask tasks.run
-}
-
-task functionalTest(dependsOn: 'startApp', type: Test) {
+task functionalTest(type: Test) {
     include '**/*FunctionalSpec.*'
-}
-
-task console(dependsOn: 'classes', type: JavaExec) {
-    main 'groovy.ui.Console'
-    classpath sourceSets.main.runtimeClasspath, sourceSets.test.runtimeClasspath
 }

@@ -40,20 +40,15 @@ class VenueFunctionalSpec extends Specification {
     private String storeAndRetrieve(venueJson) {
         request.contentType('application/json').body(venueJson)
         post('venue')
-        //def where2pair =  new RESTClient(aut.address)//new RESTClient('http://localhost:5050/')
-        //where2pair.auth.basic('testUser', 'password')
 
-        //def putResponse = where2pair.post(path: 'venue', body: venueJson, requestContentType: ContentType.JSON)
         assert response.statusCode == 200
 
-        //String savedVenueId = parsePropertyFromResponse('venueId', putResponse.data.text)
         String savedVenueId = parsePropertyFromResponse('venueId', response.asString())
 
         Thread.sleep(500)
 
         resetRequest()
         get("venue/$savedVenueId")
-        //def getResponse = where2pair.get(path: "venue/$savedVenueId", requestContentType: ContentType.URLENC)
         response.asString()
     }
 

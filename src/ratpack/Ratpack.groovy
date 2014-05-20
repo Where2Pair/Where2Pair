@@ -1,4 +1,3 @@
-import groovy.json.JsonSlurper
 import org.where2pair.common.venue.JsonResponse
 import org.where2pair.main.GuiceWhere2PairModule
 import org.where2pair.read.venue.FindVenueController
