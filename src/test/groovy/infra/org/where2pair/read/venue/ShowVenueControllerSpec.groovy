@@ -5,14 +5,14 @@ import org.where2pair.common.venue.StatusCode
 import org.where2pair.read.venue.mappingtojson.VenueToJsonMapper
 import spock.lang.Specification
 
-import static org.where2pair.common.venue.VenueIdBuilder.aRandomVenueId
+import static org.where2pair.read.venue.VenueIdBuilder.aRandomVenueId
 import static org.where2pair.read.venue.VenueBuilder.aVenue
 
 class ShowVenueControllerSpec extends Specification {
 
     def venueRepository = Mock(VenueRepository)
     def venueToJsonMapper = new VenueToJsonMapper()
-    ShowVenueController controller = new ShowVenueController(venueRepository, venueToJsonMapper)
+    def controller = new ShowVenueController(venueRepository, venueToJsonMapper)
 
     def 'looks up and renders venues as json'() {
         given:

@@ -3,7 +3,6 @@ package org.where2pair.read.venue
 import groovy.transform.Immutable
 import groovy.transform.ToString
 import org.where2pair.common.venue.Coordinates
-import org.where2pair.common.venue.VenueId
 import org.where2pair.read.venue.find.FacilitiesCriteria
 import org.where2pair.read.venue.find.OpenTimesCriteria
 

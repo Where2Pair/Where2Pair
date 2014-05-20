@@ -1,19 +1,21 @@
 package org.where2pair.common.venue
 
+import org.where2pair.write.venue.NewVenueId
+
 import static java.util.UUID.randomUUID
 import static CoordinatesBuilder.coordinates
 
-class VenueIdBuilder {
+class NewVenueIdBuilder {
 
     private String name = 'Starbucks'
     private CoordinatesBuilder coordinatesBuilder = coordinates().withLatitude(1.0).withLongitude(0.1)
     private String addressLine1 = '9 Appold Street'
 
-    static VenueIdBuilder aVenueId() {
-        new VenueIdBuilder()
+    static NewVenueIdBuilder aVenueId() {
+        new NewVenueIdBuilder()
     }
 
-    static VenueId aRandomVenueId() {
+    static NewVenueId aRandomVenueId() {
         aVenueId().withName(randomUUID() as String)
                 .withLongitude(new Random().nextDouble())
                 .withLatitude(new Random().nextDouble())
@@ -21,27 +23,27 @@ class VenueIdBuilder {
                 .build()
     }
 
-    VenueIdBuilder withName(String name) {
+    NewVenueIdBuilder withName(String name) {
         this.name = name
         this
     }
 
-    VenueIdBuilder withLatitude(double latitude) {
+    NewVenueIdBuilder withLatitude(double latitude) {
         coordinatesBuilder.withLatitude(latitude)
         this
     }
 
-    VenueIdBuilder withLongitude(double longitude) {
+    NewVenueIdBuilder withLongitude(double longitude) {
         coordinatesBuilder.withLongitude(longitude)
         this
     }
 
-    VenueIdBuilder withAddressLine1(String addressLine1) {
+    NewVenueIdBuilder withAddressLine1(String addressLine1) {
         this.addressLine1 = addressLine1
         this
     }
 
-    VenueId build() {
-        new VenueId(name, coordinatesBuilder.build(), addressLine1)
+    NewVenueId build() {
+        new NewVenueId(name, coordinatesBuilder.build(), addressLine1)
     }
 }

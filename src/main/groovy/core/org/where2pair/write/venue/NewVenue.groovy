@@ -1,10 +1,7 @@
 package org.where2pair.write.venue
 
 import groovy.transform.EqualsAndHashCode
-import groovy.transform.Immutable
 import org.where2pair.common.venue.Coordinates
-import org.where2pair.common.venue.VenueId
-
 
 @EqualsAndHashCode
 class NewVenue {
@@ -19,8 +16,8 @@ class NewVenue {
         new NewVenueSavedEvent(venueIdFrom(venueJson), newVenue(venueJson))
     }
 
-    private static VenueId venueIdFrom(Map<String, ?> venueJson) {
-        new VenueId(venueJson.name,
+    private static NewVenueId venueIdFrom(Map<String, ?> venueJson) {
+        new NewVenueId(venueJson.name,
                 new Coordinates(venueJson.location.latitude, venueJson.location.longitude),
                 venueJson.address.addressLine1)
     }

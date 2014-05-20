@@ -5,7 +5,7 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 import static groovy.json.JsonOutput.toJson
-import static org.where2pair.common.venue.VenueIdBuilder.aVenueId
+import static org.where2pair.common.venue.NewVenueIdBuilder.aVenueId
 import static org.where2pair.read.venue.VenueBuilder.aVenue
 
 class NewVenueControllerSpec extends Specification {
@@ -19,7 +19,7 @@ class NewVenueControllerSpec extends Specification {
         given:
         def expectedVenueId = aVenueId().build()
         newVenueService.save(venueJsonMap) >> expectedVenueId
-        def expectedJsonResponse = toJson([venueId: expectedVenueId.toString()])
+        def expectedJsonResponse = toJson([venueId: expectedVenueId.encode()])
 
         when:
         def response = controller.save(venueJsonString)

@@ -1,12 +1,11 @@
 package org.where2pair.read.venue
 
-import org.where2pair.common.venue.Coordinates
-import org.where2pair.common.venue.VenueId
-
+import static org.where2pair.read.venue.VenueDetailsBuilder.venueDetails
+import static org.where2pair.read.venue.VenueIdBuilder.aRandomVenueId
 
 class VenueBuilder {
-    private VenueId venueId = new VenueId('venue-name', new Coordinates(1.0, 0.1), 'address-line-1')
-    @Delegate private VenueDetailsBuilder venueDetailsBuilder = new VenueDetailsBuilder()
+    private VenueId venueId = aRandomVenueId()
+    @Delegate private VenueDetailsBuilder venueDetailsBuilder = venueDetails()
 
     private VenueBuilder() {
     }

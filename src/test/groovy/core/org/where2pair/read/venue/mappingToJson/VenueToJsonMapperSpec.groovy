@@ -9,9 +9,10 @@ import static org.where2pair.read.venue.VenueDetailsBuilder.venueDetails
 
 class VenueToJsonMapperSpec extends Specification {
 
-    Venue venue = aVenue().build()
-    Map<String, ?> venueJson = aVenue().toJson()
-    VenueToJsonMapper venueToJsonMapper = new VenueToJsonMapper()
+    def venueBuilder = aVenue()
+    def venue = venueBuilder.build()
+    Map<String, ?> venueJson = venueBuilder.toJson()
+    def venueToJsonMapper = new VenueToJsonMapper()
 
     def 'converts Venue to json'() {
         when:

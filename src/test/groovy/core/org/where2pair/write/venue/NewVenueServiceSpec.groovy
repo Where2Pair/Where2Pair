@@ -1,8 +1,6 @@
 package org.where2pair.write.venue
 
-import org.where2pair.common.venue.VenueId
 import org.where2pair.read.venue.Facility
-import org.where2pair.read.venue.Venue
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -25,7 +23,7 @@ class NewVenueServiceSpec extends Specification {
     def 'publishes new venues, assigns and returns id'() {
         given:
         def venue = aVenue().build()
-        def expectedVenueId = new VenueId(venue.name, venue.location, venue.address.addressLine1)
+        def expectedVenueId = new NewVenueId(venue.name, venue.location, venue.address.addressLine1)
 
         when:
         def venueId = newVenueService.save(venueJson)
