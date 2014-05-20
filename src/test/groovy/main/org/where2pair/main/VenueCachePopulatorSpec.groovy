@@ -18,12 +18,13 @@ class VenueCachePopulatorSpec extends Specification {
         def venueBuilder = aVenue()
         def newVenue = new NewVenue(venueBuilder.toJson())
         def newVenueSavedEvent = new NewVenueSavedEvent(aVenueId().build(), newVenue)
+        def expectedVenue = venueBuilder.build()
 
         when:
         venueCachePopulator.notifyNewVenueSaved(newVenueSavedEvent)
 
         then:
-        venueCache.put(venueBuilder.build())
+        venueCache.put(expectedVenue)
     }
 
 }
