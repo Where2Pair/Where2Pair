@@ -82,17 +82,6 @@ class NewVenueServiceSpec extends Specification {
         'openHours'            | 'Venue \'openHours\' must be provided'
     }
 
-    def test() {
-        given:
-        def json = "{\"name\":\"Starbucks\",\"location\":{\"longitude\":-0.08359,\"latitude\":51.52005},\"address\":{\"addressLine1\":\"31 - 33 Sun Street\",\"addressLine2\":\"Broadgate\",\"addressLine3\":\"\",\"city\":\"London\",\"postcode\":\"EC2M 2PY\",\"phoneNumber\":\"02072475118\"},\"openHours\":{\"wednesday\":[{\"openHour\":\"06\",\"openMinute\":\"00\",\"closeHour\":\"18\",\"closeMinute\":\"30\"}],\"thursday\":[{\"openHour\":\"06\",\"openMinute\":\"00\",\"closeHour\":\"18\",\"closeMinute\":\"30\"}],\"monday\":[{\"openHour\":\"06\",\"openMinute\":\"00\",\"closeHour\":\"18\",\"closeMinute\":\"30\"}],\"friday\":[{\"openHour\":\"06\",\"openMinute\":\"00\",\"closeHour\":\"18\",\"closeMinute\":\"30\"}],\"tuesday\":[{\"openHour\":\"06\",\"openMinute\":\"00\",\"closeHour\":\"18\",\"closeMinute\":\"30\"}]},\"facilities\":{\"Seating\":\"Y\",\"Wifi\":\"Y\",\"Mobile payments\":\"Y\"}}"
-
-        when:
-        newVenueService.save(new JsonSlurper().parseText(json))
-
-        then:
-        true
-    }
-
     @Unroll
     def 'rejects venue json if "#property" property is not of the correct type'() {
         given:

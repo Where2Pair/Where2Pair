@@ -3,6 +3,7 @@ package org.where2pair.write.venue
 import org.where2pair.common.venue.SimpleTime
 import org.where2pair.read.venue.DayOfWeek
 import org.where2pair.common.venue.Facility
+import org.where2pair.read.venue.FacilityStatus
 
 
 class VenueJsonValidator {
@@ -171,7 +172,7 @@ class VenueJsonValidator {
                 it.facilities.every { it.key.toLowerCase() in Facility.asStrings() }
             }: UNRECOGNIZED_FACILITY_ERROR_MESSAGE,
             {
-                it.facilities.every { it.value.toUpperCase() in ['Y', 'N', 'UNKNOWN']}
+                it.facilities.every { it.value.toUpperCase() in FacilityStatus.Status.asStrings() }
             }: INVALID_FACILITY_STATUS_ERROR_MESSAGE
     ]
 

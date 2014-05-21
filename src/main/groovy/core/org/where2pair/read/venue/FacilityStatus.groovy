@@ -39,6 +39,10 @@ class FacilityStatus {
 
             status
         }
+
+        static List<String> asStrings() {
+            values().label
+        }
     }
 
 }
