@@ -1,12 +1,9 @@
 package org.where2pair.read.venue.mappingfromjson
 
 import org.where2pair.common.venue.Coordinates
-import org.where2pair.read.venue.Address
-import org.where2pair.read.venue.FacilityStatus
-import org.where2pair.read.venue.FacilityStatuses
-import org.where2pair.read.venue.VenueDetails
-import org.where2pair.read.venue.WeeklyOpeningTimes
+import org.where2pair.read.venue.*
 
+import static org.where2pair.common.venue.Facility.parseFacility
 import static org.where2pair.read.venue.FacilityStatuses.facilityStatusesFor
 
 class JsonToVenueDetailsMapper {
@@ -24,7 +21,7 @@ class JsonToVenueDetailsMapper {
 
     private Set<FacilityStatus> asFacilityStatuses(Map<String, String> json) {
         json.collect { facility, status ->
-            new FacilityStatus(facility: facility.toUpperCase(), status: FacilityStatus.Status.fromString(status))
+            new FacilityStatus(facility: parseFacility(facility), status: FacilityStatus.Status.parseStatus(status))
         }
     }
 

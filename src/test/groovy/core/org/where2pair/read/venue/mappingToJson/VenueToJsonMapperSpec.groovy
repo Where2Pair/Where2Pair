@@ -1,6 +1,5 @@
 package org.where2pair.read.venue.mappingToJson
 
-import org.where2pair.read.venue.Venue
 import org.where2pair.read.venue.mappingtojson.VenueToJsonMapper
 import spock.lang.Specification
 
@@ -11,7 +10,7 @@ class VenueToJsonMapperSpec extends Specification {
 
     def venueBuilder = aVenue()
     def venue = venueBuilder.build()
-    Map<String, ?> venueJson = venueBuilder.toJson()
+    def venueJson = venueBuilder.toJson()
     def venueToJsonMapper = new VenueToJsonMapper()
 
     def 'converts Venue to json'() {
@@ -25,8 +24,8 @@ class VenueToJsonMapperSpec extends Specification {
     def 'converts Venues to json'() {
         given:
         def venueBuilder = aVenue().with(venueDetails().withName('another venue name'))
-        Venue anotherVenue = venueBuilder.build()
-        Map<String, ?> anotherVenueJson = venueBuilder.toJson()
+        def anotherVenue = venueBuilder.build()
+        def anotherVenueJson = venueBuilder.toJson()
 
         when:
         List result = venueToJsonMapper.toJson([venue, anotherVenue])

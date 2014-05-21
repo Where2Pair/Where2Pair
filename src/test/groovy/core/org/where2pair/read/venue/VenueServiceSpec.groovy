@@ -22,7 +22,7 @@ import static org.where2pair.read.venue.DayOfWeek.MONDAY
 import static org.where2pair.read.venue.DayOfWeek.SATURDAY
 import static org.where2pair.read.venue.DayOfWeek.SUNDAY
 import static org.where2pair.read.venue.DayOfWeek.parseDayOfWeek
-import static org.where2pair.read.venue.Facility.WIFI
+import static org.where2pair.common.venue.Facility.WIFI
 
 class VenueServiceSpec extends Specification {
 

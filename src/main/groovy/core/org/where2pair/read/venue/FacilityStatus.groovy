@@ -1,6 +1,7 @@
 package org.where2pair.read.venue
 
 import groovy.transform.Immutable
+import org.where2pair.common.venue.Facility
 
 import static org.where2pair.read.venue.FacilityStatus.Status.STATUS_UNKNOWN
 
@@ -19,7 +20,6 @@ class FacilityStatus {
     }
 
     enum Status {
-
         AVAILABLE('Y', true),
         UNAVAILABLE('N', false),
         STATUS_UNKNOWN('UNKNOWN', false)
@@ -32,7 +32,7 @@ class FacilityStatus {
             this.available = available
         }
 
-        static Status fromString(String label) {
+        static Status parseStatus(String label) {
             Status status = values().find { it.label == label.toUpperCase() }
 
             if (status == null) throw new IllegalArgumentException("Unrecognized status: $label")

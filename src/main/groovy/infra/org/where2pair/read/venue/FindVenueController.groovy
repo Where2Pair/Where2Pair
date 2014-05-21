@@ -1,16 +1,18 @@
 package org.where2pair.read.venue
 
 import groovy.transform.TupleConstructor
+import org.where2pair.common.venue.Facility
 import org.where2pair.common.venue.JsonResponse
 import org.where2pair.common.venue.SimpleTime
 import org.where2pair.read.venue.find.FacilitiesCriteria
 import org.where2pair.read.venue.find.OpenTimesCriteria
 import org.where2pair.read.venue.find.OpenTimesCriteriaFactory
+import org.where2pair.read.venue.mappingtojson.VenuesWithDistancesToJsonMapper
 
 import static DayOfWeek.parseDayOfWeek
 import static org.where2pair.common.venue.JsonResponse.badRequest
 import static org.where2pair.common.venue.JsonResponse.validJsonResponse
-import static org.where2pair.read.venue.Facility.parseFacility
+import static org.where2pair.common.venue.Facility.parseFacility
 
 @TupleConstructor
 class FindVenueController {
@@ -24,8 +26,11 @@ class FindVenueController {
             def openTimesCriteria = parseOpenTimesCriteriaFromRequest(params)
             def facilitiesCriteria = parseFacilitiesCriteriaFromRequest(params)
             def locationsCriteria = locationsCriteriaParser.parse(params)
+
             def venues = venueService.find(openTimesCriteria, facilitiesCriteria, locationsCriteria)
-            return validJsonResponse(venues)
+
+            def venuesJson = new VenuesWithDistancesToJsonMapper().toJson(venues)
+            return validJsonResponse(venuesJson)
         } catch (QueryParseException e) {
             return badRequest(e.message)
         }
@@ -68,7 +73,7 @@ class FindVenueController {
             def requestedFacilities = requestedFacilitiesAsStrings.collect { parseFacility(it) } as HashSet<Facility>
             new FacilitiesCriteria(requestedFacilities)
         } catch (IllegalArgumentException e) {
-            throw new QueryParseException("Unrecognized facility requested. Facilities should be comma-separated values from the following list: ${Facility.values()}")
+            throw new QueryParseException("Unrecognized facility requested. Facilities should be comma-separated values from the following list: ${Facility.asStrings()}")
         }
     }
 }

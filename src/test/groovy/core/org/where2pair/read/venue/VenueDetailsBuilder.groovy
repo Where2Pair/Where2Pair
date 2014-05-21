@@ -2,14 +2,15 @@ package org.where2pair.read.venue
 
 import org.where2pair.common.venue.Coordinates
 import org.where2pair.common.venue.CoordinatesBuilder
+import org.where2pair.common.venue.Facility
 import org.where2pair.common.venue.SimpleTime
 import org.where2pair.read.venue.mappingtojson.OpenHoursToJsonMapper
 import org.where2pair.read.venue.mappingtojson.WeeklyOpeningTimesBuilder
 
 import static org.where2pair.read.venue.DayOfWeek.MONDAY
 import static org.where2pair.read.venue.DayOfWeek.TUESDAY
-import static org.where2pair.read.venue.Facility.MOBILE_PAYMENTS
-import static org.where2pair.read.venue.Facility.WIFI
+import static org.where2pair.common.venue.Facility.MOBILE_PAYMENTS
+import static org.where2pair.common.venue.Facility.WIFI
 import static org.where2pair.read.venue.FacilityStatuses.facilityStatusesFor
 
 class VenueDetailsBuilder {

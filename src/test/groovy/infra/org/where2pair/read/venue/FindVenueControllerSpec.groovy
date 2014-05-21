@@ -1,13 +1,13 @@
 package org.where2pair.read.venue
 
 import org.where2pair.common.venue.Coordinates
+import org.where2pair.common.venue.Facility
 import org.where2pair.common.venue.SimpleTime
-import org.where2pair.common.venue.StatusCode
 import org.where2pair.read.venue.find.FacilitiesCriteria
 import org.where2pair.read.venue.find.LocationsCriteria
 import org.where2pair.read.venue.find.OpenTimesCriteria
 import org.where2pair.read.venue.find.OpenTimesCriteriaFactory
-import spock.lang.Ignore
+import org.where2pair.read.venue.mappingtojson.VenuesWithDistancesToJsonMapper
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -15,19 +15,13 @@ import static groovy.json.JsonOutput.toJson
 import static org.where2pair.common.venue.StatusCode.BAD_REQUEST
 import static org.where2pair.common.venue.StatusCode.OK
 import static org.where2pair.read.venue.DayOfWeek.FRIDAY
-import static org.where2pair.read.venue.DayOfWeek.MONDAY
-import static org.where2pair.read.venue.DayOfWeek.SUNDAY
-import static org.where2pair.read.venue.DayOfWeek.THURSDAY
 import static org.where2pair.read.venue.DayOfWeek.TUESDAY
-import static org.where2pair.read.venue.DayOfWeek.TUESDAY
-import static org.where2pair.read.venue.DayOfWeek.WEDNESDAY
+import static org.where2pair.read.venue.DistanceBuilder.fromCoordinates
 import static org.where2pair.read.venue.DistanceUnit.KM
 import static org.where2pair.read.venue.DistanceUnit.MILES
-import static org.where2pair.read.venue.Facility.POWER
-import static org.where2pair.read.venue.Facility.WIFI
-import static org.where2pair.read.venue.OpenPeriodBuilder.on
-import static org.where2pair.read.venue.VenueBuilder.aVenue
-import static org.where2pair.read.venue.VenueBuilder.aVenue
+import static org.where2pair.common.venue.Facility.POWER
+import static org.where2pair.common.venue.Facility.WIFI
+import static org.where2pair.read.venue.VenueWithDistancesBuilder.aVenue
 
 class FindVenueControllerSpec extends Specification {
 
@@ -47,14 +41,14 @@ class FindVenueControllerSpec extends Specification {
         openTimesCriteriaFactory.createOpenTimesCriteria(new SimpleTime(13, 30), new SimpleTime(14, 30), TUESDAY) >> expectedOpenTimesCriteria
         def expectedFacilitiesCriteria = new FacilitiesCriteria(requestedFacilities: [WIFI, POWER])
         def expectedLocationsCriteria = new LocationsCriteria(locations: [new Coordinates(1.0, 0.1)], distanceUnit: KM)
-        def venuesFound = [aVenue().build()]
+        def venuesFound = [aVenue().withDistance(fromCoordinates(1.0, 0.1).miles(10)).build()]
         venueService.find(expectedOpenTimesCriteria, expectedFacilitiesCriteria, expectedLocationsCriteria) >> venuesFound
 
         when:
         def jsonResponse = controller.findNearest(locationsParams + openTimesParams + facilitiesParams)
 
         then:
-        jsonResponse.responseBody == toJson(venuesFound)
+        jsonResponse.responseBody == toJson(new VenuesWithDistancesToJsonMapper().toJson(venuesFound))
         jsonResponse.statusCode == OK
     }
 

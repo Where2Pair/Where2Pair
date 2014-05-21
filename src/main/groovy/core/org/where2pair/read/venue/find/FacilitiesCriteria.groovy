@@ -2,7 +2,7 @@ package org.where2pair.read.venue.find
 
 import groovy.transform.Immutable
 import groovy.transform.ToString
-import org.where2pair.read.venue.Facility
+import org.where2pair.common.venue.Facility
 
 @Immutable
 @ToString

@@ -1,6 +1,7 @@
 package org.where2pair.write.venue
 
-import org.where2pair.read.venue.Facility
+import groovy.json.JsonSlurper
+import org.where2pair.common.venue.Facility
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -81,6 +82,17 @@ class NewVenueServiceSpec extends Specification {
         'openHours'            | 'Venue \'openHours\' must be provided'
     }
 
+    def test() {
+        given:
+        def json = "{\"name\":\"Starbucks\",\"location\":{\"longitude\":-0.08359,\"latitude\":51.52005},\"address\":{\"addressLine1\":\"31 - 33 Sun Street\",\"addressLine2\":\"Broadgate\",\"addressLine3\":\"\",\"city\":\"London\",\"postcode\":\"EC2M 2PY\",\"phoneNumber\":\"02072475118\"},\"openHours\":{\"wednesday\":[{\"openHour\":\"06\",\"openMinute\":\"00\",\"closeHour\":\"18\",\"closeMinute\":\"30\"}],\"thursday\":[{\"openHour\":\"06\",\"openMinute\":\"00\",\"closeHour\":\"18\",\"closeMinute\":\"30\"}],\"monday\":[{\"openHour\":\"06\",\"openMinute\":\"00\",\"closeHour\":\"18\",\"closeMinute\":\"30\"}],\"friday\":[{\"openHour\":\"06\",\"openMinute\":\"00\",\"closeHour\":\"18\",\"closeMinute\":\"30\"}],\"tuesday\":[{\"openHour\":\"06\",\"openMinute\":\"00\",\"closeHour\":\"18\",\"closeMinute\":\"30\"}]},\"facilities\":{\"Seating\":\"Y\",\"Wifi\":\"Y\",\"Mobile payments\":\"Y\"}}"
+
+        when:
+        newVenueService.save(new JsonSlurper().parseText(json))
+
+        then:
+        true
+    }
+
     @Unroll
     def 'rejects venue json if "#property" property is not of the correct type'() {
         given:
@@ -137,6 +149,10 @@ class NewVenueServiceSpec extends Specification {
         openHoursWithCloseMinuteLessThan0        | '\'closeMinute\' can not be negative'
         openHoursWithCloseHourGreaterThan23      | '\'closeHour\' must be less than 24'
         openHoursWithCloseMinuteGreaterThan59    | '\'closeMinute\' must be less than 60'
+        openHoursWithOpenHourAsNonInteger        | '\'openHour\' must be an integer'
+        openHoursWithOpenMinuteAsNonInteger      | '\'openMinute\' must be an integer'
+        openHoursWithCloseHourAsNonInteger       | '\'closeHour\' must be an integer'
+        openHoursWithCloseMinuteAsNonInteger     | '\'closeMinute\' must be an integer'
     }
 
     @Unroll
@@ -230,5 +246,21 @@ class NewVenueServiceSpec extends Specification {
 
     Map<String, ?> getOpenHoursWithCloseMinuteGreaterThan59() {
         aVenue().toJson() + [openHours: [monday: [[openHour: 12, openMinute: 0, closeHour: 11, closeMinute: 60]]]]
+    }
+
+    Map<String, ?> getOpenHoursWithOpenHourAsNonInteger() {
+        aVenue().toJson() + [openHours: [monday: [[openHour: 'not an integer', openMinute: 0, closeHour: 11, closeMinute: 60]]]]
+    }
+
+    Map<String, ?> getOpenHoursWithOpenMinuteAsNonInteger() {
+        aVenue().toJson() + [openHours: [monday: [[openHour: 12, openMinute: 'not an integer', closeHour: 11, closeMinute: 60]]]]
+    }
+
+    Map<String, ?> getOpenHoursWithCloseHourAsNonInteger() {
+        aVenue().toJson() + [openHours: [monday: [[openHour: 12, openMinute: 0, closeHour: 'not an integer', closeMinute: 60]]]]
+    }
+
+    Map<String, ?> getOpenHoursWithCloseMinuteAsNonInteger() {
+        aVenue().toJson() + [openHours: [monday: [[openHour: 12, openMinute: 0, closeHour: 11, closeMinute: 'not an integer']]]]
     }
 }
