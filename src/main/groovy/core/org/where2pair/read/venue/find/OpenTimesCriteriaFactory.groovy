@@ -1,6 +1,5 @@
 package org.where2pair.read.venue.find
 
-import groovy.transform.Immutable
 import groovy.transform.TupleConstructor
 import org.where2pair.common.venue.SimpleTime
 import org.where2pair.read.venue.DayOfWeek

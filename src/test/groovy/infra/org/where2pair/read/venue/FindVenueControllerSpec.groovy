@@ -25,12 +25,9 @@ import static org.where2pair.read.venue.VenueWithDistancesBuilder.aVenue
 
 class FindVenueControllerSpec extends Specification {
 
-    static final TIME_NOW = new SimpleTime(1, 2)
-    static final TODAY = FRIDAY
     def venueService = Mock(VenueService)
     def openTimesCriteriaFactory = Mock(OpenTimesCriteriaFactory)
-    def locationsCriteriaParser = new LocationsCriteriaParser()
-    def controller = new FindVenueController(venueService, locationsCriteriaParser, openTimesCriteriaFactory)
+    def controller = new FindVenueController(venueService, openTimesCriteriaFactory)
 
     def 'finds venues that match criteria and returns as json'() {
         given:
