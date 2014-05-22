@@ -25,7 +25,7 @@ class VenueToJsonMapper {
                     phoneNumber: venue.address.phoneNumber ?: ''
             ],
             openHours: openHoursToJsonMapper.toJsonStructure(venue.weeklyOpeningTimes),
-            facilities: venue.facilities.facilityStatuses.collectEntries { [it.facility.toString(), it.status.label] }
+            facilities: venue.facilities.facilityStatuses.collectEntries { [it.facility.toString(), it.availability.label] }
         ]
     }
 

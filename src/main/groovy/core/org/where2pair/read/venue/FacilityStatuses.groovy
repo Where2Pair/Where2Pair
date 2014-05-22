@@ -3,7 +3,7 @@ package org.where2pair.read.venue
 import groovy.transform.Immutable
 import org.where2pair.common.venue.Facility
 
-import static org.where2pair.read.venue.FacilityStatus.facilityStatusUnknown
+import static FacilityStatus.facilityStatusUnknown
 
 @Immutable
 class FacilityStatuses {

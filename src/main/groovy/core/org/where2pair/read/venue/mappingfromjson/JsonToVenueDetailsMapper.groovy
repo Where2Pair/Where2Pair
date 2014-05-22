@@ -4,6 +4,7 @@ import org.where2pair.common.venue.Coordinates
 import org.where2pair.read.venue.*
 
 import static org.where2pair.common.venue.Facility.parseFacility
+import static org.where2pair.common.venue.FacilityAvailability.parseFacilityAvailability
 import static org.where2pair.read.venue.FacilityStatuses.facilityStatusesFor
 
 class JsonToVenueDetailsMapper {
@@ -21,7 +22,7 @@ class JsonToVenueDetailsMapper {
 
     private Set<FacilityStatus> asFacilityStatuses(Map<String, String> json) {
         json.collect { facility, status ->
-            new FacilityStatus(facility: parseFacility(facility), status: FacilityStatus.Status.parseStatus(status))
+            new FacilityStatus(facility: parseFacility(facility), availability: parseFacilityAvailability(status))
         }
     }
 

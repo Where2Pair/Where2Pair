@@ -1,6 +1,5 @@
 package org.where2pair.write.venue
 
-import groovy.json.JsonSlurper
 import org.where2pair.common.venue.Facility
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -11,7 +10,7 @@ import static org.where2pair.write.venue.VenueJsonValidator.INVALID_FACILITY_STA
 import static org.where2pair.write.venue.VenueJsonValidator.LOCATION_STRUCTURE_ERROR_MESSAGE
 import static org.where2pair.write.venue.VenueJsonValidator.OPEN_HOURS_STRUCTURE_ERROR_MESSAGE
 import static org.where2pair.write.venue.VenueJsonValidator.UNRECOGNIZED_FACILITY_ERROR_MESSAGE
-import static org.where2pair.write.venue.VenueJsonValidator.getFACILITIES_STRUCTURE_ERROR_MESSAGE
+import static org.where2pair.write.venue.VenueJsonValidator.FACILITIES_STRUCTURE_ERROR_MESSAGE
 
 class NewVenueServiceSpec extends Specification {
 

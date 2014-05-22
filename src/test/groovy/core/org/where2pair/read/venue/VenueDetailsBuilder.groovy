@@ -7,10 +7,11 @@ import org.where2pair.common.venue.SimpleTime
 import org.where2pair.read.venue.mappingtojson.OpenHoursToJsonMapper
 import org.where2pair.read.venue.mappingtojson.WeeklyOpeningTimesBuilder
 
-import static org.where2pair.read.venue.DayOfWeek.MONDAY
-import static org.where2pair.read.venue.DayOfWeek.TUESDAY
 import static org.where2pair.common.venue.Facility.MOBILE_PAYMENTS
 import static org.where2pair.common.venue.Facility.WIFI
+import static org.where2pair.common.venue.FacilityAvailability.AVAILABLE
+import static org.where2pair.read.venue.DayOfWeek.MONDAY
+import static org.where2pair.read.venue.DayOfWeek.TUESDAY
 import static org.where2pair.read.venue.FacilityStatuses.facilityStatusesFor
 
 class VenueDetailsBuilder {
@@ -66,7 +67,7 @@ class VenueDetailsBuilder {
 
     private FacilityStatuses asAvailableFacilities(Facility... facilities) {
         Set<FacilityStatus> availableFacilities = facilities.collect {
-            new FacilityStatus(it, FacilityStatus.Status.AVAILABLE)
+            new FacilityStatus(it, AVAILABLE)
         }
         facilityStatusesFor(availableFacilities)
     }
@@ -97,7 +98,7 @@ class VenueDetailsBuilder {
                         phoneNumber: address.phoneNumber ?: ''
                 ],
                 openHours: openHoursToJsonMapper.toJsonStructure(weeklyOpeningTimesBuilder.build()),
-                facilities: facilityStatuses.facilityStatuses.collectEntries { [it.facility.toString(), it.status.label ] }
+                facilities: facilityStatuses.facilityStatuses.collectEntries { [it.facility.toString(), it.availability.label ] }
         ]
     }
 }
