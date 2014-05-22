@@ -3,13 +3,9 @@ package org.where2pair.main
 import com.google.inject.AbstractModule
 import com.google.inject.Provides
 import com.google.inject.Singleton
-import org.where2pair.read.venue.FindVenueController
-import org.where2pair.read.venue.LocationsCriteriaParser
-import org.where2pair.read.venue.ShowVenueController
-import org.where2pair.read.venue.TimeProvider
-import org.where2pair.read.venue.VenueService
-import org.where2pair.read.venue.opentimes.OpenTimesCriteriaFactory
+import org.where2pair.read.venue.*
 import org.where2pair.read.venue.mappingtojson.VenueToJsonMapper
+import org.where2pair.read.venue.opentimes.OpenTimesCriteriaFactory
 import org.where2pair.write.venue.AmazonS3NewVenueRepository
 import org.where2pair.write.venue.NewVenueController
 import org.where2pair.write.venue.NewVenueSavedEvent
@@ -49,9 +45,8 @@ class GuiceWhere2PairModule extends AbstractModule {
     @Singleton
     FindVenueController createFindVenueController(HashMapVenueCache venueCache) {
         def venueService = new VenueService(venueCache)
-        def locationsCriteriaParser = new LocationsCriteriaParser()
         def openTimesCriteriaFactory = new OpenTimesCriteriaFactory(new TimeProvider())
-        new FindVenueController(venueService, locationsCriteriaParser, openTimesCriteriaFactory)
+        new FindVenueController(venueService, openTimesCriteriaFactory)
     }
 
     @Provides
