@@ -10,12 +10,12 @@ class VenuesWithDistancesToJsonMapper {
 
     private VenueToJsonMapper venueToJsonMapper = new VenueToJsonMapper()
 
-    List<Map<String, ?>> toJson(List<VenueWithDistances> venuesWithDistances) {
+    List<Map<String, ?>> toJsonStructure(List<VenueWithDistances> venuesWithDistances) {
         venuesWithDistances.collect {
             [
                 distances: coordinateDistancesToJson(it.distances),
                 averageDistance: distanceToJson(it.averageDistance),
-                venue: venueToJsonMapper.toJson(it.venue)
+                venue: venueToJsonMapper.toJsonStructure(it.venue)
             ]
         }
     }

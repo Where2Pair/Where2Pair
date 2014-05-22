@@ -3,10 +3,7 @@ package org.where2pair.read.venue
 import org.where2pair.common.venue.Coordinates
 import org.where2pair.common.venue.Facility
 import org.where2pair.common.venue.SimpleTime
-import org.where2pair.read.venue.find.FacilitiesCriteria
-import org.where2pair.read.venue.find.LocationsCriteria
-import org.where2pair.read.venue.find.OpenTimesCriteria
-import org.where2pair.read.venue.find.OpenTimesCriteriaFactory
+import org.where2pair.read.venue.opentimes.OpenTimesCriteriaFactory
 import org.where2pair.read.venue.mappingtojson.VenuesWithDistancesToJsonMapper
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -14,7 +11,6 @@ import spock.lang.Unroll
 import static groovy.json.JsonOutput.toJson
 import static org.where2pair.common.venue.StatusCode.BAD_REQUEST
 import static org.where2pair.common.venue.StatusCode.OK
-import static org.where2pair.read.venue.DayOfWeek.FRIDAY
 import static org.where2pair.read.venue.DayOfWeek.TUESDAY
 import static org.where2pair.read.venue.DistanceBuilder.fromCoordinates
 import static org.where2pair.read.venue.DistanceUnit.KM
@@ -28,16 +24,20 @@ class FindVenueControllerSpec extends Specification {
     def venueService = Mock(VenueService)
     def openTimesCriteriaFactory = Mock(OpenTimesCriteriaFactory)
     def controller = new FindVenueController(venueService, openTimesCriteriaFactory)
+    def mapper = new VenuesWithDistancesToJsonMapper()
 
     def 'finds venues that match criteria and returns as json'() {
         given:
         def openTimesParams = [openFrom: '13.30', openUntil: '14.30', openDay: 'Tuesday']
-        def facilitiesParams = [withFacilities: 'wifi,power']
-        def locationsParams = [location: ['1.0,0.1'], distanceUnit: 'km']
         def expectedOpenTimesCriteria = Mock(OpenTimesCriteria)
         openTimesCriteriaFactory.createOpenTimesCriteria(new SimpleTime(13, 30), new SimpleTime(14, 30), TUESDAY) >> expectedOpenTimesCriteria
+
+        def facilitiesParams = [withFacilities: 'wifi,power']
         def expectedFacilitiesCriteria = new FacilitiesCriteria(requestedFacilities: [WIFI, POWER])
+
+        def locationsParams = [location: ['1.0,0.1'], distanceUnit: 'km']
         def expectedLocationsCriteria = new LocationsCriteria(locations: [new Coordinates(1.0, 0.1)], distanceUnit: KM)
+
         def venuesFound = [aVenue().withDistance(fromCoordinates(1.0, 0.1).miles(10)).build()]
         venueService.find(expectedOpenTimesCriteria, expectedFacilitiesCriteria, expectedLocationsCriteria) >> venuesFound
 
@@ -45,7 +45,7 @@ class FindVenueControllerSpec extends Specification {
         def jsonResponse = controller.findNearest(locationsParams + openTimesParams + facilitiesParams)
 
         then:
-        jsonResponse.responseBody == toJson(new VenuesWithDistancesToJsonMapper().toJson(venuesFound))
+        jsonResponse.responseBody == toJson(mapper.toJsonStructure(venuesFound))
         jsonResponse.statusCode == OK
     }
 
@@ -130,5 +130,4 @@ class FindVenueControllerSpec extends Specification {
     Map<String, String> getMinimumRequiredParams() {
         [location: ['1.0,0.1']]
     }
-
 }

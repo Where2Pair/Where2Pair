@@ -2,7 +2,6 @@ package org.where2pair.read.venue
 
 import groovy.transform.Immutable
 import groovy.transform.ToString
-import org.where2pair.read.venue.find.OpenTimesCriteria
 
 @Immutable
 @ToString

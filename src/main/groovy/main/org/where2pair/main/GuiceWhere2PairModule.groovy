@@ -7,9 +7,8 @@ import org.where2pair.read.venue.FindVenueController
 import org.where2pair.read.venue.LocationsCriteriaParser
 import org.where2pair.read.venue.ShowVenueController
 import org.where2pair.read.venue.TimeProvider
-import org.where2pair.read.venue.VenueRepository
 import org.where2pair.read.venue.VenueService
-import org.where2pair.read.venue.find.OpenTimesCriteriaFactory
+import org.where2pair.read.venue.opentimes.OpenTimesCriteriaFactory
 import org.where2pair.read.venue.mappingtojson.VenueToJsonMapper
 import org.where2pair.write.venue.AmazonS3NewVenueRepository
 import org.where2pair.write.venue.NewVenueController

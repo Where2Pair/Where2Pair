@@ -1,7 +1,6 @@
 package org.where2pair.read.venue
 
 import org.where2pair.common.venue.Coordinates
-import org.where2pair.read.venue.find.LocationsCriteria
 
 import static java.lang.Double.parseDouble
 

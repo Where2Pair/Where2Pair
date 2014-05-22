@@ -24,7 +24,7 @@ class VenuesWithDistancesToJsonMapperSpec extends Specification {
         def expectedJson = [venue1.toJson(), venue2.toJson()]
 
         when:
-        def venueWithDistancesJson = venueWithDistancesToJsonMapper.toJson(venuesWithDistances)
+        def venueWithDistancesJson = venueWithDistancesToJsonMapper.toJsonStructure(venuesWithDistances)
 
         then:
         venueWithDistancesJson == expectedJson

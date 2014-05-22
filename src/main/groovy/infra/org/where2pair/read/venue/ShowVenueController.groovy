@@ -2,7 +2,6 @@ package org.where2pair.read.venue
 
 import groovy.transform.TupleConstructor
 import org.where2pair.common.venue.JsonResponse
-import org.where2pair.write.venue.NewVenueId
 import org.where2pair.read.venue.mappingtojson.VenueToJsonMapper
 
 import static JsonResponse.validJsonResponse
@@ -22,7 +21,7 @@ class ShowVenueController {
         def venue = venueRepository.get(venueId)
 
         if (venue) {
-            return validJsonResponse(venueToJsonMapper.toJson(venue))
+            return validJsonResponse(venueToJsonMapper.toJsonStructure(venue))
         } else {
             return venueNotFoundResponse(venueId.toString())
         }

@@ -1,7 +1,6 @@
 package org.where2pair.read.venue
 
 import org.where2pair.common.venue.Facility
-import org.where2pair.read.venue.find.FacilitiesCriteria
 
 import static org.where2pair.common.venue.Facility.parseFacility
 

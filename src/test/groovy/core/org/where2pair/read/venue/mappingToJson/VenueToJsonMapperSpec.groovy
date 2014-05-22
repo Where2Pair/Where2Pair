@@ -15,7 +15,7 @@ class VenueToJsonMapperSpec extends Specification {
 
     def 'converts Venue to json'() {
         when:
-        Map result = venueToJsonMapper.toJson(venue)
+        Map result = venueToJsonMapper.toJsonStructure(venue)
 
         then:
         result == venueJson
@@ -28,7 +28,7 @@ class VenueToJsonMapperSpec extends Specification {
         def anotherVenueJson = venueBuilder.toJson()
 
         when:
-        List result = venueToJsonMapper.toJson([venue, anotherVenue])
+        List result = venueToJsonMapper.toJsonStructure([venue, anotherVenue])
 
         then:
         result == [venueJson, anotherVenueJson]

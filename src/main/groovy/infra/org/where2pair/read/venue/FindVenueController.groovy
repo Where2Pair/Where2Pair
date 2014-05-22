@@ -1,7 +1,7 @@
 package org.where2pair.read.venue
 
 import org.where2pair.common.venue.JsonResponse
-import org.where2pair.read.venue.find.OpenTimesCriteriaFactory
+import org.where2pair.read.venue.opentimes.OpenTimesCriteriaFactory
 import org.where2pair.read.venue.mappingtojson.VenuesWithDistancesToJsonMapper
 
 import static org.where2pair.common.venue.JsonResponse.badRequest
@@ -38,7 +38,7 @@ class FindVenueController {
     }
 
     private JsonResponse venuesAsJson(List<VenueWithDistances> venues) {
-        def venuesJson = venuesWithDistancesToJsonMapper.toJson(venues)
+        def venuesJson = venuesWithDistancesToJsonMapper.toJsonStructure(venues)
         return validJsonResponse(venuesJson)
     }
 }

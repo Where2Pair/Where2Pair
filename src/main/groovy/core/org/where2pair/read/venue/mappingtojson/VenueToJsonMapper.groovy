@@ -8,7 +8,7 @@ class VenueToJsonMapper {
 
     private OpenHoursToJsonMapper openHoursToJsonMapper = new OpenHoursToJsonMapper()
 
-    Map<String, ?> toJson(Venue venue) {
+    Map<String, ?> toJsonStructure(Venue venue) {
         [
             id: venue.id.toString(),
             name: venue.name ?: '',
@@ -24,12 +24,12 @@ class VenueToJsonMapper {
                     postcode: venue.address.postcode ?: '',
                     phoneNumber: venue.address.phoneNumber ?: ''
             ],
-            openHours: openHoursToJsonMapper.asOpenHoursJson(venue.weeklyOpeningTimes),
+            openHours: openHoursToJsonMapper.toJsonStructure(venue.weeklyOpeningTimes),
             facilities: venue.facilities.facilityStatuses.collectEntries { [it.facility.toString(), it.status.label] }
         ]
     }
 
-    List<Map<String, ?>> toJson(List<Venue> venues) {
-        venues.collect { toJson(it) }
+    List<Map<String, ?>> toJsonStructure(List<Venue> venues) {
+        venues.collect { toJsonStructure(it) }
     }
 }

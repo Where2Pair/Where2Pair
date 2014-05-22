@@ -19,7 +19,7 @@ class ShowVenueControllerSpec extends Specification {
         def venueId = aRandomVenueId()
         def venue = aVenue().build()
         venueRepository.get(venueId) >> venue
-        def expectedVenueJson = venueToJsonMapper.toJson(venue)
+        def expectedVenueJson = venueToJsonMapper.toJsonStructure(venue)
 
         when:
         def response = controller.show(venueId.toString())

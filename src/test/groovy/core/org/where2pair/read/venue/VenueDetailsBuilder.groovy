@@ -96,7 +96,7 @@ class VenueDetailsBuilder {
                         postcode: address.postcode ?: '',
                         phoneNumber: address.phoneNumber ?: ''
                 ],
-                openHours: openHoursToJsonMapper.asOpenHoursJson(weeklyOpeningTimesBuilder.build()),
+                openHours: openHoursToJsonMapper.toJsonStructure(weeklyOpeningTimesBuilder.build()),
                 facilities: facilityStatuses.facilityStatuses.collectEntries { [it.facility.toString(), it.status.label ] }
         ]
     }

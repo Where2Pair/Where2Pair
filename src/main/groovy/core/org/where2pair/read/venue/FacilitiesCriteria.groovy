@@ -1,4 +1,4 @@
-package org.where2pair.read.venue.find
+package org.where2pair.read.venue
 
 import groovy.transform.Immutable
 import groovy.transform.ToString

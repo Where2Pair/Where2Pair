@@ -12,7 +12,7 @@ import groovy.transform.Immutable
 @Immutable
 class OpenHoursToJsonMapper {
 
-    Map<String, ?> asOpenHoursJson(WeeklyOpeningTimes weeklyOpeningTimes) {
+    Map<String, ?> toJsonStructure(WeeklyOpeningTimes weeklyOpeningTimes) {
         Map openHours = (MONDAY..SUNDAY).collectEntries { [dayToString(it), []] }
 
         weeklyOpeningTimes.each { DayOfWeek day, DailyOpeningTimes dailyOpeningTimes ->
