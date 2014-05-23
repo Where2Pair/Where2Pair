@@ -24,7 +24,7 @@ import java.util.regex.Matcher
 class VenueServiceSpec extends Specification {
 
     static final OPEN_ANY_TIME = openAnyTimeCriteria()
-    static final ANY_FACILITIES = FacilitiesCriteria.anyFacilities()
+    static final ANY_FACILITIES = new FacilitiesCriteria(requestedFacilities: [])
     static final SINGLE_LOCATION = LocationsCriteria.distanceInMilesTo(someCoordinates())
     static final TODAY = SATURDAY
     static final TOMORROW = SUNDAY

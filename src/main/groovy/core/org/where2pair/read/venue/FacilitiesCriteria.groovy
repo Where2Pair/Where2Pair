@@ -9,8 +9,5 @@ import org.where2pair.common.venue.Facility
 class FacilitiesCriteria {
     Set<Facility> requestedFacilities
 
-    static FacilitiesCriteria anyFacilities() {
-        new FacilitiesCriteria(requestedFacilities: [])
-    }
 }
 
