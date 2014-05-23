@@ -11,7 +11,7 @@ class TimeProvider {
     }
 
     DayOfWeek today() {
-        DayOfWeek.getDayOfWeek(currentDateTime())
+        DayOfWeek.getDayOfWeek(currentDateTime)
     }
 
     private DateTime getCurrentDateTime() {

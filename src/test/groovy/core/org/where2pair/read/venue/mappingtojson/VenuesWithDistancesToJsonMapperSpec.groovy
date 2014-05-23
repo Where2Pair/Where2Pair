@@ -1,9 +1,8 @@
-package org.where2pair.read.venue.mappingToJson
+package org.where2pair.read.venue.mappingtojson
 
 import static org.where2pair.read.venue.DistanceBuilder.fromCoordinates
 import static org.where2pair.read.venue.VenueWithDistancesBuilder.aVenue
 
-import org.where2pair.read.venue.mappingtojson.VenuesWithDistancesToJsonMapper
 import spock.lang.Specification
 
 class VenuesWithDistancesToJsonMapperSpec extends Specification {

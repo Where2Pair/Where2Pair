@@ -22,6 +22,16 @@ class VenueJsonValidator {
             { it.openHours }: 'Venue \'openHours\' must be provided'
     ]
 
+    static final ADDRESS_STRUCTURE_ERROR_MESSAGE = "Expected address to be a map e.g. ['addressLine1': " +
+            "'9 Appold Street', city: 'London'...]"
+    static final LOCATION_STRUCTURE_ERROR_MESSAGE = "Expected location to be a map e.g. ['latitude': " +
+            "1.0, 'longitude': 0.1]"
+    static final OPEN_HOURS_STRUCTURE_ERROR_MESSAGE = "Expected openHours to map day to a list of open periods " +
+            "e.g. ['monday': [['openHour': 12, 'openMinute': 0, 'closeHour': 18, 'closeMinute': 30]],\n'tuesday': " +
+            "[['openHour': 8, 'openMinute': 0, 'closeHour': 11, 'closeMinute': 0]],\n...\n]"
+    static final FACILITIES_STRUCTURE_ERROR_MESSAGE = "Expected facilities to map to either 'Y' or 'N' e.g. " +
+            "['wifi': 'N', 'power': 'Y']"
+
     private static final EXPECTED_STRUCTURE_CHECKS = [
             {
                 it.address instanceof Map
@@ -54,6 +64,9 @@ class VenueJsonValidator {
             { it.address.postcode }: 'Venue \'address.postcode\' must be provided'
     ]
 
+    static final INCOMPLETE_OPEN_HOURS_ERROR_MESSAGE = 'Daily venue \'openHours\' must contain \'openHour\',' +
+            ' \'openMinute\', \'closeHour\' and \'closeHour\''
+
     private static final OPEN_HOURS_CHECKS = [
             {
                 it.openHours.any { day, dailyOpenHours ->
@@ -70,7 +83,7 @@ class VenueJsonValidator {
                                         openPeriod.closeMinute != null
                             }
                 }
-            }: 'Daily venue \'openHours\' must contain \'openHour\', \'openMinute\', \'closeHour\' and \'closeHour\'',
+            }: INCOMPLETE_OPEN_HOURS_ERROR_MESSAGE,
             {
                 allValidOpenHours(it.openHours).every { day, List dailyOpeningHours ->
                     dailyOpeningHours.isEmpty() ||
@@ -162,9 +175,9 @@ class VenueJsonValidator {
                 }
             }: 'Daily venue \'openHours\' must close after opening time'
     ]
-
     static final UNRECOGNIZED_FACILITY_ERROR_MESSAGE = "Supported facilities are: ${Facility.asStrings()}"
     static final INVALID_FACILITY_STATUS_ERROR_MESSAGE = "The status of a facility can be either 'Y', 'N' or 'UNKNOWN"
+
     private static final FACILITIES_CHECKS = [
             {
                 it.facilities.every { it.key.toLowerCase() in Facility.asStrings() }
@@ -209,15 +222,5 @@ class VenueJsonValidator {
                     ADDRESS_CHECKS +
                     OPEN_HOURS_CHECKS +
                     FACILITIES_CHECKS
-
-    static final ADDRESS_STRUCTURE_ERROR_MESSAGE = "Expected address to be a map e.g. ['addressLine1': " +
-            "'9 Appold Street', city: 'London'...]"
-    static final LOCATION_STRUCTURE_ERROR_MESSAGE = "Expected location to be a map e.g. ['latitude': " +
-            "1.0, 'longitude': 0.1]"
-    static final OPEN_HOURS_STRUCTURE_ERROR_MESSAGE = "Expected openHours to map day to a list of open periods " +
-            "e.g. ['monday': [['openHour': 12, 'openMinute': 0, 'closeHour': 18, 'closeMinute': 30]],\n'tuesday': " +
-            "[['openHour': 8, 'openMinute': 0, 'closeHour': 11, 'closeMinute': 0]],\n...\n]"
-    static final FACILITIES_STRUCTURE_ERROR_MESSAGE = "Expected facilities to map to either 'Y' or 'N' e.g. " +
-            "['wifi': 'N', 'power': 'Y']"
 }
 

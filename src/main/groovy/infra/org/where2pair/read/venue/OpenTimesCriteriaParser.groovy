@@ -43,6 +43,5 @@ class OpenTimesCriteriaParser {
                     "Expected to be in the form: $paramName:<hour>.<minute>")
         }
     }
-
 }
 

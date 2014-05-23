@@ -23,7 +23,7 @@ class TimeProviderSpec extends Specification {
     def 'returns current time as simple time'() {
         given:
         def currentTime = new DateTime()
-        timeProvider.currentDateTime() >> currentTime
+        timeProvider.currentDateTime >> currentTime
 
         when:
         def timeNow = timeProvider.timeNow()
@@ -36,7 +36,7 @@ class TimeProviderSpec extends Specification {
     def 'returns today as DayOfWeek'() {
         given:
         def currentTime = new DateTime()
-        timeProvider.getCurrentDateTime() >> currentTime
+        timeProvider.currentDateTime >> currentTime
 
         when:
         def dayOfWeek = timeProvider.today()

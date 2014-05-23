@@ -1,7 +1,13 @@
 package org.where2pair.write.venue
 
 import static org.where2pair.read.venue.VenueBuilder.aVenue
-import static org.where2pair.write.venue.VenueJsonValidator.*
+import static org.where2pair.write.venue.VenueJsonValidator.ADDRESS_STRUCTURE_ERROR_MESSAGE
+import static org.where2pair.write.venue.VenueJsonValidator.FACILITIES_STRUCTURE_ERROR_MESSAGE
+import static org.where2pair.write.venue.VenueJsonValidator.INVALID_FACILITY_STATUS_ERROR_MESSAGE
+import static org.where2pair.write.venue.VenueJsonValidator.LOCATION_STRUCTURE_ERROR_MESSAGE
+import static org.where2pair.write.venue.VenueJsonValidator.OPEN_HOURS_STRUCTURE_ERROR_MESSAGE
+import static org.where2pair.write.venue.VenueJsonValidator.UNRECOGNIZED_FACILITY_ERROR_MESSAGE
+import static org.where2pair.write.venue.VenueJsonValidator.INCOMPLETE_OPEN_HOURS_ERROR_MESSAGE
 
 import org.where2pair.common.venue.Facility
 import spock.lang.Specification
@@ -121,7 +127,7 @@ class NewVenueServiceSpec extends Specification {
 
         where:
         invalidJson                              | expectedReason
-        openHoursWithIncorrectKeys               | 'Daily venue \'openHours\' must contain \'openHour\', \'openMinute\', \'closeHour\' and \'closeHour\''
+        openHoursWithIncorrectKeys               | INCOMPLETE_OPEN_HOURS_ERROR_MESSAGE
         openHoursWithClosedTimeTheSameAsOpenTime | 'Daily venue \'openHours\' must close after opening time'
         openHoursWithClosedTimeBeforeOpenTime    | 'Daily venue \'openHours\' must close after opening time'
         openHoursWithOpenHourLessThan0           | '\'openHour\' can not be negative'
@@ -232,19 +238,23 @@ class NewVenueServiceSpec extends Specification {
     }
 
     Map<String, ?> getOpenHoursWithOpenHourAsNonInteger() {
-        aVenue().toJson() + [openHours: [monday: [[openHour: 'not an integer', openMinute: 0, closeHour: 11, closeMinute: 60]]]]
+        aVenue().toJson() + [openHours: [monday: [[openHour: 'not an integer',
+                openMinute: 0, closeHour: 11, closeMinute: 60]]]]
     }
 
     Map<String, ?> getOpenHoursWithOpenMinuteAsNonInteger() {
-        aVenue().toJson() + [openHours: [monday: [[openHour: 12, openMinute: 'not an integer', closeHour: 11, closeMinute: 60]]]]
+        aVenue().toJson() + [openHours: [monday: [[openHour: 12,
+                openMinute: 'not an integer', closeHour: 11, closeMinute: 60]]]]
     }
 
     Map<String, ?> getOpenHoursWithCloseHourAsNonInteger() {
-        aVenue().toJson() + [openHours: [monday: [[openHour: 12, openMinute: 0, closeHour: 'not an integer', closeMinute: 60]]]]
+        aVenue().toJson() + [openHours: [monday: [[openHour: 12,
+                openMinute: 0, closeHour: 'not an integer', closeMinute: 60]]]]
     }
 
     Map<String, ?> getOpenHoursWithCloseMinuteAsNonInteger() {
-        aVenue().toJson() + [openHours: [monday: [[openHour: 12, openMinute: 0, closeHour: 11, closeMinute: 'not an integer']]]]
+        aVenue().toJson() + [openHours: [monday: [[openHour: 12,
+                openMinute: 0, closeHour: 11, closeMinute: 'not an integer']]]]
     }
 }
 

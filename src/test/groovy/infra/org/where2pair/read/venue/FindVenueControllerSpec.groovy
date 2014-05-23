@@ -98,7 +98,7 @@ class FindVenueControllerSpec extends Specification {
 
     def 'rejects requests with invalid facilities'() {
         given:
-        def params = getMinimumRequiredParams() + invalidParams
+        def params = minimumRequiredParams + invalidParams
 
         when:
         def response = controller.findNearest(params)

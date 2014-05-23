@@ -1,9 +1,8 @@
-package org.where2pair.read.venue.mappingToJson
+package org.where2pair.read.venue.mappingtojson
 
 import static org.where2pair.read.venue.VenueBuilder.aVenue
 import static org.where2pair.read.venue.VenueDetailsBuilder.venueDetails
 
-import org.where2pair.read.venue.mappingtojson.VenueToJsonMapper
 import spock.lang.Specification
 
 class VenueToJsonMapperSpec extends Specification {

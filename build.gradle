@@ -61,8 +61,15 @@ eclipse {
 }
 
 codenarc {
-    configFile = new File('config/codenarc/Codenarc.groovy')
     toolVersion = '0.21'
+}
+
+codenarcMain {
+    configFile = new File('config/codenarc/CodenarcMain.groovy')
+}
+
+codenarcTest {
+    configFile = new File('config/codenarc/CodenarcTest.groovy')
 }
 
 dependencies {

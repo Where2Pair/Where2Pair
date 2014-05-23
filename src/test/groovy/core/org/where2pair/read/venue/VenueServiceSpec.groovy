@@ -7,7 +7,11 @@ import static java.lang.Integer.parseInt
 import static org.where2pair.common.venue.CoordinatesBuilder.coordinates
 import static org.where2pair.common.venue.CoordinatesBuilder.someCoordinates
 import static org.where2pair.common.venue.Facility.WIFI
-import static org.where2pair.read.venue.DayOfWeek.*
+import static org.where2pair.read.venue.DayOfWeek.FRIDAY
+import static org.where2pair.read.venue.DayOfWeek.MONDAY
+import static org.where2pair.read.venue.DayOfWeek.SATURDAY
+import static org.where2pair.read.venue.DayOfWeek.SUNDAY
+import static org.where2pair.read.venue.DayOfWeek.parseDayOfWeek
 
 import org.where2pair.common.venue.Coordinates
 import org.where2pair.common.venue.SimpleTime
