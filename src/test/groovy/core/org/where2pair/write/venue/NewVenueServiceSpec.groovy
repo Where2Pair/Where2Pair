@@ -1,16 +1,11 @@
 package org.where2pair.write.venue
 
+import static org.where2pair.read.venue.VenueBuilder.aVenue
+import static org.where2pair.write.venue.VenueJsonValidator.*
+
 import org.where2pair.common.venue.Facility
 import spock.lang.Specification
 import spock.lang.Unroll
-
-import static org.where2pair.read.venue.VenueBuilder.aVenue
-import static org.where2pair.write.venue.VenueJsonValidator.ADDRESS_STRUCTURE_ERROR_MESSAGE
-import static org.where2pair.write.venue.VenueJsonValidator.INVALID_FACILITY_STATUS_ERROR_MESSAGE
-import static org.where2pair.write.venue.VenueJsonValidator.LOCATION_STRUCTURE_ERROR_MESSAGE
-import static org.where2pair.write.venue.VenueJsonValidator.OPEN_HOURS_STRUCTURE_ERROR_MESSAGE
-import static org.where2pair.write.venue.VenueJsonValidator.UNRECOGNIZED_FACILITY_ERROR_MESSAGE
-import static org.where2pair.write.venue.VenueJsonValidator.FACILITIES_STRUCTURE_ERROR_MESSAGE
 
 class NewVenueServiceSpec extends Specification {
 
@@ -252,3 +247,4 @@ class NewVenueServiceSpec extends Specification {
         aVenue().toJson() + [openHours: [monday: [[openHour: 12, openMinute: 0, closeHour: 11, closeMinute: 'not an integer']]]]
     }
 }
+

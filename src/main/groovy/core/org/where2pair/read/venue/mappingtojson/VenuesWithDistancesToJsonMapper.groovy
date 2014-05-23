@@ -20,7 +20,7 @@ class VenuesWithDistancesToJsonMapper {
         }
     }
 
-    private def coordinateDistancesToJson(Map<Coordinates, Distance> distances) {
+    private coordinateDistancesToJson(Map<Coordinates, Distance> distances) {
         distances.collect {
             [location: it.key, distance: distanceToJson(it.value)]
         }
@@ -30,3 +30,4 @@ class VenuesWithDistancesToJsonMapper {
         [value: distance.value, unit: distance.unit.toString().toLowerCase()]
     }
 }
+

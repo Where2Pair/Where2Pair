@@ -1,13 +1,12 @@
 package org.where2pair.read.venue.mappingtojson
 
-import org.where2pair.read.venue.DailyOpeningTimes
-import org.where2pair.read.venue.DayOfWeek
-import org.where2pair.read.venue.WeeklyOpeningTimes
-
 import static org.where2pair.read.venue.DayOfWeek.MONDAY
 import static org.where2pair.read.venue.DayOfWeek.SUNDAY
 
 import groovy.transform.Immutable
+import org.where2pair.read.venue.DailyOpeningTimes
+import org.where2pair.read.venue.DayOfWeek
+import org.where2pair.read.venue.WeeklyOpeningTimes
 
 @Immutable
 class OpenHoursToJsonMapper {
@@ -32,3 +31,4 @@ class OpenHoursToJsonMapper {
         day.toString().toLowerCase()
     }
 }
+

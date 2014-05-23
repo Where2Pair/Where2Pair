@@ -29,7 +29,9 @@ class VenueWithDistancesBuilder {
     Map<String, ?> toJson() {
         VenueWithDistances venueWithDistances = build()
         [
-                distances: venueWithDistances.distances.collect { [location: it.key, distance: distanceAsJson(it.value)] },
+                distances: venueWithDistances.distances.collect {
+                    [location: it.key, distance: distanceAsJson(it.value)]
+                },
                 averageDistance: distanceAsJson(venueWithDistances.averageDistance),
                 venue: venueBuilder.toJson()
         ]
@@ -40,3 +42,4 @@ class VenueWithDistancesBuilder {
         [value: distance.value, unit: distance.unit.toString().toLowerCase()]
     }
 }
+

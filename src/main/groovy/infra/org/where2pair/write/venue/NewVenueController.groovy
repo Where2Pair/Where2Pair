@@ -5,7 +5,7 @@ import groovy.transform.TupleConstructor
 import org.where2pair.common.venue.JsonResponse
 
 @TupleConstructor
-public class NewVenueController {
+class NewVenueController {
 
     NewVenueService newVenueService
 
@@ -34,7 +34,7 @@ public class NewVenueController {
     }
 
     private JsonResponse badRequestResponse(InvalidVenueJsonException e) {
-        JsonResponse.badRequest(e.getMessage())
+        JsonResponse.badRequest(e.message)
     }
 
 }

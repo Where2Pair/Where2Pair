@@ -35,3 +35,4 @@ class Venue {
         distanceUnit.distanceBetween(coordinates, location)
     }
 }
+

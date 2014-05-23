@@ -1,7 +1,6 @@
 package org.where2pair.common.venue
 
-
-public enum StatusCode {
+enum StatusCode {
 
     OK(200),
     BAD_REQUEST(400),
@@ -17,3 +16,4 @@ public enum StatusCode {
         statusCode
     }
 }
+

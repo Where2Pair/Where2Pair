@@ -1,13 +1,13 @@
 package org.where2pair.read.venue.mappingFromJson
 
+import static org.where2pair.read.venue.VenueDetailsBuilder.venueDetails
+
 import org.where2pair.read.venue.mappingfromjson.JsonToVenueDetailsMapper
 import spock.lang.Specification
 
-import static org.where2pair.read.venue.VenueDetailsBuilder.venueDetails
-
 class JsonToVenueDetailsMapperSpec extends Specification {
 
-    JsonToVenueDetailsMapper jsonToVenueDetailsMapper = new JsonToVenueDetailsMapper()
+    def jsonToVenueDetailsMapper = new JsonToVenueDetailsMapper()
 
     def 'maps json to venue details'() {
         given:
@@ -21,3 +21,4 @@ class JsonToVenueDetailsMapperSpec extends Specification {
         venueDetails == expectedVenueDetails
     }
 }
+

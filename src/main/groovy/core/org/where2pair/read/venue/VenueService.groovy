@@ -19,7 +19,7 @@ class VenueService {
     }
 
     private List<Venue> venues() {
-        venueRepository.getAll()
+        venueRepository.all
     }
 
     private static VenueFilter findAll(List<Venue> venues) {
@@ -58,3 +58,4 @@ class VenueService {
         }
     }
 }
+

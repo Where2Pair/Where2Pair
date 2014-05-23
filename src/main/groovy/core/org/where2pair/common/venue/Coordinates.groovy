@@ -7,3 +7,4 @@ class Coordinates {
     double lat
     double lng
 }
+

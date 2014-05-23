@@ -11,3 +11,4 @@ class VenueDetails {
     WeeklyOpeningTimes weeklyOpeningTimes
     FacilityStatuses facilities
 }
+

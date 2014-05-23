@@ -30,5 +30,5 @@ class OpenTimesCriteriaFactory {
         return new OpenAtTimeOnDayCriteria(openFrom ?: openUntil, timeProvider.today())
     }
 
-
 }
+

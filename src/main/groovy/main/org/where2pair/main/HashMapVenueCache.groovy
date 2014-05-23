@@ -3,13 +3,13 @@ package org.where2pair.main
 import org.where2pair.read.venue.Venue
 import org.where2pair.read.venue.VenueId
 import org.where2pair.read.venue.VenueRepository
-import org.where2pair.write.venue.NewVenueId
 
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentMap
 
 class HashMapVenueCache implements VenueRepository {
 
-    final ConcurrentHashMap<NewVenueId, Venue> venues = [:]
+    final ConcurrentMap<VenueId, Venue> venues = [:] as ConcurrentHashMap<VenueId, Venue>
 
     @Override
     List<Venue> getAll() {
@@ -27,3 +27,4 @@ class HashMapVenueCache implements VenueRepository {
         venues[venue.id] = venue
     }
 }
+

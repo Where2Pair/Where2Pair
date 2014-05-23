@@ -7,3 +7,4 @@ class NewVenueSavedEvent {
     final NewVenueId venueId
     final NewVenue newVenue
 }
+

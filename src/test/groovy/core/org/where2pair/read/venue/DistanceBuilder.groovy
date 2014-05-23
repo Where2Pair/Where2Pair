@@ -1,10 +1,9 @@
 package org.where2pair.read.venue
 
-import groovy.transform.Immutable
-import org.where2pair.common.venue.Coordinates
-
 import static org.where2pair.read.venue.DistanceUnit.MILES
 
+import groovy.transform.Immutable
+import org.where2pair.common.venue.Coordinates
 
 class DistanceBuilder {
 
@@ -28,3 +27,4 @@ class DistanceBuilder {
         Coordinates coordinates
     }
 }
+

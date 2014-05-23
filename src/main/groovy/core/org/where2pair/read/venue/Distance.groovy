@@ -1,6 +1,6 @@
 package org.where2pair.read.venue
 
-import groovy.transform.Immutable;
+import groovy.transform.Immutable
 
 @Immutable
 class Distance implements Comparable {
@@ -9,7 +9,8 @@ class Distance implements Comparable {
 
     @Override
     int compareTo(Object o) {
-        value<=>o.value
+        value <=> o.value
     }
 
 }
+

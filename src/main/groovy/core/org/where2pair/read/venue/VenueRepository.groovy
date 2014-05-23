@@ -7,3 +7,4 @@ interface VenueRepository {
     Venue get(VenueId id)
 
 }
+

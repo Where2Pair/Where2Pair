@@ -1,9 +1,9 @@
 package org.where2pair.common.venue
 
-import org.where2pair.write.venue.NewVenueId
-
-import static java.util.UUID.randomUUID
 import static CoordinatesBuilder.coordinates
+import static java.util.UUID.randomUUID
+
+import org.where2pair.write.venue.NewVenueId
 
 class NewVenueIdBuilder {
 
@@ -17,10 +17,14 @@ class NewVenueIdBuilder {
 
     static NewVenueId aRandomVenueId() {
         aVenueId().withName(randomUUID() as String)
-                .withLongitude(new Random().nextDouble())
+                .withLongitude(randomDouble())
                 .withLatitude(new Random().nextDouble())
                 .withAddressLine1(randomUUID() as String)
                 .build()
+    }
+
+    private static double randomDouble() {
+        new Random().nextDouble()
     }
 
     NewVenueIdBuilder withName(String name) {
@@ -47,3 +51,4 @@ class NewVenueIdBuilder {
         new NewVenueId(name, coordinatesBuilder.build(), addressLine1)
     }
 }
+

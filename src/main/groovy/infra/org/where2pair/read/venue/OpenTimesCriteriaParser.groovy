@@ -1,10 +1,10 @@
 package org.where2pair.read.venue
 
+import static org.where2pair.read.venue.DayOfWeek.parseDayOfWeek
+
 import groovy.transform.TupleConstructor
 import org.where2pair.common.venue.SimpleTime
 import org.where2pair.read.venue.opentimes.OpenTimesCriteriaFactory
-
-import static org.where2pair.read.venue.DayOfWeek.parseDayOfWeek
 
 @TupleConstructor
 class OpenTimesCriteriaParser {
@@ -30,7 +30,8 @@ class OpenTimesCriteriaParser {
     private static SimpleTime parseSimpleTime(Map<String, ?> params, String paramName) {
         String requestParamValue = params[paramName]
         if (!requestParamValue.contains('.')) {
-            throw new QueryParseException("'$paramName' not supplied in the correct format. Expected to be in the form: $paramName:<hour>.<minute>")
+            throw new QueryParseException("'$paramName' not supplied in the correct format. " +
+                    "Expected to be in the form: $paramName:<hour>.<minute>")
         }
 
         def (hour, minute) = requestParamValue.split(/\./)
@@ -38,8 +39,10 @@ class OpenTimesCriteriaParser {
         try {
             return new SimpleTime(hour as Integer, minute as Integer)
         } catch (NumberFormatException e) {
-            throw new QueryParseException("'$paramName' not supplied in the correct format. Expected to be in the form: $paramName:<hour>.<minute>")
+            throw new QueryParseException("'$paramName' not supplied in the correct format. " +
+                    "Expected to be in the form: $paramName:<hour>.<minute>")
         }
     }
 
 }
+

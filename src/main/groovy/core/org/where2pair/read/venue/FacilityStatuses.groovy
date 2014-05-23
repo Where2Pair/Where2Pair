@@ -1,9 +1,9 @@
 package org.where2pair.read.venue
 
+import static FacilityStatus.facilityStatusUnknown
+
 import groovy.transform.Immutable
 import org.where2pair.common.venue.Facility
-
-import static FacilityStatus.facilityStatusUnknown
 
 @Immutable
 class FacilityStatuses {
@@ -19,7 +19,10 @@ class FacilityStatuses {
     }
 
     boolean hasFacilities(FacilitiesCriteria facilitiesCriteria) {
-        def statusesForRequestFacilities = facilityStatuses.findAll { it.facility in facilitiesCriteria.requestedFacilities }
+        def statusesForRequestFacilities = facilityStatuses.findAll {
+            it.facility in facilitiesCriteria.requestedFacilities
+        }
         statusesForRequestFacilities.every { it.available }
     }
 }
+

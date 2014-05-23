@@ -1,11 +1,15 @@
 package org.where2pair.read.venue.mappingfromjson
 
-import org.where2pair.common.venue.Coordinates
-import org.where2pair.read.venue.*
-
 import static org.where2pair.common.venue.Facility.parseFacility
 import static org.where2pair.common.venue.FacilityAvailability.parseFacilityAvailability
 import static org.where2pair.read.venue.FacilityStatuses.facilityStatusesFor
+
+import org.where2pair.common.venue.Coordinates
+import org.where2pair.read.venue.Address
+import org.where2pair.read.venue.FacilityStatus
+import org.where2pair.read.venue.FacilityStatuses
+import org.where2pair.read.venue.VenueDetails
+import org.where2pair.read.venue.WeeklyOpeningTimes
 
 class JsonToVenueDetailsMapper {
 
@@ -42,3 +46,4 @@ class JsonToVenueDetailsMapper {
         new Address(addressLine1, addressLine2, addressLine3, city, postcode, phoneNumber)
     }
 }
+

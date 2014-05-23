@@ -1,13 +1,13 @@
 package org.where2pair.read.venue.mappingtojson
 
+import static org.where2pair.read.venue.DayOfWeek.MONDAY
+import static org.where2pair.read.venue.DayOfWeek.SUNDAY
+
 import org.where2pair.common.venue.SimpleTime
 import org.where2pair.read.venue.DailyOpeningTimes
 import org.where2pair.read.venue.DayOfWeek
 import org.where2pair.read.venue.TimeWindow
 import org.where2pair.read.venue.WeeklyOpeningTimes
-
-import static org.where2pair.read.venue.DayOfWeek.MONDAY
-import static org.where2pair.read.venue.DayOfWeek.SUNDAY
 
 class WeeklyOpeningTimesBuilder {
 
@@ -27,3 +27,4 @@ class WeeklyOpeningTimesBuilder {
         new WeeklyOpeningTimes(weeklyOpeningTimes: weeklyOpeningTimes)
     }
 }
+

@@ -1,12 +1,11 @@
 package org.where2pair.read.venue.mappingfromjson
 
-import org.where2pair.common.venue.SimpleTime
-import org.where2pair.read.venue.DayOfWeek
-import org.where2pair.read.venue.WeeklyOpeningTimes
-import org.where2pair.read.venue.mappingtojson.WeeklyOpeningTimesBuilder
-
+import static java.lang.Integer.parseInt
 import static org.where2pair.read.venue.DayOfWeek.parseDayOfWeek
 
+import org.where2pair.common.venue.SimpleTime
+import org.where2pair.read.venue.WeeklyOpeningTimes
+import org.where2pair.read.venue.mappingtojson.WeeklyOpeningTimesBuilder
 
 class JsonToOpenHoursMapper {
 
@@ -23,7 +22,8 @@ class JsonToOpenHoursMapper {
     }
 
     private int asInt(timeUnit) {
-        (timeUnit instanceof Integer) ? timeUnit : Integer.parseInt(timeUnit)
+        (timeUnit instanceof Integer) ? timeUnit : parseInt(timeUnit)
     }
 
 }
+

@@ -2,7 +2,6 @@ package org.where2pair.read.venue
 
 import org.where2pair.common.venue.SimpleTime
 
-
 class OpenPeriodBuilder {
     DayOfWeek dayOfWeek
     SimpleTime openTime
@@ -36,3 +35,4 @@ class OpenPeriodBuilder {
         this
     }
 }
+

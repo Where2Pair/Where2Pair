@@ -13,3 +13,4 @@ class FacilitiesCriteria {
         new FacilitiesCriteria(requestedFacilities: [])
     }
 }
+

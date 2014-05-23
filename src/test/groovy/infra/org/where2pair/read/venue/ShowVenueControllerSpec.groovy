@@ -1,12 +1,12 @@
 package org.where2pair.read.venue
 
+import static org.where2pair.read.venue.VenueBuilder.aVenue
+import static org.where2pair.read.venue.VenueIdBuilder.aRandomVenueId
+
 import groovy.json.JsonOutput
 import org.where2pair.common.venue.StatusCode
 import org.where2pair.read.venue.mappingtojson.VenueToJsonMapper
 import spock.lang.Specification
-
-import static org.where2pair.read.venue.VenueIdBuilder.aRandomVenueId
-import static org.where2pair.read.venue.VenueBuilder.aVenue
 
 class ShowVenueControllerSpec extends Specification {
 

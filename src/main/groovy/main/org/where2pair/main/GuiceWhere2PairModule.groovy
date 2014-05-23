@@ -1,17 +1,20 @@
 package org.where2pair.main
 
+import static AsyncNewVenueSavedEventSubscriber.asAsyncSubscriber
+
 import com.google.inject.AbstractModule
 import com.google.inject.Provides
 import com.google.inject.Singleton
-import org.where2pair.read.venue.*
+import org.where2pair.read.venue.FindVenueController
+import org.where2pair.read.venue.ShowVenueController
+import org.where2pair.read.venue.TimeProvider
+import org.where2pair.read.venue.VenueService
 import org.where2pair.read.venue.mappingtojson.VenueToJsonMapper
 import org.where2pair.read.venue.opentimes.OpenTimesCriteriaFactory
 import org.where2pair.write.venue.AmazonS3NewVenueRepository
 import org.where2pair.write.venue.NewVenueController
 import org.where2pair.write.venue.NewVenueSavedEvent
 import org.where2pair.write.venue.NewVenueServiceFactory
-
-import static AsyncNewVenueSavedEventSubscriber.asAsyncSubscriber
 
 class GuiceWhere2PairModule extends AbstractModule {
 
@@ -20,7 +23,7 @@ class GuiceWhere2PairModule extends AbstractModule {
     NewVenueController createNewVenueController(VenueCachePopulator venueCachePopulator) {
         def venueRepository = new AmazonS3NewVenueRepository()
 
-        List<NewVenueSavedEvent> venues = venueRepository.getAll()
+        List<NewVenueSavedEvent> venues = venueRepository.all
         venues.each { venueCachePopulator.notifyNewVenueSaved(it) }
 
         def newVenueService = new NewVenueServiceFactory().createServiceWithEventSubscribers(
@@ -60,3 +63,4 @@ class GuiceWhere2PairModule extends AbstractModule {
     }
 
 }
+

@@ -1,12 +1,12 @@
 package org.where2pair.write.venue
 
-import org.where2pair.common.venue.StatusCode
-import spock.lang.Specification
-import spock.lang.Unroll
-
 import static groovy.json.JsonOutput.toJson
 import static org.where2pair.common.venue.NewVenueIdBuilder.aVenueId
 import static org.where2pair.read.venue.VenueBuilder.aVenue
+
+import org.where2pair.common.venue.StatusCode
+import spock.lang.Specification
+import spock.lang.Unroll
 
 class NewVenueControllerSpec extends Specification {
 
@@ -60,3 +60,4 @@ class NewVenueControllerSpec extends Specification {
         ''               | toJson([error: 'Venue json not in the expected format'])
     }
 }
+

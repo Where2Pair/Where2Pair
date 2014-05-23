@@ -11,3 +11,4 @@ class VenueId {
         id
     }
 }
+

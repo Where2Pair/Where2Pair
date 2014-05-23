@@ -9,3 +9,4 @@ class OpenAnyTimeCriteria implements OpenTimesCriteria {
         true
     }
 }
+

@@ -1,17 +1,16 @@
 package org.where2pair.main
 
+import static java.util.concurrent.Executors.newCachedThreadPool
+
 import groovyx.gpars.GParsExecutorsPool
 import org.where2pair.write.venue.NewVenueSavedEvent
 import org.where2pair.write.venue.NewVenueSavedEventSubscriber
 
 import java.util.concurrent.ExecutorService
 
-import static java.util.concurrent.Executors.newCachedThreadPool
-
-
 class AsyncNewVenueSavedEventSubscriber implements NewVenueSavedEventSubscriber {
 
-    private static final ExecutorService executorService = newCachedThreadPool()
+    private static final ExecutorService EXECUTOR_SERVICE = newCachedThreadPool()
     private final NewVenueSavedEventSubscriber subscriber
 
     static NewVenueSavedEventSubscriber asAsyncSubscriber(NewVenueSavedEventSubscriber newVenueSavedEventSubscriber) {
@@ -24,9 +23,10 @@ class AsyncNewVenueSavedEventSubscriber implements NewVenueSavedEventSubscriber 
 
     @Override
     void notifyNewVenueSaved(NewVenueSavedEvent newVenueSavedEvent) {
-        GParsExecutorsPool.withExistingPool(executorService) {
+        GParsExecutorsPool.withExistingPool(EXECUTOR_SERVICE) {
             Closure notify = { subscriber.notifyNewVenueSaved(newVenueSavedEvent) }
             notify.callAsync()
         }
     }
 }
+

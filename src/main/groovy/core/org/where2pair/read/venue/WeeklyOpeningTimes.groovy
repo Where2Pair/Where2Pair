@@ -25,3 +25,4 @@ class WeeklyOpeningTimes {
         weeklyOpeningTimes.values().any(c)
     }
 }
+

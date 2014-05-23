@@ -1,15 +1,11 @@
 package org.where2pair.main.venue
 
+import static ratpack.groovy.test.TestHttpClients.testHttpClient
+
 import groovy.json.JsonSlurper
-import groovyx.net.http.ContentType
-import groovyx.net.http.RESTClient
-import ratpack.groovy.launch.GroovyScriptFileHandlerFactory
 import ratpack.groovy.test.LocalScriptApplicationUnderTest
 import ratpack.groovy.test.TestHttpClient
 import spock.lang.Specification
-
-import static ratpack.groovy.launch.GroovyScriptFileHandlerFactory.SCRIPT_PROPERTY_NAME
-import static ratpack.groovy.test.TestHttpClients.testHttpClient
 
 class VenueFunctionalSpec extends Specification {
     static final String VENUE_NAME = randomName()
@@ -64,3 +60,4 @@ class VenueFunctionalSpec extends Specification {
         UUID.randomUUID()
     }
 }
+

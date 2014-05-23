@@ -1,11 +1,11 @@
 package org.where2pair.read.venue
 
-import org.where2pair.common.venue.JsonResponse
-import org.where2pair.read.venue.opentimes.OpenTimesCriteriaFactory
-import org.where2pair.read.venue.mappingtojson.VenuesWithDistancesToJsonMapper
-
 import static org.where2pair.common.venue.JsonResponse.badRequest
 import static org.where2pair.common.venue.JsonResponse.validJsonResponse
+
+import org.where2pair.common.venue.JsonResponse
+import org.where2pair.read.venue.mappingtojson.VenuesWithDistancesToJsonMapper
+import org.where2pair.read.venue.opentimes.OpenTimesCriteriaFactory
 
 class FindVenueController {
 
@@ -42,3 +42,4 @@ class FindVenueController {
         return validJsonResponse(venuesJson)
     }
 }
+

@@ -1,6 +1,5 @@
 package org.where2pair.write.venue
 
-
 class NewVenueServiceFactory {
 
     NewVenueService createServiceWithEventSubscribers(
@@ -10,3 +9,4 @@ class NewVenueServiceFactory {
     }
 
 }
+

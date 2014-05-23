@@ -19,3 +19,4 @@ class OpenBetweenTimesOnDayCriteria implements OpenTimesCriteria {
         venue.weeklyOpeningTimes[openDay].isOpenBetween(new TimeWindow(openFrom, openUntil))
     }
 }
+

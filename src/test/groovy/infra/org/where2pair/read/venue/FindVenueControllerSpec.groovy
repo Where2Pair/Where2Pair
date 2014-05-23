@@ -1,23 +1,23 @@
 package org.where2pair.read.venue
 
-import org.where2pair.common.venue.Coordinates
-import org.where2pair.common.venue.Facility
-import org.where2pair.common.venue.SimpleTime
-import org.where2pair.read.venue.opentimes.OpenTimesCriteriaFactory
-import org.where2pair.read.venue.mappingtojson.VenuesWithDistancesToJsonMapper
-import spock.lang.Specification
-import spock.lang.Unroll
-
 import static groovy.json.JsonOutput.toJson
+import static org.where2pair.common.venue.Facility.POWER
+import static org.where2pair.common.venue.Facility.WIFI
 import static org.where2pair.common.venue.StatusCode.BAD_REQUEST
 import static org.where2pair.common.venue.StatusCode.OK
 import static org.where2pair.read.venue.DayOfWeek.TUESDAY
 import static org.where2pair.read.venue.DistanceBuilder.fromCoordinates
 import static org.where2pair.read.venue.DistanceUnit.KM
 import static org.where2pair.read.venue.DistanceUnit.MILES
-import static org.where2pair.common.venue.Facility.POWER
-import static org.where2pair.common.venue.Facility.WIFI
 import static org.where2pair.read.venue.VenueWithDistancesBuilder.aVenue
+
+import org.where2pair.common.venue.Coordinates
+import org.where2pair.common.venue.Facility
+import org.where2pair.common.venue.SimpleTime
+import org.where2pair.read.venue.mappingtojson.VenuesWithDistancesToJsonMapper
+import org.where2pair.read.venue.opentimes.OpenTimesCriteriaFactory
+import spock.lang.Specification
+import spock.lang.Unroll
 
 class FindVenueControllerSpec extends Specification {
 
@@ -78,7 +78,7 @@ class FindVenueControllerSpec extends Specification {
     @Unroll
     def 'rejects requests with invalid open times criteria'() {
         given:
-        def params = getMinimumRequiredParams() + invalidParams
+        def params = minimumRequiredParams + invalidParams
 
         when:
         def response = controller.findNearest(params)
@@ -95,7 +95,6 @@ class FindVenueControllerSpec extends Specification {
         [openUntil: 'abc.xyz'] | "'openUntil' not supplied in the correct format. Expected to be in the form: openUntil:<hour>.<minute>"
         [openDay: 'abcday']    | "'openDay' not recognized. Expected to be a day from Monday-Sunday"
     }
-
 
     def 'rejects requests with invalid facilities'() {
         given:

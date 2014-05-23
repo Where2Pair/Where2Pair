@@ -12,11 +12,12 @@ enum DayOfWeek {
     SATURDAY,
     SUNDAY
 
-    public static DayOfWeek getDayOfWeek(DateTime dateTime) {
-        (MONDAY..SUNDAY)[dateTime.getDayOfWeek() - 1]
+    static DayOfWeek getDayOfWeek(DateTime dateTime) {
+        (MONDAY..SUNDAY)[dateTime.dayOfWeek - 1]
     }
 
-    public static DayOfWeek parseDayOfWeek(String day) {
+    static DayOfWeek parseDayOfWeek(String day) {
         day.toUpperCase()
     }
 }
+

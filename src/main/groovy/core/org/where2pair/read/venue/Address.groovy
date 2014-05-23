@@ -15,3 +15,4 @@ class Address {
     String postcode
     String phoneNumber
 }
+

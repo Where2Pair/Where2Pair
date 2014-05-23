@@ -5,8 +5,6 @@ import org.where2pair.common.venue.Coordinates
 
 import java.security.MessageDigest
 
-import static java.lang.Double.parseDouble
-
 @Immutable
 class NewVenueId {
     String venueName
@@ -15,7 +13,7 @@ class NewVenueId {
 
     String encode() {
         MessageDigest digest = MessageDigest.getInstance('MD5')
-        digest.update(toString().bytes);
+        digest.update(toString().bytes)
         new BigInteger(1, digest.digest()).toString(16).padLeft(32, '0')
     }
 
@@ -26,3 +24,4 @@ class NewVenueId {
         "${nameComponent}|${location.lat}|${location.lng}|${addressLine1Component}"
     }
 }
+

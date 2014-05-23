@@ -1,9 +1,9 @@
 package org.where2pair.write.venue
 
-import spock.lang.Specification
-
 import static org.where2pair.common.venue.NewVenueIdBuilder.aRandomVenueId
 import static org.where2pair.common.venue.NewVenueIdBuilder.aVenueId
+
+import spock.lang.Specification
 
 class NewVenueIdSpec extends Specification {
 
@@ -13,7 +13,7 @@ class NewVenueIdSpec extends Specification {
         1000.times { venueIds << aRandomVenueId() }
 
         when:
-        List<String> encodedVenueIds = venueIds.collect { it.encode() }
+        List<String> encodedVenueIds = venueIds*.encode()
 
         then:
         encodedVenueIds.unique().size() == 1000
@@ -33,3 +33,4 @@ class NewVenueIdSpec extends Specification {
         encodedVenueId1 == encodedVenueId2
     }
 }
+

@@ -17,7 +17,7 @@ enum DistanceUnit {
     }
 
     static interface DistanceCalculator {
-        Distance distanceBetween(Coordinates c1, Coordinates c2);
+        Distance distanceBetween(Coordinates c1, Coordinates c2)
     }
 
     static class KmDistanceCalculator implements DistanceCalculator {
@@ -32,7 +32,7 @@ enum DistanceUnit {
             double dLng = Math.toRadians(c1.lng - c2.lng)
             double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                     Math.cos(Math.toRadians(c1.lat)) * Math.cos(Math.toRadians(c2.lat)) *
-                    Math.sin(dLng / 2) * Math.sin(dLng / 2);
+                    Math.sin(dLng / 2) * Math.sin(dLng / 2)
             double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
             double dist = earthRadius * c
             dist.doubleValue()
@@ -51,3 +51,4 @@ enum DistanceUnit {
         }
     }
 }
+

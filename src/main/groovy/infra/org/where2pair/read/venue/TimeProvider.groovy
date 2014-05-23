@@ -6,15 +6,16 @@ import org.where2pair.common.venue.SimpleTime
 class TimeProvider {
 
     SimpleTime timeNow() {
-        DateTime currentTime = getCurrentDateTime()
+        DateTime currentTime = currentDateTime
         new SimpleTime(currentTime.hourOfDay, currentTime.minuteOfHour)
     }
 
     DayOfWeek today() {
-        DayOfWeek.getDayOfWeek(getCurrentDateTime())
+        DayOfWeek.getDayOfWeek(currentDateTime())
     }
 
-    private static DateTime getCurrentDateTime() {
+    private DateTime getCurrentDateTime() {
         new DateTime()
     }
 }
+

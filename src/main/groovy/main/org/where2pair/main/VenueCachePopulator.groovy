@@ -22,3 +22,4 @@ class VenueCachePopulator implements NewVenueSavedEventSubscriber {
         venueCache.put(venue)
     }
 }
+

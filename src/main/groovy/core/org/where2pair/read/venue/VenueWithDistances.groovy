@@ -16,3 +16,4 @@ class VenueWithDistances {
         new Distance(averageValue, unit)
     }
 }
+

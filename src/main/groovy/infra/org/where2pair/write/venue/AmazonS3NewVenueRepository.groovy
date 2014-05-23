@@ -1,6 +1,5 @@
 package org.where2pair.write.venue
 
-
 class AmazonS3NewVenueRepository implements NewVenueSavedEventSubscriber {
 
     @Override
@@ -12,3 +11,4 @@ class AmazonS3NewVenueRepository implements NewVenueSavedEventSubscriber {
         []
     }
 }
+

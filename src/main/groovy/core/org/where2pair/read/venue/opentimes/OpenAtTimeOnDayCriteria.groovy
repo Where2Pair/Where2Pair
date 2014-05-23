@@ -17,3 +17,4 @@ class OpenAtTimeOnDayCriteria implements OpenTimesCriteria {
         venue.weeklyOpeningTimes[day].isOpenAt(time)
     }
 }
+

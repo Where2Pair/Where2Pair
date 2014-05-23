@@ -1,10 +1,10 @@
 package org.where2pair.read.venue.mappingToJson
 
-import org.where2pair.read.venue.mappingtojson.VenuesWithDistancesToJsonMapper
-import spock.lang.Specification
-
 import static org.where2pair.read.venue.DistanceBuilder.fromCoordinates
 import static org.where2pair.read.venue.VenueWithDistancesBuilder.aVenue
+
+import org.where2pair.read.venue.mappingtojson.VenuesWithDistancesToJsonMapper
+import spock.lang.Specification
 
 class VenuesWithDistancesToJsonMapperSpec extends Specification {
 
@@ -30,3 +30,4 @@ class VenuesWithDistancesToJsonMapperSpec extends Specification {
         venueWithDistancesJson == expectedJson
     }
 }
+

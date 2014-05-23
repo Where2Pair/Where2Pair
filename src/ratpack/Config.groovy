@@ -7,3 +7,4 @@ app {
         password = 'ratpack'
     }
 }
+

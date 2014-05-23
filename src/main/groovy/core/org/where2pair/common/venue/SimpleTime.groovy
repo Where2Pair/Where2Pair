@@ -7,6 +7,7 @@ class SimpleTime implements Comparable {
     int hour
     int minute
 
+    @SuppressWarnings('ExplicitCallToEqualsMethod')
     int compareTo(otherTime) {
         if (this.equals(otherTime))
             return 0
@@ -17,3 +18,4 @@ class SimpleTime implements Comparable {
         -1
     }
 }
+

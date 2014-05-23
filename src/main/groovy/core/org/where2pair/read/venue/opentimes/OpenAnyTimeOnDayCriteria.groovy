@@ -15,3 +15,4 @@ class OpenAnyTimeOnDayCriteria implements OpenTimesCriteria {
         venue.weeklyOpeningTimes[day].isOpen()
     }
 }
+

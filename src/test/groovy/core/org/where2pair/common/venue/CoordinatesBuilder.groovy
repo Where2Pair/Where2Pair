@@ -27,3 +27,4 @@ class CoordinatesBuilder {
         new Coordinates(latitude, longitude)
     }
 }
+

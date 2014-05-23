@@ -1,7 +1,6 @@
 package org.where2pair.common.venue
 
-
-public enum Facility {
+enum Facility {
 
     WIFI,
     POWER,
@@ -12,11 +11,11 @@ public enum Facility {
     }
 
     static List<String> asStrings() {
-        values().collect { it.toString() }
+        values()*.toString()
     }
 
     @Override
-    public String toString() {
+    String toString() {
         super.toString().toLowerCase().replaceAll('_', ' ')
     }
 }

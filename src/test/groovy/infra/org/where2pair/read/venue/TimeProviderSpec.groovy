@@ -1,9 +1,9 @@
 package org.where2pair.read.venue
 
+import static spock.util.matcher.HamcrestMatchers.closeTo
+
 import org.joda.time.DateTime
 import spock.lang.Specification
-
-import static spock.util.matcher.HamcrestMatchers.closeTo
 
 class TimeProviderSpec extends Specification {
 
@@ -23,7 +23,7 @@ class TimeProviderSpec extends Specification {
     def 'returns current time as simple time'() {
         given:
         def currentTime = new DateTime()
-        timeProvider.getCurrentDateTime() >> currentTime
+        timeProvider.currentDateTime() >> currentTime
 
         when:
         def timeNow = timeProvider.timeNow()
@@ -45,3 +45,4 @@ class TimeProviderSpec extends Specification {
         dayOfWeek == DayOfWeek.getDayOfWeek(currentTime)
     }
 }
+
