@@ -25,9 +25,7 @@ repositories {
 sourceSets {
     main {
         groovy {
-            srcDir 'src/main/groovy/core'
-            srcDir 'src/main/groovy/infra'
-            srcDir 'src/main/groovy/main'
+            srcDirs = ['src/main/groovy/core', 'src/main/groovy/infra', 'src/main/groovy/main']
         }
         resources {
             srcDir 'src/ratpack'
@@ -35,9 +33,7 @@ sourceSets {
     }
     test {
         groovy {
-            srcDir 'src/test/groovy/core'
-            srcDir 'src/test/groovy/infra'
-            srcDir 'src/test/groovy/main'
+            srcDirs = ['src/test/groovy/core', 'src/test/groovy/infra', 'src/test/groovy/main']
         }
     }
 }
