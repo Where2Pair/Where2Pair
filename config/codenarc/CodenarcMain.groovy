@@ -118,9 +118,12 @@ ruleset {
     DuplicateStringLiteral { enabled = false }
 
     // rulesets/enhanced.xml
-    CloneWithoutCloneable
-    JUnitAssertEqualsConstantActualValue
-    UnsafeImplementationAsMap
+    //    Disabled until we can pass the applicaiton classpath to Codenarc
+    //    http://codenarc.sourceforge.net/codenarc-enhanced-classpath-rules.html
+    //    http://forums.gradle.org/gradle/topics/is_there_a_way_to_add_jars_to_the_classpath_for_the_gradle_codenarc_plugin
+    //    CloneWithoutCloneable
+    //    JUnitAssertEqualsConstantActualValue
+    //    UnsafeImplementationAsMap
 
     // rulesets/exceptions.xml
     CatchArrayIndexOutOfBoundsException
@@ -319,7 +322,7 @@ ruleset {
     AbcComplexity   // DEPRECATED: Use the AbcMetric rule instead. Requires the GMetrics jar
     AbcMetric   // Requires the GMetrics jar
     ClassSize
-    CrapMetric   // Requires the GMetrics jar and a Cobertura coverage file
+    //CrapMetric   // Requires the GMetrics jar and a Cobertura coverage file
     CyclomaticComplexity   // Requires the GMetrics jar
     MethodCount
     MethodSize
