@@ -2,7 +2,6 @@ package org.where2pair.read.venue
 
 import groovy.transform.ToString
 import groovy.transform.Immutable
-import org.where2pair.common.venue.Coordinates
 
 @Immutable
 @ToString

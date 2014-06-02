@@ -1,7 +1,7 @@
 package org.where2pair.write.venue
 
-import static org.where2pair.common.venue.NewVenueIdBuilder.aRandomVenueId
-import static org.where2pair.common.venue.NewVenueIdBuilder.aVenueId
+import static NewVenueIdBuilder.aRandomVenueId
+import static NewVenueIdBuilder.aVenueId
 
 import spock.lang.Specification
 

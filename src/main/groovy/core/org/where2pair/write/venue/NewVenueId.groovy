@@ -1,14 +1,14 @@
 package org.where2pair.write.venue
 
 import groovy.transform.Immutable
-import org.where2pair.common.venue.Coordinates
 
 import java.security.MessageDigest
 
 @Immutable
 class NewVenueId {
-    String venueName
-    Coordinates location
+    String name
+    double latitude
+    double longitude
     String addressLine1
 
     String encode() {
@@ -19,9 +19,7 @@ class NewVenueId {
 
     @Override
     String toString() {
-        String nameComponent = venueName.replaceAll(' ', '_')
-        String addressLine1Component = addressLine1.replaceAll(' ', '_')
-        "${nameComponent}|${location.lat}|${location.lng}|${addressLine1Component}"
+        "${name}|${latitude}|${longitude}|${addressLine1}"
     }
 }
 

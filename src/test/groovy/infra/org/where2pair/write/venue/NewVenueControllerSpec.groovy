@@ -1,7 +1,7 @@
 package org.where2pair.write.venue
 
 import static groovy.json.JsonOutput.toJson
-import static org.where2pair.common.venue.NewVenueIdBuilder.aVenueId
+import static NewVenueIdBuilder.aVenueId
 import static org.where2pair.read.venue.VenueBuilder.aVenue
 
 import org.where2pair.common.venue.StatusCode

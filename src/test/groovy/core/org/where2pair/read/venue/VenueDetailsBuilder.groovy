@@ -7,8 +7,6 @@ import static org.where2pair.read.venue.DayOfWeek.MONDAY
 import static org.where2pair.read.venue.DayOfWeek.TUESDAY
 import static org.where2pair.read.venue.FacilityStatuses.facilityStatusesFor
 
-import org.where2pair.common.venue.Coordinates
-import org.where2pair.common.venue.CoordinatesBuilder
 import org.where2pair.common.venue.Facility
 import org.where2pair.common.venue.SimpleTime
 import org.where2pair.read.venue.mappingtojson.OpenHoursToJsonMapper

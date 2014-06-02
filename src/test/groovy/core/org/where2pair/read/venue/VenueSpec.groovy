@@ -5,7 +5,6 @@ import static org.where2pair.read.venue.DistanceUnit.MILES
 import static spock.util.matcher.HamcrestMatchers.closeTo
 import static spock.util.matcher.HamcrestSupport.that
 
-import org.where2pair.common.venue.Coordinates
 import spock.lang.Specification
 
 class VenueSpec extends Specification {

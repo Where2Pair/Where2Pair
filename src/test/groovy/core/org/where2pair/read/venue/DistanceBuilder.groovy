@@ -3,7 +3,6 @@ package org.where2pair.read.venue
 import static org.where2pair.read.venue.DistanceUnit.MILES
 
 import groovy.transform.Immutable
-import org.where2pair.common.venue.Coordinates
 
 class DistanceBuilder {
 

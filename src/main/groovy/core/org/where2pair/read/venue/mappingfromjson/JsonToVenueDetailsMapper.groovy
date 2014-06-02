@@ -4,7 +4,7 @@ import static org.where2pair.common.venue.Facility.parseFacility
 import static org.where2pair.common.venue.FacilityAvailability.parseFacilityAvailability
 import static org.where2pair.read.venue.FacilityStatuses.facilityStatusesFor
 
-import org.where2pair.common.venue.Coordinates
+import org.where2pair.read.venue.Coordinates
 import org.where2pair.read.venue.Address
 import org.where2pair.read.venue.FacilityStatus
 import org.where2pair.read.venue.FacilityStatuses

@@ -2,8 +2,6 @@ package org.where2pair.read.venue
 
 import static java.lang.Double.parseDouble
 
-import org.where2pair.common.venue.Coordinates
-
 class LocationsCriteriaParser {
 
     LocationsCriteria parse(Map<String, ?> params) {

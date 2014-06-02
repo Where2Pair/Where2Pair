@@ -1,14 +1,12 @@
-package org.where2pair.common.venue
+package org.where2pair.write.venue
 
-import static CoordinatesBuilder.coordinates
 import static java.util.UUID.randomUUID
-
-import org.where2pair.write.venue.NewVenueId
 
 class NewVenueIdBuilder {
 
     private String name = 'Starbucks'
-    private CoordinatesBuilder coordinatesBuilder = coordinates().withLatitude(1.0).withLongitude(0.1)
+    private double latitude = 1.0
+    private double longitude = 0.1
     private String addressLine1 = '9 Appold Street'
 
     static NewVenueIdBuilder aVenueId() {
@@ -18,7 +16,7 @@ class NewVenueIdBuilder {
     static NewVenueId aRandomVenueId() {
         aVenueId().withName(randomUUID() as String)
                 .withLongitude(randomDouble())
-                .withLatitude(new Random().nextDouble())
+                .withLatitude(randomDouble())
                 .withAddressLine1(randomUUID() as String)
                 .build()
     }
@@ -33,12 +31,12 @@ class NewVenueIdBuilder {
     }
 
     NewVenueIdBuilder withLatitude(double latitude) {
-        coordinatesBuilder.withLatitude(latitude)
+        this.latitude = latitude
         this
     }
 
     NewVenueIdBuilder withLongitude(double longitude) {
-        coordinatesBuilder.withLongitude(longitude)
+        this.longitude = longitude
         this
     }
 
@@ -48,7 +46,7 @@ class NewVenueIdBuilder {
     }
 
     NewVenueId build() {
-        new NewVenueId(name, coordinatesBuilder.build(), addressLine1)
+        new NewVenueId(name, latitude, longitude, addressLine1)
     }
 }
 

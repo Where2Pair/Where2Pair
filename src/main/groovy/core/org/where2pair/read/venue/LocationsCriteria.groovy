@@ -4,7 +4,6 @@ import static org.where2pair.read.venue.DistanceUnit.MILES
 
 import groovy.transform.Immutable
 import groovy.transform.ToString
-import org.where2pair.common.venue.Coordinates
 
 @Immutable
 @ToString

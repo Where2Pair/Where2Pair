@@ -11,7 +11,6 @@ import static org.where2pair.read.venue.DistanceUnit.KM
 import static org.where2pair.read.venue.DistanceUnit.MILES
 import static org.where2pair.read.venue.VenueWithDistancesBuilder.aVenue
 
-import org.where2pair.common.venue.Coordinates
 import org.where2pair.common.venue.Facility
 import org.where2pair.common.venue.SimpleTime
 import org.where2pair.read.venue.mappingtojson.VenuesWithDistancesToJsonMapper

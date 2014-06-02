@@ -1,4 +1,4 @@
-package org.where2pair.common.venue
+package org.where2pair.read.venue
 
 class CoordinatesBuilder {
 

@@ -1,6 +1,6 @@
 package org.where2pair.main
 
-import static org.where2pair.common.venue.NewVenueIdBuilder.aVenueId
+import static org.where2pair.write.venue.NewVenueIdBuilder.aVenueId
 import static org.where2pair.read.venue.VenueBuilder.aVenue
 
 import org.where2pair.write.venue.NewVenue

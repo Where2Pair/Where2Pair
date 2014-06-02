@@ -24,7 +24,7 @@ class NewVenueServiceSpec extends Specification {
     def 'publishes new venues, assigns and returns id'() {
         given:
         def venue = aVenue().build()
-        def expectedVenueId = new NewVenueId(venue.name, venue.location, venue.address.addressLine1)
+        def expectedVenueId = new NewVenueId(venue.name, venue.location.lat, venue.location.lng, venue.address.addressLine1)
 
         when:
         def venueId = newVenueService.save(venueJson)

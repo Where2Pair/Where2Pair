@@ -1,7 +1,5 @@
 package org.where2pair.read.venue
 
-import org.where2pair.common.venue.Coordinates
-
 class VenueWithDistancesBuilder {
 
     private List<DistanceBuilder.DistanceToCoordinates> distances = []

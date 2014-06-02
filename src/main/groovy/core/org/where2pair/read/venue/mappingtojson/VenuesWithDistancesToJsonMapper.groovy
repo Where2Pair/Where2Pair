@@ -1,7 +1,7 @@
 package org.where2pair.read.venue.mappingtojson
 
 import groovy.transform.Immutable
-import org.where2pair.common.venue.Coordinates
+import org.where2pair.read.venue.Coordinates
 import org.where2pair.read.venue.Distance
 import org.where2pair.read.venue.VenueWithDistances
 
