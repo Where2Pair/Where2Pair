@@ -1,24 +1,27 @@
 package org.where2pair.write.venue
 
 import groovy.transform.EqualsAndHashCode
+import groovy.transform.TupleConstructor
 
 @EqualsAndHashCode
+@TupleConstructor
 class NewVenue {
-    private final Map<String, ?> venueJson
+    final VenueJson venueJson
 
-    NewVenue(Map<String, ?> venueJson) {
-        this.venueJson = venueJson
-    }
-
-    static NewVenueSavedEvent publishNewVenue(Map<String, ?> venueJson) throws InvalidVenueJsonException {
+    static NewVenueSavedEvent publishNewVenue(VenueJson venueJson) throws InvalidVenueJsonException {
         new VenueJsonValidator().validate(venueJson)
         new NewVenueSavedEvent(venueIdFrom(venueJson), new NewVenue(venueJson))
     }
 
-    private static NewVenueId venueIdFrom(Map<String, ?> venueJson) {
-        new NewVenueId(venueJson.name,
-                venueJson.location.latitude,
-                venueJson.location.longitude,
-                venueJson.address.addressLine1)
+    private static NewVenueId venueIdFrom(VenueJson venueJson) {
+        Map<String, ?> venueJsonMap = venueJson.jsonMap
+        new NewVenueId(venueJsonMap.name,
+                venueJsonMap.location.latitude,
+                venueJsonMap.location.longitude,
+                venueJsonMap.address.addressLine1)
+    }
+
+    Map<String, ?> getJsonMap() {
+        venueJson.jsonMap
     }
 }

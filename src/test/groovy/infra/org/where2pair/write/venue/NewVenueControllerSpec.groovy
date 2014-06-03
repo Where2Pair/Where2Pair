@@ -2,7 +2,7 @@ package org.where2pair.write.venue
 
 import static groovy.json.JsonOutput.toJson
 import static NewVenueIdBuilder.aVenueId
-import static org.where2pair.read.venue.VenueBuilder.aVenue
+import static org.where2pair.write.venue.VenueJsonBuilder.venueJson
 
 import org.where2pair.common.venue.StatusCode
 import spock.lang.Specification
@@ -12,13 +12,13 @@ class NewVenueControllerSpec extends Specification {
 
     def newVenueService = Mock(NewVenueService)
     def controller = new NewVenueController(newVenueService: newVenueService)
-    def venueJsonMap = aVenue().toJson()
-    def venueJsonString = toJson(venueJsonMap)
+    def venueJson = venueJson().build()
+    def venueJsonString = toJson(venueJson.jsonMap)
 
     def 'saves new venues and returns venue id'() {
         given:
         def expectedVenueId = aVenueId().build()
-        newVenueService.save(venueJsonMap) >> expectedVenueId
+        newVenueService.save(venueJson) >> expectedVenueId
         def expectedJsonResponse = toJson([venueId: expectedVenueId.encode()])
 
         when:
@@ -31,7 +31,7 @@ class NewVenueControllerSpec extends Specification {
 
     def 'returns an error message if there was a problem whilst saving'() {
         given:
-        newVenueService.save(venueJsonMap) >> { throw new InvalidVenueJsonException('Could not parse Json') }
+        newVenueService.save(venueJson) >> { throw new InvalidVenueJsonException('Could not parse Json') }
         def expectedJsonResponse = toJson([error: 'Could not parse Json'])
 
         when:

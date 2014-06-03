@@ -4,7 +4,7 @@ class NewVenueService {
 
     NewVenueSavedEventSubscribers newVenueSavedEventSubscribers
 
-    NewVenueId save(Map<String, ?> venueJson) {
+    NewVenueId save(VenueJson venueJson) {
         NewVenueSavedEvent newVenueSavedEvent = NewVenue.publishNewVenue(venueJson)
         newVenueSavedEventSubscribers.publish(newVenueSavedEvent)
         newVenueSavedEvent.venueId

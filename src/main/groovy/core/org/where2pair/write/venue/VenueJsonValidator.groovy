@@ -7,9 +7,9 @@ import org.where2pair.read.venue.DayOfWeek
 
 class VenueJsonValidator {
 
-    void validate(Map<String, ?> venueJson) throws InvalidVenueJsonException {
+    void validate(VenueJson venueJson) throws InvalidVenueJsonException {
         ALL_VALIDATION_CHECKS.each { rule, reason ->
-            if (!rule(venueJson)) {
+            if (!rule(venueJson.jsonMap)) {
                 throw new InvalidVenueJsonException(reason)
             }
         }

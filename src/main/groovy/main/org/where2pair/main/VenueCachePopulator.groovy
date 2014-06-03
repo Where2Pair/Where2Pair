@@ -16,7 +16,7 @@ class VenueCachePopulator implements NewVenueSavedEventSubscriber {
 
     @Override
     void notifyNewVenueSaved(NewVenueSavedEvent newVenueSavedEvent) {
-        VenueDetails venueDetails = jsonToVenueDetailsMapper.toVenueDetails(newVenueSavedEvent.newVenue.venueJson)
+        VenueDetails venueDetails = jsonToVenueDetailsMapper.toVenueDetails(newVenueSavedEvent.newVenue.jsonMap)
         VenueId venueId = new VenueId(newVenueSavedEvent.venueId.encode())
         Venue venue = Venue.newInstance(venueId, venueDetails)
         venueCache.put(venue)

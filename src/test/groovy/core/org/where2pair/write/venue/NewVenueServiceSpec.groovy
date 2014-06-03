@@ -1,21 +1,20 @@
 package org.where2pair.write.venue
 
-import static org.where2pair.read.venue.VenueBuilder.aVenue
+import static org.where2pair.write.venue.VenueJsonBuilder.venueJson
 import static org.where2pair.write.venue.VenueJsonValidator.ADDRESS_STRUCTURE_ERROR_MESSAGE
 import static org.where2pair.write.venue.VenueJsonValidator.FACILITIES_STRUCTURE_ERROR_MESSAGE
+import static org.where2pair.write.venue.VenueJsonValidator.INCOMPLETE_OPEN_HOURS_ERROR_MESSAGE
 import static org.where2pair.write.venue.VenueJsonValidator.INVALID_FACILITY_STATUS_ERROR_MESSAGE
 import static org.where2pair.write.venue.VenueJsonValidator.LOCATION_STRUCTURE_ERROR_MESSAGE
 import static org.where2pair.write.venue.VenueJsonValidator.OPEN_HOURS_STRUCTURE_ERROR_MESSAGE
 import static org.where2pair.write.venue.VenueJsonValidator.UNRECOGNIZED_FACILITY_ERROR_MESSAGE
-import static org.where2pair.write.venue.VenueJsonValidator.INCOMPLETE_OPEN_HOURS_ERROR_MESSAGE
 
-import org.where2pair.common.venue.Facility
 import spock.lang.Specification
 import spock.lang.Unroll
 
 class NewVenueServiceSpec extends Specification {
 
-    Map<String, ?> venueJson = aVenue().toJson()
+    def venueJson = venueJson().build()
     def subscriberA = Mock(NewVenueSavedEventSubscriber)
     def subscriberB = Mock(NewVenueSavedEventSubscriber)
     def newVenueServiceFactory = new NewVenueServiceFactory()
@@ -23,8 +22,10 @@ class NewVenueServiceSpec extends Specification {
 
     def 'publishes new venues, assigns and returns id'() {
         given:
-        def venue = aVenue().build()
-        def expectedVenueId = new NewVenueId(venue.name, venue.location.lat, venue.location.lng, venue.address.addressLine1)
+        def expectedVenueId = new NewVenueId(venueJson.jsonMap.name,
+                venueJson.jsonMap.location.latitude,
+                venueJson.jsonMap.location.longitude,
+                venueJson.jsonMap.address.addressLine1)
 
         when:
         def venueId = newVenueService.save(venueJson)
@@ -47,8 +48,7 @@ class NewVenueServiceSpec extends Specification {
 
     def 'facilities are optional'() {
         given:
-        def venueWithoutFacilities = aVenue().toJson()
-        venueWithoutFacilities.remove('facilities')
+        def venueWithoutFacilities = venueJson().without('facilities').build()
 
         when:
         newVenueService.save(venueWithoutFacilities)
@@ -60,10 +60,10 @@ class NewVenueServiceSpec extends Specification {
     @Unroll
     def 'rejects venue json missing "#missingProperty"'() {
         given:
-        Map<String, ?> invalidJson = venueJsonMissing(missingProperty)
+        def invalidVenueJson = venueJson().without(missingProperty).build()
 
         when:
-        newVenueService.save(invalidJson)
+        newVenueService.save(invalidVenueJson)
 
         then:
         def exceptionThrown = thrown InvalidVenueJsonException
@@ -85,10 +85,10 @@ class NewVenueServiceSpec extends Specification {
     @Unroll
     def 'rejects venue json if "#property" property is not of the correct type'() {
         given:
-        Map<String, ?> invalidJson = overrideValidVenueJsonWith(property, value)
+        def invalidVenueJson = venueJson().withInvalidPropertyValue(property, value).build()
 
         when:
-        newVenueService.save(invalidJson)
+        newVenueService.save(invalidVenueJson)
 
         then:
         def exceptionThrown = thrown InvalidVenueJsonException
@@ -106,10 +106,10 @@ class NewVenueServiceSpec extends Specification {
 
     def 'rejects venue json if there are no open hours for Monday-Sunday'() {
         given:
-        Map<String, ?> invalidJson = venueJson + [openHours: [invalidDay: []]]
+        def invalidVenueJson = venueJson().withOpenHours([invalidDay: []]).build()
 
         when:
-        newVenueService.save(invalidJson)
+        newVenueService.save(invalidVenueJson)
 
         then:
         def exceptionThrown = thrown InvalidVenueJsonException
@@ -159,102 +159,76 @@ class NewVenueServiceSpec extends Specification {
         invalidStatus()        | INVALID_FACILITY_STATUS_ERROR_MESSAGE
     }
 
-    Map<String, ?> invalidStatus() {
-        aVenue().toJson() + [facilities: [(Facility.values()[0].toString()): 'Yeah']]
+    VenueJson invalidStatus() {
+        venueJson().withFacilities([wifi: 'Yeah']).build()
     }
 
-    Map<String, ?> unrecognizedFacility() {
-        aVenue().toJson() + [facilities: [Teleporter: 'Y']]
+    VenueJson unrecognizedFacility() {
+        venueJson().withFacilities([Teleporter: 'Y']).build()
     }
 
-    Map<String, ?> venueJsonMissing(String property) {
-        Map<String, ?> venueJson = aVenue().toJson()
-        List<String> propertyParts = property.split('\\.')
-        String lastProperty = propertyParts.pop()
-        def subCollection = venueJson
-        propertyParts.each { subCollection = subCollection[getPropertyForCollection(it, subCollection)] }
-        subCollection.remove(lastProperty)
-        venueJson
+    VenueJson getOpenHoursWithIncorrectKeys() {
+        venueJson().withOpenHours([monday: [[openHuor: 12, openMintue: 0, closeHuor: 15, closeMintue: 0]]]).build()
     }
 
-    Map<String, ?> overrideValidVenueJsonWith(String property, Object value) {
-        Map<String, ?> venueJson = aVenue().toJson()
-        List<String> propertyParts = property.split('\\.')
-        String lastProperty = propertyParts.pop()
-        def subCollection = venueJson
-        propertyParts.each {
-            subCollection = subCollection[getPropertyForCollection(it, subCollection)]
-        }
-        subCollection[getPropertyForCollection(lastProperty, subCollection)] = value
-        venueJson
+    VenueJson getOpenHoursWithClosedTimeTheSameAsOpenTime() {
+        venueJson().withOpenHours([monday: [[openHour: 12, openMinute: 0, closeHour: 12, closeMinute: 0]]]).build()
     }
 
-    def getPropertyForCollection(property, collection) {
-        (collection instanceof Map) ? property : property as Integer
+    VenueJson getOpenHoursWithClosedTimeBeforeOpenTime() {
+        venueJson().withOpenHours([monday: [[openHour: 12, openMinute: 0, closeHour: 11, closeMinute: 0]]]).build()
     }
 
-    Map<String, ?> getOpenHoursWithIncorrectKeys() {
-        aVenue().toJson() + [openHours: [monday: [[openHuor: 12, openMintue: 0, closeHuor: 15, closeMintue: 0]]]]
+    VenueJson getOpenHoursWithOpenHourLessThan0() {
+        venueJson().withOpenHours([monday: [[openHour: -1, openMinute: 0, closeHour: 11, closeMinute: 0]]]).build()
     }
 
-    Map<String, ?> getOpenHoursWithClosedTimeTheSameAsOpenTime() {
-        aVenue().toJson() + [openHours: [monday: [[openHour: 12, openMinute: 0, closeHour: 12, closeMinute: 0]]]]
+    VenueJson getOpenHoursWithOpenMinuteLessThan0() {
+        venueJson().withOpenHours([monday: [[openHour: 12, openMinute: -1, closeHour: 11, closeMinute: 0]]]).build()
     }
 
-    Map<String, ?> getOpenHoursWithClosedTimeBeforeOpenTime() {
-        aVenue().toJson() + [openHours: [monday: [[openHour: 12, openMinute: 0, closeHour: 11, closeMinute: 0]]]]
+    VenueJson getOpenHoursWithOpenHourGreaterThan23() {
+        venueJson().withOpenHours([monday: [[openHour: 24, openMinute: 0, closeHour: 11, closeMinute: 0]]]).build()
     }
 
-    Map<String, ?> getOpenHoursWithOpenHourLessThan0() {
-        aVenue().toJson() + [openHours: [monday: [[openHour: -1, openMinute: 0, closeHour: 11, closeMinute: 0]]]]
+    VenueJson getOpenHoursWithOpenMinuteGreaterThan59() {
+        venueJson().withOpenHours([monday: [[openHour: 12, openMinute: 60, closeHour: 11, closeMinute: 0]]]).build()
     }
 
-    Map<String, ?> getOpenHoursWithOpenMinuteLessThan0() {
-        aVenue().toJson() + [openHours: [monday: [[openHour: 12, openMinute: -1, closeHour: 11, closeMinute: 0]]]]
+    VenueJson getOpenHoursWithCloseHourLessThan0() {
+        venueJson().withOpenHours([monday: [[openHour: 12, openMinute: 0, closeHour: -1, closeMinute: 0]]]).build()
     }
 
-    Map<String, ?> getOpenHoursWithOpenHourGreaterThan23() {
-        aVenue().toJson() + [openHours: [monday: [[openHour: 24, openMinute: 0, closeHour: 11, closeMinute: 0]]]]
+    VenueJson getOpenHoursWithCloseMinuteLessThan0() {
+        venueJson().withOpenHours([monday: [[openHour: 12, openMinute: 0, closeHour: 11, closeMinute: -1]]]).build()
     }
 
-    Map<String, ?> getOpenHoursWithOpenMinuteGreaterThan59() {
-        aVenue().toJson() + [openHours: [monday: [[openHour: 12, openMinute: 60, closeHour: 11, closeMinute: 0]]]]
+    VenueJson getOpenHoursWithCloseHourGreaterThan23() {
+        venueJson().withOpenHours([monday: [[openHour: 12, openMinute: 0, closeHour: 24, closeMinute: 0]]]).build()
     }
 
-    Map<String, ?> getOpenHoursWithCloseHourLessThan0() {
-        aVenue().toJson() + [openHours: [monday: [[openHour: 12, openMinute: 0, closeHour: -1, closeMinute: 0]]]]
+    VenueJson getOpenHoursWithCloseMinuteGreaterThan59() {
+        venueJson().withOpenHours([monday: [[openHour: 12, openMinute: 0, closeHour: 11, closeMinute: 60]]]).build()
     }
 
-    Map<String, ?> getOpenHoursWithCloseMinuteLessThan0() {
-        aVenue().toJson() + [openHours: [monday: [[openHour: 12, openMinute: 0, closeHour: 11, closeMinute: -1]]]]
+    VenueJson getOpenHoursWithOpenHourAsNonInteger() {
+        venueJson().withOpenHours([monday: [[openHour: 'not an integer',
+                openMinute: 0, closeHour: 18, closeMinute: 30]]]).build()
     }
 
-    Map<String, ?> getOpenHoursWithCloseHourGreaterThan23() {
-        aVenue().toJson() + [openHours: [monday: [[openHour: 12, openMinute: 0, closeHour: 24, closeMinute: 0]]]]
+    VenueJson getOpenHoursWithOpenMinuteAsNonInteger() {
+        venueJson().withOpenHours([monday: [[openHour: 12,
+                openMinute: 'not an integer', closeHour: 18, closeMinute: 30]]]).build()
     }
 
-    Map<String, ?> getOpenHoursWithCloseMinuteGreaterThan59() {
-        aVenue().toJson() + [openHours: [monday: [[openHour: 12, openMinute: 0, closeHour: 11, closeMinute: 60]]]]
+    VenueJson getOpenHoursWithCloseHourAsNonInteger() {
+        venueJson().withOpenHours([monday: [[openHour: 12,
+                openMinute: 0, closeHour: 'not an integer', closeMinute: 30]]]).build()
     }
 
-    Map<String, ?> getOpenHoursWithOpenHourAsNonInteger() {
-        aVenue().toJson() + [openHours: [monday: [[openHour: 'not an integer',
-                openMinute: 0, closeHour: 11, closeMinute: 60]]]]
-    }
-
-    Map<String, ?> getOpenHoursWithOpenMinuteAsNonInteger() {
-        aVenue().toJson() + [openHours: [monday: [[openHour: 12,
-                openMinute: 'not an integer', closeHour: 11, closeMinute: 60]]]]
-    }
-
-    Map<String, ?> getOpenHoursWithCloseHourAsNonInteger() {
-        aVenue().toJson() + [openHours: [monday: [[openHour: 12,
-                openMinute: 0, closeHour: 'not an integer', closeMinute: 60]]]]
-    }
-
-    Map<String, ?> getOpenHoursWithCloseMinuteAsNonInteger() {
-        aVenue().toJson() + [openHours: [monday: [[openHour: 12,
-                openMinute: 0, closeHour: 11, closeMinute: 'not an integer']]]]
+    VenueJson getOpenHoursWithCloseMinuteAsNonInteger() {
+        venueJson().withOpenHours([monday: [[openHour: 12,
+                openMinute: 0, closeHour: 18, closeMinute: 'not an integer']]]).build()
     }
 }
 

@@ -9,11 +9,11 @@ class NewVenueController {
 
     NewVenueService newVenueService
 
-    JsonResponse save(String venueJson) {
+    JsonResponse save(String rawVenueJson) {
         try {
-            def venueJsonMap = parseJson(venueJson)
+            def venueJsonMap = parseJson(rawVenueJson)
             ensureJsonInCorrectFormat(venueJsonMap)
-            def venueId = newVenueService.save(venueJsonMap)
+            def venueId = newVenueService.save(new VenueJson(venueJsonMap))
             return okResponse(venueId)
         } catch (InvalidVenueJsonException e) {
             return badRequestResponse(e)
