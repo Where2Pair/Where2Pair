@@ -1,5 +1,7 @@
 package org.where2pair.write.venue
 
+import groovy.json.JsonOutput
+
 class VenueJsonBuilder {
     private String name = 'venue name'
     private Map<String, String> address = [addressLine1: 'addressLine1', addressLine2: 'addressLine2', addressLine3: 'addressLine3', city: 'city',
@@ -20,7 +22,8 @@ class VenueJsonBuilder {
         def jsonMap = createJsonMap()
         removeMissingFields(jsonMap)
         overridePropertiesWithInvalidValues(jsonMap)
-        new VenueJson(jsonMap)
+        def jsonString = JsonOutput.toJson(jsonMap)
+        new VenueJson(jsonString)
     }
 
     def overridePropertiesWithInvalidValues(Map<String, ?> jsonMap) {

@@ -1,5 +1,6 @@
 package org.where2pair.write.venue
 
+import static groovy.json.JsonOutput.toJson
 import static org.where2pair.write.venue.VenueJsonBuilder.venueJson
 import static org.where2pair.write.venue.VenueJsonValidator.ADDRESS_STRUCTURE_ERROR_MESSAGE
 import static org.where2pair.write.venue.VenueJsonValidator.FACILITIES_STRUCTURE_ERROR_MESSAGE
@@ -55,6 +56,23 @@ class NewVenueServiceSpec extends Specification {
 
         then:
         noExceptionThrown()
+    }
+
+    def 'rejects venue json that is not a map'() {
+        given:
+        def invalidJson = toJson(invalidVenueJson)
+
+        when:
+        newVenueService.save(new VenueJson(invalidJson))
+
+        then:
+        def exception = thrown(InvalidVenueJsonException)
+        exception.message == expectedErrorMessage
+
+        where:
+        invalidVenueJson | expectedErrorMessage
+        []               | 'Venue json not in the expected format'
+        ''               | 'Venue json not in the expected format'
     }
 
     @Unroll
@@ -212,23 +230,23 @@ class NewVenueServiceSpec extends Specification {
     }
 
     VenueJson getOpenHoursWithOpenHourAsNonInteger() {
-        venueJson().withOpenHours([monday: [[openHour: 'not an integer',
-                openMinute: 0, closeHour: 18, closeMinute: 30]]]).build()
+        venueJson().withOpenHours([monday: [[openHour  : 'not an integer',
+                                             openMinute: 0, closeHour: 18, closeMinute: 30]]]).build()
     }
 
     VenueJson getOpenHoursWithOpenMinuteAsNonInteger() {
-        venueJson().withOpenHours([monday: [[openHour: 12,
-                openMinute: 'not an integer', closeHour: 18, closeMinute: 30]]]).build()
+        venueJson().withOpenHours([monday: [[openHour  : 12,
+                                             openMinute: 'not an integer', closeHour: 18, closeMinute: 30]]]).build()
     }
 
     VenueJson getOpenHoursWithCloseHourAsNonInteger() {
-        venueJson().withOpenHours([monday: [[openHour: 12,
-                openMinute: 0, closeHour: 'not an integer', closeMinute: 30]]]).build()
+        venueJson().withOpenHours([monday: [[openHour  : 12,
+                                             openMinute: 0, closeHour: 'not an integer', closeMinute: 30]]]).build()
     }
 
     VenueJson getOpenHoursWithCloseMinuteAsNonInteger() {
-        venueJson().withOpenHours([monday: [[openHour: 12,
-                openMinute: 0, closeHour: 18, closeMinute: 'not an integer']]]).build()
+        venueJson().withOpenHours([monday: [[openHour  : 12,
+                                             openMinute: 0, closeHour: 18, closeMinute: 'not an integer']]]).build()
     }
 }
 

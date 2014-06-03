@@ -1,19 +1,18 @@
 package org.where2pair.write.venue
 
-import static groovy.json.JsonOutput.toJson
 import static NewVenueIdBuilder.aVenueId
+import static groovy.json.JsonOutput.toJson
 import static org.where2pair.write.venue.VenueJsonBuilder.venueJson
 
 import org.where2pair.common.venue.StatusCode
 import spock.lang.Specification
-import spock.lang.Unroll
 
 class NewVenueControllerSpec extends Specification {
 
     def newVenueService = Mock(NewVenueService)
     def controller = new NewVenueController(newVenueService: newVenueService)
     def venueJson = venueJson().build()
-    def venueJsonString = toJson(venueJson.jsonMap)
+    def venueJsonString = venueJson.rawVenueJson
 
     def 'saves new venues and returns venue id'() {
         given:
@@ -42,22 +41,17 @@ class NewVenueControllerSpec extends Specification {
         response.statusCode == StatusCode.BAD_REQUEST
     }
 
-    @Unroll
     def 'returns an error message if the json is not in the expected format'() {
         given:
-        def invalidVenueJsonString = toJson(invalidVenueJson)
+        newVenueService.save(_) >> { throw new InvalidVenueJsonException('error message') }
 
         when:
-        def response = controller.save(invalidVenueJsonString)
+        def response = controller.save('invalid json')
 
         then:
-        response.responseBody == expectedErrorMessage
+        response.responseBody == toJson([error: 'error message'])
         response.statusCode == StatusCode.BAD_REQUEST
-
-        where:
-        invalidVenueJson | expectedErrorMessage
-        []               | toJson([error: 'Venue json not in the expected format'])
-        ''               | toJson([error: 'Venue json not in the expected format'])
     }
+
 }
 

@@ -1,6 +1,5 @@
 package org.where2pair.write.venue
 
-import groovy.json.JsonSlurper
 import groovy.transform.TupleConstructor
 import org.where2pair.common.venue.JsonResponse
 
@@ -11,22 +10,11 @@ class NewVenueController {
 
     JsonResponse save(String rawVenueJson) {
         try {
-            def venueJsonMap = parseJson(rawVenueJson)
-            ensureJsonInCorrectFormat(venueJsonMap)
-            def venueId = newVenueService.save(new VenueJson(venueJsonMap))
+            def venueId = newVenueService.save(new VenueJson(rawVenueJson))
             return okResponse(venueId)
         } catch (InvalidVenueJsonException e) {
             return badRequestResponse(e)
         }
-    }
-
-    private parseJson(String venueJson) {
-        new JsonSlurper().parseText(venueJson)
-    }
-
-    private void ensureJsonInCorrectFormat(venueJsonMap) {
-        if (!(venueJsonMap instanceof Map))
-            throw new InvalidVenueJsonException('Venue json not in the expected format')
     }
 
     private JsonResponse okResponse(NewVenueId venueId) {

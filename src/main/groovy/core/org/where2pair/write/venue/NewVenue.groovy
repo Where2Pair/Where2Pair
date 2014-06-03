@@ -1,5 +1,7 @@
 package org.where2pair.write.venue
 
+import static org.where2pair.write.venue.VenueJsonValidator.validate
+
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.TupleConstructor
 
@@ -9,7 +11,7 @@ class NewVenue {
     final VenueJson venueJson
 
     static NewVenueSavedEvent publishNewVenue(VenueJson venueJson) throws InvalidVenueJsonException {
-        new VenueJsonValidator().validate(venueJson)
+        validate(venueJson)
         new NewVenueSavedEvent(venueIdFrom(venueJson), new NewVenue(venueJson))
     }
 
