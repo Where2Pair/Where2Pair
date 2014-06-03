@@ -9,7 +9,7 @@ class VenueJsonValidator {
 
     void validate(VenueJson venueJson) throws InvalidVenueJsonException {
         ALL_VALIDATION_CHECKS.each { rule, reason ->
-            if (!rule(venueJson.jsonMap)) {
+            if (!rule(venueJson)) {
                 throw new InvalidVenueJsonException(reason)
             }
         }

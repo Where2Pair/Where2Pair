@@ -7,4 +7,8 @@ import groovy.transform.TupleConstructor
 @TupleConstructor
 class VenueJson {
     Map<String, ?> jsonMap
+
+    def propertyMissing(String property) {
+        jsonMap[property]
+    }
 }
