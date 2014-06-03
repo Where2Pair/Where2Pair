@@ -1,8 +1,8 @@
 package org.where2pair.main
 
+import groovy.json.JsonSlurper
 import groovy.transform.TupleConstructor
 import org.where2pair.read.venue.Venue
-import org.where2pair.read.venue.VenueDetails
 import org.where2pair.read.venue.VenueId
 import org.where2pair.read.venue.mappingfromjson.JsonToVenueDetailsMapper
 import org.where2pair.write.venue.NewVenueSavedEvent
@@ -16,10 +16,15 @@ class VenueCachePopulator implements NewVenueSavedEventSubscriber {
 
     @Override
     void notifyNewVenueSaved(NewVenueSavedEvent newVenueSavedEvent) {
-        VenueDetails venueDetails = jsonToVenueDetailsMapper.toVenueDetails(newVenueSavedEvent.newVenue.jsonMap)
-        VenueId venueId = new VenueId(newVenueSavedEvent.venueId.encode())
-        Venue venue = Venue.newInstance(venueId, venueDetails)
+        Map<String, ?> venueJsonMap = parseVenueJson(newVenueSavedEvent.rawVenueJson)
+        def venueDetails = jsonToVenueDetailsMapper.toVenueDetails(venueJsonMap)
+        def venueId = new VenueId(newVenueSavedEvent.venueId.encode())
+        def venue = Venue.newInstance(venueId, venueDetails)
         venueCache.put(venue)
+    }
+
+    private static Map<String, ?> parseVenueJson(String rawVenueJson) {
+        new JsonSlurper().parseText(rawVenueJson)
     }
 }
 

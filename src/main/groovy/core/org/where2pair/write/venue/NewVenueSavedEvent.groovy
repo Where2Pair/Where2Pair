@@ -1,10 +1,9 @@
 package org.where2pair.write.venue
 
-import groovy.transform.TupleConstructor
+import groovy.transform.Immutable
 
-@TupleConstructor
+@Immutable
 class NewVenueSavedEvent {
-    final NewVenueId venueId
-    final NewVenue newVenue
+    @Delegate NewVenue newVenue
 }
 

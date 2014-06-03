@@ -1,11 +1,9 @@
 package org.where2pair.write.venue
 
 import groovy.json.JsonSlurper
-import groovy.transform.EqualsAndHashCode
-import groovy.transform.TupleConstructor
+import groovy.transform.Immutable
 
-@EqualsAndHashCode
-@TupleConstructor
+@Immutable
 class VenueJson {
     final String rawVenueJson
     final static Closure<Map<String, ?>> CACHING_JSON_MAP_PARSER = { rawVenueJson ->
