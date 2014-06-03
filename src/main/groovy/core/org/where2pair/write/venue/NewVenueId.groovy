@@ -13,12 +13,11 @@ class NewVenueId {
 
     String encode() {
         MessageDigest digest = MessageDigest.getInstance('MD5')
-        digest.update(toString().bytes)
+        digest.update(asString().bytes)
         new BigInteger(1, digest.digest()).toString(16).padLeft(32, '0')
     }
 
-    @Override
-    String toString() {
+    private String asString() {
         "${name}|${latitude}|${longitude}|${addressLine1}"
     }
 }

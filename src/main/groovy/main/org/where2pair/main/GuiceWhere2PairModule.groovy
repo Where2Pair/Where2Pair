@@ -11,7 +11,7 @@ import org.where2pair.read.venue.TimeProvider
 import org.where2pair.read.venue.VenueService
 import org.where2pair.read.venue.mappingtojson.VenueToJsonMapper
 import org.where2pair.read.venue.opentimes.OpenTimesCriteriaFactory
-import org.where2pair.write.venue.AmazonS3NewVenueRepository
+import org.where2pair.write.venue.FileSystemNewVenueRepository
 import org.where2pair.write.venue.NewVenueController
 import org.where2pair.write.venue.NewVenueSavedEvent
 import org.where2pair.write.venue.NewVenueServiceFactory
@@ -21,7 +21,7 @@ class GuiceWhere2PairModule extends AbstractModule {
     @Provides
     @Singleton
     NewVenueController createNewVenueController(VenueCachePopulator venueCachePopulator) {
-        def venueRepository = new AmazonS3NewVenueRepository()
+        def venueRepository = new FileSystemNewVenueRepository()
 
         List<NewVenueSavedEvent> venues = venueRepository.all
         venues.each { venueCachePopulator.notifyNewVenueSaved(it) }
