@@ -1,21 +1,22 @@
-package org.where2pair.read.venue
+package org.where2pair.read.venue.find
 
 import static org.where2pair.common.venue.JsonResponse.badRequest
 import static org.where2pair.common.venue.JsonResponse.validJsonResponse
 
 import org.where2pair.common.venue.JsonResponse
+import org.where2pair.read.venue.VenueWithDistances
 import org.where2pair.read.venue.mappingtojson.VenuesWithDistancesToJsonMapper
 import org.where2pair.read.venue.opentimes.OpenTimesCriteriaFactory
 
 class FindVenueController {
 
-    final VenueService venueService
+    final VenueFinderService venueService
     final OpenTimesCriteriaParser openTimesCriteriaParser
     final FacilitiesCriteriaParser facilitiesCriteriaParser
     final LocationsCriteriaParser locationsCriteriaParser
     final VenuesWithDistancesToJsonMapper venuesWithDistancesToJsonMapper
 
-    FindVenueController(VenueService venueService, OpenTimesCriteriaFactory openTimesCriteriaFactory) {
+    FindVenueController(VenueFinderService venueService, OpenTimesCriteriaFactory openTimesCriteriaFactory) {
         this.venueService = venueService
         this.openTimesCriteriaParser = new OpenTimesCriteriaParser(openTimesCriteriaFactory)
         this.facilitiesCriteriaParser = new FacilitiesCriteriaParser()

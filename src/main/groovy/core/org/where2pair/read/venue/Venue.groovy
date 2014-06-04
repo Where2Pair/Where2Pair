@@ -2,6 +2,7 @@ package org.where2pair.read.venue
 
 import groovy.transform.Immutable
 import groovy.transform.ToString
+import org.where2pair.common.venue.Facility
 
 @Immutable
 @ToString
@@ -22,12 +23,8 @@ class Venue {
                 facilities: venueDetails.facilities)
     }
 
-    boolean isOpen(OpenTimesCriteria openTimesCriteria) {
-        weeklyOpeningTimes.isOpen(openTimesCriteria)
-    }
-
-    boolean hasFacilities(FacilitiesCriteria facilitiesCriteria) {
-        facilities.hasFacilities(facilitiesCriteria)
+    boolean hasFacilities(Set<Facility> requestedFacilities) {
+        this.facilities.hasFacilities(requestedFacilities)
     }
 
     Distance distanceTo(Coordinates coordinates, DistanceUnit distanceUnit) {

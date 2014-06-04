@@ -1,6 +1,9 @@
-package org.where2pair.read.venue
+package org.where2pair.read.venue.find
 
 import static java.lang.Double.parseDouble
+
+import org.where2pair.read.venue.Coordinates
+import org.where2pair.read.venue.DistanceUnit
 
 class LocationsCriteriaParser {
 

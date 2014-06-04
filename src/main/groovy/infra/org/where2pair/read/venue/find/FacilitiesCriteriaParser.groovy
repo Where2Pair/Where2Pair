@@ -1,4 +1,4 @@
-package org.where2pair.read.venue
+package org.where2pair.read.venue.find
 
 import static org.where2pair.common.venue.Facility.parseFacility
 

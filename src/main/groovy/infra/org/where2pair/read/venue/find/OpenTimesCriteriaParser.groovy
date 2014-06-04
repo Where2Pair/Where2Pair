@@ -1,9 +1,10 @@
-package org.where2pair.read.venue
+package org.where2pair.read.venue.find
 
 import static org.where2pair.read.venue.DayOfWeek.parseDayOfWeek
 
 import groovy.transform.TupleConstructor
 import org.where2pair.common.venue.SimpleTime
+import org.where2pair.read.venue.DayOfWeek
 import org.where2pair.read.venue.opentimes.OpenTimesCriteriaFactory
 
 @TupleConstructor

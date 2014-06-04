@@ -1,4 +1,4 @@
-package org.where2pair.read.venue
+package org.where2pair.read.venue.find
 
 class QueryParseException extends RuntimeException {
 

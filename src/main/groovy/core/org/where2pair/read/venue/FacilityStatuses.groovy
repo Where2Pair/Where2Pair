@@ -18,9 +18,9 @@ class FacilityStatuses {
         new FacilityStatuses(facilityStatuses: facilityStatuses + unknownStatusFacilityStatuses)
     }
 
-    boolean hasFacilities(FacilitiesCriteria facilitiesCriteria) {
+    boolean hasFacilities(Set<Facility> requestedFacilities) {
         def statusesForRequestFacilities = facilityStatuses.findAll {
-            it.facility in facilitiesCriteria.requestedFacilities
+            it.facility in requestedFacilities
         }
         statusesForRequestFacilities.every { it.available }
     }

@@ -1,6 +1,6 @@
 import org.where2pair.common.venue.JsonResponse
 import org.where2pair.main.GuiceWhere2PairModule
-import org.where2pair.read.venue.FindVenueController
+import org.where2pair.read.venue.find.FindVenueController
 import org.where2pair.read.venue.ShowVenueController
 import org.where2pair.write.venue.NewVenueController
 import ratpack.http.Response

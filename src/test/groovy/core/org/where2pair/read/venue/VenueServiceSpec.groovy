@@ -14,6 +14,10 @@ import static org.where2pair.read.venue.DayOfWeek.SUNDAY
 import static org.where2pair.read.venue.DayOfWeek.parseDayOfWeek
 
 import org.where2pair.common.venue.SimpleTime
+import org.where2pair.read.venue.find.FacilitiesCriteria
+import org.where2pair.read.venue.find.LocationsCriteria
+import org.where2pair.read.venue.find.OpenTimesCriteria
+import org.where2pair.read.venue.find.VenueFinderService
 import org.where2pair.read.venue.opentimes.OpenTimesCriteriaFactory
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -29,7 +33,7 @@ class VenueServiceSpec extends Specification {
     static final TOMORROW = SUNDAY
 
     def venueRepository = Mock(VenueRepository)
-    def venueService = new VenueService(venueRepository: venueRepository)
+    def venueService = new VenueFinderService(venueRepository: venueRepository)
 
     @Unroll
     def 'finds at most 50 venues'() {

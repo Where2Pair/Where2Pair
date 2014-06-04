@@ -3,7 +3,7 @@ package org.where2pair.read.venue.opentimes
 import groovy.transform.TupleConstructor
 import org.where2pair.common.venue.SimpleTime
 import org.where2pair.read.venue.DayOfWeek
-import org.where2pair.read.venue.OpenTimesCriteria
+import org.where2pair.read.venue.find.OpenTimesCriteria
 import org.where2pair.read.venue.TimeProvider
 
 @TupleConstructor

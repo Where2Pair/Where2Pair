@@ -18,10 +18,10 @@ class ShowVenueController {
     }
 
     private JsonResponse lookupVenue(VenueId venueId) {
-        def venue = venueRepository.get(venueId)
+        def venueFound = venueRepository.get(venueId)
 
-        if (venue) {
-            return validJsonResponse(venueToJsonMapper.toJsonStructure(venue))
+        if (venueFound) {
+            return validJsonResponse(venueToJsonMapper.toJsonStructure(venueFound))
         }
 
         return venueNotFoundResponse(venueId.toString())

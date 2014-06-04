@@ -13,6 +13,11 @@ import static org.where2pair.read.venue.VenueWithDistancesBuilder.aVenue
 
 import org.where2pair.common.venue.Facility
 import org.where2pair.common.venue.SimpleTime
+import org.where2pair.read.venue.find.FacilitiesCriteria
+import org.where2pair.read.venue.find.FindVenueController
+import org.where2pair.read.venue.find.LocationsCriteria
+import org.where2pair.read.venue.find.OpenTimesCriteria
+import org.where2pair.read.venue.find.VenueFinderService
 import org.where2pair.read.venue.mappingtojson.VenuesWithDistancesToJsonMapper
 import org.where2pair.read.venue.opentimes.OpenTimesCriteriaFactory
 import spock.lang.Specification
@@ -20,7 +25,7 @@ import spock.lang.Unroll
 
 class FindVenueControllerSpec extends Specification {
 
-    def venueService = Mock(VenueService)
+    def venueService = Mock(VenueFinderService)
     def openTimesCriteriaFactory = Mock(OpenTimesCriteriaFactory)
     def controller = new FindVenueController(venueService, openTimesCriteriaFactory)
     def mapper = new VenuesWithDistancesToJsonMapper()

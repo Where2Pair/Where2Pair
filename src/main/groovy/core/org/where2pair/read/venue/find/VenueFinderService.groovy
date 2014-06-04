@@ -1,10 +1,13 @@
-package org.where2pair.read.venue
+package org.where2pair.read.venue.find
 
 import groovy.transform.Immutable
 import groovy.transform.TupleConstructor
+import org.where2pair.read.venue.Venue
+import org.where2pair.read.venue.VenueRepository
+import org.where2pair.read.venue.VenueWithDistances
 
 @TupleConstructor
-class VenueService {
+class VenueFinderService {
 
     VenueRepository venueRepository
 
@@ -38,7 +41,7 @@ class VenueService {
 
         VenueFilter thatHaveRequestedFacilities(FacilitiesCriteria facilitiesCriteria) {
             new VenueFilter(venues.findAll { Venue venue ->
-                venue.hasFacilities(facilitiesCriteria)
+                venue.hasFacilities(facilitiesCriteria.requestedFacilities)
             })
         }
 

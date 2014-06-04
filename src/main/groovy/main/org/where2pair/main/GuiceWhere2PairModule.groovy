@@ -5,10 +5,10 @@ import static AsyncNewVenueSavedEventSubscriber.asAsyncSubscriber
 import com.google.inject.AbstractModule
 import com.google.inject.Provides
 import com.google.inject.Singleton
-import org.where2pair.read.venue.FindVenueController
+import org.where2pair.read.venue.find.FindVenueController
 import org.where2pair.read.venue.ShowVenueController
 import org.where2pair.read.venue.TimeProvider
-import org.where2pair.read.venue.VenueService
+import org.where2pair.read.venue.find.VenueFinderService
 import org.where2pair.read.venue.mappingtojson.VenueToJsonMapper
 import org.where2pair.read.venue.opentimes.OpenTimesCriteriaFactory
 import org.where2pair.write.venue.CurrentTimeProvider
@@ -50,7 +50,7 @@ class GuiceWhere2PairModule extends AbstractModule {
     @Provides
     @Singleton
     FindVenueController createFindVenueController(HashMapVenueCache venueCache) {
-        def venueService = new VenueService(venueCache)
+        def venueService = new VenueFinderService(venueCache)
         def openTimesCriteriaFactory = new OpenTimesCriteriaFactory(new TimeProvider())
         new FindVenueController(venueService, openTimesCriteriaFactory)
     }
