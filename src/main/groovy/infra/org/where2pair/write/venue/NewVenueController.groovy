@@ -18,7 +18,7 @@ class NewVenueController {
     }
 
     private JsonResponse okResponse(NewVenueId venueId) {
-        JsonResponse.validJsonResponse([venueId: venueId.encode()])
+        JsonResponse.validJsonResponse([venueId: venueId.toString()])
     }
 
     private JsonResponse badRequestResponse(InvalidVenueJsonException e) {

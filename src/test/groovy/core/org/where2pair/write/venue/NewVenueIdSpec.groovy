@@ -13,7 +13,7 @@ class NewVenueIdSpec extends Specification {
         1000.times { venueIds << aRandomVenueId() }
 
         when:
-        List<String> encodedVenueIds = venueIds*.encode()
+        List<String> encodedVenueIds = venueIds*.toString()
 
         then:
         encodedVenueIds.unique().size() == 1000
@@ -26,8 +26,8 @@ class NewVenueIdSpec extends Specification {
         def venueId2 = venueIdBuilder.build()
 
         when:
-        def encodedVenueId1 = venueId1.encode()
-        def encodedVenueId2 = venueId2.encode()
+        def encodedVenueId1 = venueId1.toString()
+        def encodedVenueId2 = venueId2.toString()
 
         then:
         encodedVenueId1 == encodedVenueId2

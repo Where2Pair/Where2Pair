@@ -11,13 +11,14 @@ class NewVenueId {
     double longitude
     String addressLine1
 
-    String encode() {
+    @Override
+    String toString() {
         MessageDigest digest = MessageDigest.getInstance('MD5')
-        digest.update(asString().bytes)
+        digest.update(stringForHashing().bytes)
         new BigInteger(1, digest.digest()).toString(16).padLeft(32, '0')
     }
 
-    private String asString() {
+    private String stringForHashing() {
         "${name}|${latitude}|${longitude}|${addressLine1}"
     }
 }

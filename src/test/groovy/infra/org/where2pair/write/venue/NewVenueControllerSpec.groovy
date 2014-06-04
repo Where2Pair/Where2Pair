@@ -18,7 +18,7 @@ class NewVenueControllerSpec extends Specification {
         given:
         def expectedVenueId = aVenueId().build()
         newVenueService.save(venueJson) >> expectedVenueId
-        def expectedJsonResponse = toJson([venueId: expectedVenueId.encode()])
+        def expectedJsonResponse = toJson([venueId: expectedVenueId.toString()])
 
         when:
         def response = controller.save(venueJsonString)

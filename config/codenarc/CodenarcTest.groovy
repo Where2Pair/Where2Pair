@@ -258,8 +258,8 @@ ruleset {
     JUnitFailWithoutMessage
     JUnitLostTest
     JUnitPublicField
-    JUnitPublicNonTestMethod
-    JUnitPublicProperty
+    JUnitPublicNonTestMethod { enabled = false }
+    JUnitPublicProperty { enabled = false }
     JUnitSetUpCallsSuper
     JUnitStyleAssertions
     JUnitTearDownCallsSuper

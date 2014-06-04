@@ -10,7 +10,21 @@ class FileSystemNewVenueRepository implements NewVenueSavedEventSubscriber {
 
     @Override
     void notifyNewVenueSaved(NewVenueSavedEvent newVenueSavedEvent) {
+        def venueDirectory = createVenueDirectory(newVenueSavedEvent)
+        def venueJsonFile = createJsonFile(venueDirectory)
+        venueJsonFile.text = newVenueSavedEvent.rawVenueJson
+    }
 
+    private File createVenueDirectory(NewVenueSavedEvent newVenueSavedEvent) {
+        def venueDirectory = new File(rootFilePath, newVenueSavedEvent.venueId.toString())
+        venueDirectory.mkdir()
+        venueDirectory
+    }
+
+    private File createJsonFile(File venueDirectory) {
+        def file = new File(venueDirectory, "${timeProvider.currentTimeMillis()}")
+        file.createNewFile()
+        file
     }
 
     List<NewVenueSavedEvent> getAll() {
