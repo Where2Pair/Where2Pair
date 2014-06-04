@@ -1,5 +1,8 @@
 package org.where2pair.write.venue
 
+import static groovy.io.FileType.FILES
+
+import groovy.io.FileType
 import groovy.transform.TupleConstructor
 
 @TupleConstructor
@@ -28,7 +31,10 @@ class FileSystemNewVenueRepository implements NewVenueSavedEventSubscriber {
     }
 
     List<NewVenueSavedEvent> getAll() {
-        []
+        List<File> filePaths = []
+        rootFilePath.eachFileRecurse(FILES) { filePaths << it }
+        filePaths.sort { it.name }
+        filePaths.collect { new NewVenueSavedEvent(new NewVenue(new VenueJson(it.text))) }
     }
 }
 
