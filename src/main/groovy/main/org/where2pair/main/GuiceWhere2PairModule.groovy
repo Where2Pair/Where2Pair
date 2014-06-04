@@ -11,6 +11,7 @@ import org.where2pair.read.venue.TimeProvider
 import org.where2pair.read.venue.VenueService
 import org.where2pair.read.venue.mappingtojson.VenueToJsonMapper
 import org.where2pair.read.venue.opentimes.OpenTimesCriteriaFactory
+import org.where2pair.write.venue.CurrentTimeProvider
 import org.where2pair.write.venue.FileSystemNewVenueRepository
 import org.where2pair.write.venue.NewVenueController
 import org.where2pair.write.venue.NewVenueSavedEvent
@@ -21,9 +22,11 @@ class GuiceWhere2PairModule extends AbstractModule {
     @Provides
     @Singleton
     NewVenueController createNewVenueController(VenueCachePopulator venueCachePopulator) {
-        def venueRepository = new FileSystemNewVenueRepository()
+        def rootFilePath = File.createTempDir()
+        def timeProvider = new CurrentTimeProvider()
+        def venueRepository = new FileSystemNewVenueRepository(rootFilePath, timeProvider)
 
-        List<NewVenueSavedEvent> venues = venueRepository.all
+        List<NewVenueSavedEvent> venues = venueRepository.findAll()
         venues.each { venueCachePopulator.notifyNewVenueSaved(it) }
 
         def newVenueService = new NewVenueServiceFactory().createServiceWithEventSubscribers(

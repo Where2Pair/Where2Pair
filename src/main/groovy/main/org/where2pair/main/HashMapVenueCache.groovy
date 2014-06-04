@@ -12,7 +12,7 @@ class HashMapVenueCache implements VenueRepository {
     final ConcurrentMap<VenueId, Venue> venues = [:] as ConcurrentHashMap<VenueId, Venue>
 
     @Override
-    List<Venue> getAll() {
+    List<Venue> findAll() {
         venues.collect { id, venue ->
             venue
         }.asImmutable()

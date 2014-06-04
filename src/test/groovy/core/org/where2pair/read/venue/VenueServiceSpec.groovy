@@ -34,7 +34,7 @@ class VenueServiceSpec extends Specification {
     @Unroll
     def 'finds at most 50 venues'() {
         given:
-        venueRepository.all >> [aVenue().build()] * numberOfVenues
+        venueRepository.findAll() >> [aVenue().build()] * numberOfVenues
 
         when:
         List<VenueWithDistances> venues = venueService.find(OPEN_ANY_TIME, ANY_FACILITIES, SINGLE_LOCATION)
@@ -54,7 +54,7 @@ class VenueServiceSpec extends Specification {
         given:
         def openTimesCriteria = parseOpenTimesCriteria(searchCriteria)
         def venueWithOpenPeriod = parseVenue(openFrom, openUntil, openDay)
-        venueRepository.all >> [venueWithOpenPeriod]
+        venueRepository.findAll() >> [venueWithOpenPeriod]
 
         when:
         List<VenueWithDistances> openVenues = venueService.find(openTimesCriteria, ANY_FACILITIES, SINGLE_LOCATION)
@@ -87,7 +87,7 @@ class VenueServiceSpec extends Specification {
         def facilitiesCriteria = new FacilitiesCriteria([WIFI] as HashSet)
         def venueWithWifi = aVenue().with(venueDetails().withFacilities(WIFI)).build()
         def venueWithoutWifi = aVenue().with(venueDetails().withNoFacilities()).build()
-        venueRepository.all >> ten(venueWithWifi) + ten(venueWithoutWifi) + five(venueWithWifi)
+        venueRepository.findAll() >> ten(venueWithWifi) + ten(venueWithoutWifi) + five(venueWithWifi)
 
         when:
         List<VenueWithDistances> venues = venueService.find(OPEN_ANY_TIME, facilitiesCriteria, SINGLE_LOCATION)
@@ -100,7 +100,7 @@ class VenueServiceSpec extends Specification {
         given:
         def expectedVenueOrdering = create100VenuesOrderedAscendingByDistanceFrom(SINGLE_LOCATION)
         def jumbledVenues = expectedVenueOrdering.clone().sort { new Random().nextInt() }
-        venueRepository.all >> jumbledVenues
+        venueRepository.findAll() >> jumbledVenues
 
         when:
         List<VenueWithDistances> venues = venueService.find(OPEN_ANY_TIME, ANY_FACILITIES, SINGLE_LOCATION)

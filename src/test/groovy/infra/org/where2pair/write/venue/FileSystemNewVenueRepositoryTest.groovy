@@ -42,7 +42,7 @@ class FileSystemNewVenueRepositoryTest extends Specification {
         createVenueJsonFile().withId('abc').withTimestamp(104).withJson('json: 4')
 
         when:
-        def venues = venueRepository.getAll()
+        def venues = venueRepository.findAll()
 
         then:
         venues == ['json: 1', 'json: 2', 'json: 3', 'json: 4'].collect {

@@ -19,7 +19,7 @@ class VenueService {
     }
 
     private List<Venue> venues() {
-        venueRepository.all
+        venueRepository.findAll()
     }
 
     private static VenueFilter findAll(List<Venue> venues) {
