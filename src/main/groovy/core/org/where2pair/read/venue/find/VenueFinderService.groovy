@@ -8,7 +8,6 @@ import org.where2pair.read.venue.VenueWithDistances
 
 @TupleConstructor
 class VenueFinderService {
-
     VenueRepository venueRepository
 
     List<VenueWithDistances> find(OpenTimesCriteria openTimesCriteria,

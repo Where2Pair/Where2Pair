@@ -9,7 +9,6 @@ import groovy.transform.Immutable
 
 @Immutable
 class JsonResponse {
-
     StatusCode statusCode
     String responseBody
 
