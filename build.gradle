@@ -89,6 +89,7 @@ dependencies {
 
 test {
     exclude '**/*FunctionalSpec.*'
+    maxParallelForks = Runtime.runtime.availableProcessors() / 2
 }
 
 task functionalTest(type: Test) {
