@@ -1,12 +1,12 @@
+import static ratpack.groovy.Groovy.ratpack
+
 import org.where2pair.common.venue.JsonResponse
 import org.where2pair.main.GuiceWhere2PairModule
-import org.where2pair.read.venue.find.FindVenueController
 import org.where2pair.read.venue.ShowVenueController
+import org.where2pair.read.venue.find.FindVenueController
 import org.where2pair.write.venue.NewVenueController
 import ratpack.http.Response
 import ratpack.util.MultiValueMap
-
-import static ratpack.groovy.Groovy.ratpack
 
 ratpack {
     modules {
@@ -15,7 +15,8 @@ ratpack {
 
     handlers {
         get {
-            response.send 'Welcome to Where2Pair! Your installation is working. For a list of the endpoints available, please see the documentation.'
+            response.contentType 'text/html'
+            response.send getLandingPage(bindAddress.host, bindAddress.port)
         }
         prefix('venues') {
             get('nearest') { FindVenueController findVenueController ->
@@ -49,4 +50,55 @@ def squashLocationQueryParamValuesIntoList(MultiValueMap<String, String> queryPa
         }
         [(key): value]
     }
+}
+
+String getLandingPage(String host, int port) {
+    """
+    |<h2>Welcome to Where2Pair!</h2>
+    |
+    |<h4>Find venues sample request (GET):</h4>
+    |
+    |<i>http://$host:$port/venues/nearest?location=1.0,0.1&openDay=monday&openFrom=12.30&openUntil=18.30&withFacilities=wifi</i>
+    |
+    |<h4>Show venue sample request (GET):</h4>
+    |
+    |<i>http://$host:$port/venue/<b>:venueId</b></i>
+    |
+    |<h4>Upload venue sample request (POST):</h4>
+    |
+    |<i>http://$host:$port/venue</i>
+    |
+    |<p>Sample venue json request body:</p>
+    |
+    |<i>{
+    |    "name": "venue name",
+    |    "address": {
+    |        "addressLine1": "addressLine1",
+    |        "addressLine2": "addressLine2",
+    |        "addressLine3": "addressLine3",
+    |        "city": "city",
+    |        "postcode": "postcode",
+    |        "phoneNumber": "01234567890"
+    |    },
+    |    "location": {
+    |        "latitude": 1.0,
+    |        "longitude": 0.1
+    |    },
+    |    "openHours": {
+    |        "monday": [
+    |            {
+    |                "openHour": 12,
+    |                "openMinute": 0,
+    |                "closeHour": 18,
+    |                "closeMinute": 30
+    |            }
+    |        ]
+    |    },
+    |    "facilities": {
+    |        "wifi": "Y",
+    |        "mobile payments": "N",
+    |        "power": "UNKNOWN"
+    |    }
+    |}</i>
+    |""".stripMargin()
 }
