@@ -3,15 +3,15 @@ package org.where2pair.write.venue
 import groovy.json.JsonOutput
 
 class VenueJsonBuilder {
-    private String name = 'venue name'
+    private String name = randomName()
     private Map<String, String> address = [addressLine1: 'addressLine1', addressLine2: 'addressLine2', addressLine3: 'addressLine3', city: 'city',
             postcode: 'postcode', phoneNumber: '01234567890']
     private Map<String, Double> location = [latitude: 1.0, longitude: 0.1]
     private Map<String, List<Map<String, Integer>>> openHours = [monday: [[openHour: 12,
             openMinute: 0, closeHour: 18, closeMinute: 30]]]
     private Map<String, String> facilities = [wifi: 'Y', 'mobile payments': 'N', power: 'UNKNOWN']
-
     private List<String> missingFields = []
+
     private Map<String, ?> invalidPropertyValues = [:]
 
     static VenueJsonBuilder venueJson() {
@@ -80,5 +80,9 @@ class VenueJsonBuilder {
     VenueJsonBuilder withInvalidPropertyValue(String property, value) {
         this.invalidPropertyValues[property] = value
         this
+    }
+
+    private String randomName() {
+        UUID.randomUUID().toString()
     }
 }

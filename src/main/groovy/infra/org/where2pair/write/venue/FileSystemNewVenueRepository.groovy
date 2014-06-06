@@ -1,11 +1,14 @@
 package org.where2pair.write.venue
 
 import static groovy.io.FileType.FILES
+import static java.util.UUID.randomUUID
 
 import groovy.transform.TupleConstructor
 
 @TupleConstructor
 class FileSystemNewVenueRepository implements NewVenueSavedEventSubscriber {
+
+    static final String JOIN_CHAR = '_'
 
     final File rootFilePath
     final CurrentTimeProvider timeProvider
@@ -24,7 +27,8 @@ class FileSystemNewVenueRepository implements NewVenueSavedEventSubscriber {
     }
 
     private File createJsonFile(File venueDirectory) {
-        def file = new File(venueDirectory, "${timeProvider.currentTimeMillis()}")
+        def uniqueFilename = "${timeProvider.currentTimeMillis()}" + JOIN_CHAR + randomUUID()
+        def file = new File(venueDirectory, uniqueFilename)
         file.createNewFile()
         file
     }
@@ -32,8 +36,12 @@ class FileSystemNewVenueRepository implements NewVenueSavedEventSubscriber {
     List<NewVenueSavedEvent> findAll() {
         List<File> filePaths = []
         rootFilePath.eachFileRecurse(FILES) { filePaths << it }
-        filePaths.sort { it.name }
+        filePaths.sort { timestampFromFilename(it) }
         filePaths.collect { file -> newVenueSavedEvent(file.text) }
+    }
+
+    private String timestampFromFilename(File file) {
+        file.name.split(JOIN_CHAR)[0]
     }
 
     private NewVenueSavedEvent newVenueSavedEvent(String json) {

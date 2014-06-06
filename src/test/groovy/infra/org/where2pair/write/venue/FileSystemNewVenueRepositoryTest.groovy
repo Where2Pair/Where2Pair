@@ -11,7 +11,7 @@ class FileSystemNewVenueRepositoryTest extends Specification {
     @Rule TemporaryFolder tmp
     def timeProvider = Mock(CurrentTimeProvider)
     def venueJson = venueJson().build()
-    def currentTime = 99L
+    def currentTime = new Random().nextLong()
     File rootFilePath
     FileSystemNewVenueRepository venueRepository
 
@@ -24,14 +24,35 @@ class FileSystemNewVenueRepositoryTest extends Specification {
     def 'saves venue json to disk'() {
         given:
         def newVenueSavedEvent = new NewVenueSavedEvent(new NewVenue(venueJson))
-        def expectedPath = newVenueSavedEvent.venueId.toString() + File.separator + String.valueOf(currentTime)
+        def expectedVenueDir = new File(rootFilePath, newVenueSavedEvent.venueId.toString())
 
         when:
         venueRepository.notifyNewVenueSaved(newVenueSavedEvent)
 
         then:
-        def expectedFile = new File(rootFilePath, expectedPath)
-        expectedFile.text == venueJson.rawVenueJson
+        def venueJsonFiles = expectedVenueDir.listFiles()
+        venueJsonFiles.size() == 1
+        with(venueJsonFiles[0]) {
+            name.startsWith("$currentTime")
+            text == venueJson.rawVenueJson
+        }
+    }
+
+    def 'venue submissions with the same timestamps should be saved in separate files'() {
+        given:
+        def (VenueJson venueJson1, VenueJson venueJson2) = twoIdenticalVenues()
+        def newVenueSavedEvent1 = new NewVenueSavedEvent(new NewVenue(venueJson1))
+        def newVenueSavedEvent2 = new NewVenueSavedEvent(new NewVenue(venueJson2))
+
+        when:
+        venueRepository.notifyNewVenueSaved(newVenueSavedEvent1)
+        venueRepository.notifyNewVenueSaved(newVenueSavedEvent2)
+
+        then:
+        def venues = venueRepository.findAll()
+        venues.size() == 2
+        venues.find { it.rawVenueJson == venueJson1.rawVenueJson }
+        venues.find { it.rawVenueJson == venueJson2.rawVenueJson }
     }
 
     def 'loads all venue json from disk, ordered descending by timestamp'() {
@@ -48,6 +69,11 @@ class FileSystemNewVenueRepositoryTest extends Specification {
         venues == ['json: 1', 'json: 2', 'json: 3', 'json: 4'].collect {
             new NewVenueSavedEvent(new NewVenue(new VenueJson(it)))
         }
+    }
+
+    private static List<VenueJson> twoIdenticalVenues() {
+        def venueJsonBuilder = venueJson()
+        [venueJsonBuilder.build(), venueJsonBuilder.build()]
     }
 
     private VenueJsonFileBuilder createVenueJsonFile() {
@@ -69,7 +95,7 @@ class FileSystemNewVenueRepositoryTest extends Specification {
         }
 
         void withJson(String json) {
-            def jsonFile = new File(rootFilePath, venueId + File.separator + timestamp)
+            def jsonFile = new File(rootFilePath, venueId + File.separator + timestamp + '_' + UUID.randomUUID())
             jsonFile.parentFile.mkdirs()
             jsonFile.createNewFile()
             jsonFile.text = json
