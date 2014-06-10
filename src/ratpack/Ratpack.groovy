@@ -9,8 +9,8 @@ import ratpack.http.Response
 import ratpack.util.MultiValueMap
 
 ratpack {
-    modules {
-        register new GuiceWhere2PairModule()
+    bindings {
+        add new GuiceWhere2PairModule()
     }
 
     handlers {
