@@ -10,7 +10,7 @@ class NewVenueController {
 
     JsonResponse save(String rawVenueJson) {
         try {
-            def venueId = newVenueService.save(new VenueJson(rawVenueJson))
+            def venueId = newVenueService.save(new RawVenueJson(rawVenueJson))
             return okResponse(venueId)
         } catch (InvalidVenueJsonException e) {
             return badRequestResponse(e)

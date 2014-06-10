@@ -1,7 +1,7 @@
 package org.where2pair.write.venue
 
 import static groovy.json.JsonOutput.toJson
-import static org.where2pair.write.venue.VenueJsonBuilder.venueJson
+import static RawVenueJsonBuilder.rawVenueJson
 import static org.where2pair.write.venue.VenueJsonValidator.ADDRESS_STRUCTURE_ERROR_MESSAGE
 import static org.where2pair.write.venue.VenueJsonValidator.FACILITIES_STRUCTURE_ERROR_MESSAGE
 import static org.where2pair.write.venue.VenueJsonValidator.INCOMPLETE_OPEN_HOURS_ERROR_MESSAGE
@@ -15,7 +15,7 @@ import spock.lang.Unroll
 
 class NewVenueServiceSpec extends Specification {
 
-    def venueJson = venueJson().build()
+    def rawVenueJson = rawVenueJson().build()
     def subscriberA = Mock(NewVenueSavedEventSubscriber)
     def subscriberB = Mock(NewVenueSavedEventSubscriber)
     def newVenueServiceFactory = new NewVenueServiceFactory()
@@ -23,13 +23,14 @@ class NewVenueServiceSpec extends Specification {
 
     def 'publishes new venues, assigns and returns id'() {
         given:
-        def expectedVenueId = new NewVenueId(venueJson.jsonMap.name,
-                venueJson.jsonMap.location.latitude,
-                venueJson.jsonMap.location.longitude,
-                venueJson.jsonMap.address.addressLine1)
+        def venueJson = VenueJson.parseFrom(rawVenueJson)
+        def expectedVenueId = new NewVenueId(venueJson.name,
+                venueJson.location.latitude,
+                venueJson.location.longitude,
+                venueJson.address.addressLine1)
 
         when:
-        def venueId = newVenueService.save(venueJson)
+        def venueId = newVenueService.save(rawVenueJson)
 
         then:
         1 * subscriberA.notifyNewVenueSaved { NewVenueSavedEvent newVenueSavedEvent ->
@@ -49,7 +50,7 @@ class NewVenueServiceSpec extends Specification {
 
     def 'facilities are optional'() {
         given:
-        def venueWithoutFacilities = venueJson().without('facilities').build()
+        def venueWithoutFacilities = rawVenueJson().without('facilities').build()
 
         when:
         newVenueService.save(venueWithoutFacilities)
@@ -63,7 +64,7 @@ class NewVenueServiceSpec extends Specification {
         def invalidJson = toJson(invalidVenueJson)
 
         when:
-        newVenueService.save(new VenueJson(invalidJson))
+        newVenueService.save(new RawVenueJson(invalidJson))
 
         then:
         def exception = thrown(InvalidVenueJsonException)
@@ -78,7 +79,7 @@ class NewVenueServiceSpec extends Specification {
     @Unroll
     def 'rejects venue json missing "#missingProperty"'() {
         given:
-        def invalidVenueJson = venueJson().without(missingProperty).build()
+        def invalidVenueJson = rawVenueJson().without(missingProperty).build()
 
         when:
         newVenueService.save(invalidVenueJson)
@@ -103,7 +104,7 @@ class NewVenueServiceSpec extends Specification {
     @Unroll
     def 'rejects venue json if "#property" property is not of the correct type'() {
         given:
-        def invalidVenueJson = venueJson().withInvalidPropertyValue(property, value).build()
+        def invalidVenueJson = rawVenueJson().withInvalidPropertyValue(property, value).build()
 
         when:
         newVenueService.save(invalidVenueJson)
@@ -124,7 +125,7 @@ class NewVenueServiceSpec extends Specification {
 
     def 'rejects venue json if there are no open hours for Monday-Sunday'() {
         given:
-        def invalidVenueJson = venueJson().withOpenHours([invalidDay: []]).build()
+        def invalidVenueJson = rawVenueJson().withOpenHours([invalidDay: []]).build()
 
         when:
         newVenueService.save(invalidVenueJson)
@@ -177,75 +178,75 @@ class NewVenueServiceSpec extends Specification {
         invalidStatus()        | INVALID_FACILITY_STATUS_ERROR_MESSAGE
     }
 
-    VenueJson invalidStatus() {
-        venueJson().withFacilities([wifi: 'Yeah']).build()
+    RawVenueJson invalidStatus() {
+        rawVenueJson().withFacilities([wifi: 'Yeah']).build()
     }
 
-    VenueJson unrecognizedFacility() {
-        venueJson().withFacilities([Teleporter: 'Y']).build()
+    RawVenueJson unrecognizedFacility() {
+        rawVenueJson().withFacilities([Teleporter: 'Y']).build()
     }
 
-    VenueJson getOpenHoursWithIncorrectKeys() {
-        venueJson().withOpenHours([monday: [[openHuor: 12, openMintue: 0, closeHuor: 15, closeMintue: 0]]]).build()
+    RawVenueJson getOpenHoursWithIncorrectKeys() {
+        rawVenueJson().withOpenHours([monday: [[openHuor: 12, openMintue: 0, closeHuor: 15, closeMintue: 0]]]).build()
     }
 
-    VenueJson getOpenHoursWithClosedTimeTheSameAsOpenTime() {
-        venueJson().withOpenHours([monday: [[openHour: 12, openMinute: 0, closeHour: 12, closeMinute: 0]]]).build()
+    RawVenueJson getOpenHoursWithClosedTimeTheSameAsOpenTime() {
+        rawVenueJson().withOpenHours([monday: [[openHour: 12, openMinute: 0, closeHour: 12, closeMinute: 0]]]).build()
     }
 
-    VenueJson getOpenHoursWithClosedTimeBeforeOpenTime() {
-        venueJson().withOpenHours([monday: [[openHour: 12, openMinute: 0, closeHour: 11, closeMinute: 0]]]).build()
+    RawVenueJson getOpenHoursWithClosedTimeBeforeOpenTime() {
+        rawVenueJson().withOpenHours([monday: [[openHour: 12, openMinute: 0, closeHour: 11, closeMinute: 0]]]).build()
     }
 
-    VenueJson getOpenHoursWithOpenHourLessThan0() {
-        venueJson().withOpenHours([monday: [[openHour: -1, openMinute: 0, closeHour: 11, closeMinute: 0]]]).build()
+    RawVenueJson getOpenHoursWithOpenHourLessThan0() {
+        rawVenueJson().withOpenHours([monday: [[openHour: -1, openMinute: 0, closeHour: 11, closeMinute: 0]]]).build()
     }
 
-    VenueJson getOpenHoursWithOpenMinuteLessThan0() {
-        venueJson().withOpenHours([monday: [[openHour: 12, openMinute: -1, closeHour: 11, closeMinute: 0]]]).build()
+    RawVenueJson getOpenHoursWithOpenMinuteLessThan0() {
+        rawVenueJson().withOpenHours([monday: [[openHour: 12, openMinute: -1, closeHour: 11, closeMinute: 0]]]).build()
     }
 
-    VenueJson getOpenHoursWithOpenHourGreaterThan23() {
-        venueJson().withOpenHours([monday: [[openHour: 24, openMinute: 0, closeHour: 11, closeMinute: 0]]]).build()
+    RawVenueJson getOpenHoursWithOpenHourGreaterThan23() {
+        rawVenueJson().withOpenHours([monday: [[openHour: 24, openMinute: 0, closeHour: 11, closeMinute: 0]]]).build()
     }
 
-    VenueJson getOpenHoursWithOpenMinuteGreaterThan59() {
-        venueJson().withOpenHours([monday: [[openHour: 12, openMinute: 60, closeHour: 11, closeMinute: 0]]]).build()
+    RawVenueJson getOpenHoursWithOpenMinuteGreaterThan59() {
+        rawVenueJson().withOpenHours([monday: [[openHour: 12, openMinute: 60, closeHour: 11, closeMinute: 0]]]).build()
     }
 
-    VenueJson getOpenHoursWithCloseHourLessThan0() {
-        venueJson().withOpenHours([monday: [[openHour: 12, openMinute: 0, closeHour: -1, closeMinute: 0]]]).build()
+    RawVenueJson getOpenHoursWithCloseHourLessThan0() {
+        rawVenueJson().withOpenHours([monday: [[openHour: 12, openMinute: 0, closeHour: -1, closeMinute: 0]]]).build()
     }
 
-    VenueJson getOpenHoursWithCloseMinuteLessThan0() {
-        venueJson().withOpenHours([monday: [[openHour: 12, openMinute: 0, closeHour: 11, closeMinute: -1]]]).build()
+    RawVenueJson getOpenHoursWithCloseMinuteLessThan0() {
+        rawVenueJson().withOpenHours([monday: [[openHour: 12, openMinute: 0, closeHour: 11, closeMinute: -1]]]).build()
     }
 
-    VenueJson getOpenHoursWithCloseHourGreaterThan23() {
-        venueJson().withOpenHours([monday: [[openHour: 12, openMinute: 0, closeHour: 24, closeMinute: 0]]]).build()
+    RawVenueJson getOpenHoursWithCloseHourGreaterThan23() {
+        rawVenueJson().withOpenHours([monday: [[openHour: 12, openMinute: 0, closeHour: 24, closeMinute: 0]]]).build()
     }
 
-    VenueJson getOpenHoursWithCloseMinuteGreaterThan59() {
-        venueJson().withOpenHours([monday: [[openHour: 12, openMinute: 0, closeHour: 11, closeMinute: 60]]]).build()
+    RawVenueJson getOpenHoursWithCloseMinuteGreaterThan59() {
+        rawVenueJson().withOpenHours([monday: [[openHour: 12, openMinute: 0, closeHour: 11, closeMinute: 60]]]).build()
     }
 
-    VenueJson getOpenHoursWithOpenHourAsNonInteger() {
-        venueJson().withOpenHours([monday: [[openHour  : 'not an integer',
+    RawVenueJson getOpenHoursWithOpenHourAsNonInteger() {
+        rawVenueJson().withOpenHours([monday: [[openHour  : 'not an integer',
                                              openMinute: 0, closeHour: 18, closeMinute: 30]]]).build()
     }
 
-    VenueJson getOpenHoursWithOpenMinuteAsNonInteger() {
-        venueJson().withOpenHours([monday: [[openHour  : 12,
+    RawVenueJson getOpenHoursWithOpenMinuteAsNonInteger() {
+        rawVenueJson().withOpenHours([monday: [[openHour  : 12,
                                              openMinute: 'not an integer', closeHour: 18, closeMinute: 30]]]).build()
     }
 
-    VenueJson getOpenHoursWithCloseHourAsNonInteger() {
-        venueJson().withOpenHours([monday: [[openHour  : 12,
+    RawVenueJson getOpenHoursWithCloseHourAsNonInteger() {
+        rawVenueJson().withOpenHours([monday: [[openHour  : 12,
                                              openMinute: 0, closeHour: 'not an integer', closeMinute: 30]]]).build()
     }
 
-    VenueJson getOpenHoursWithCloseMinuteAsNonInteger() {
-        venueJson().withOpenHours([monday: [[openHour  : 12,
+    RawVenueJson getOpenHoursWithCloseMinuteAsNonInteger() {
+        rawVenueJson().withOpenHours([monday: [[openHour  : 12,
                                              openMinute: 0, closeHour: 18, closeMinute: 'not an integer']]]).build()
     }
 }

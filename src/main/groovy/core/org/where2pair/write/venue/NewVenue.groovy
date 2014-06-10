@@ -20,7 +20,7 @@ class NewVenue {
                 venueJson.address.addressLine1)
     }
 
-    String getRawVenueJson() {
-        venueJson.rawVenueJson
+    String getVenueJsonPayload() {
+        venueJson.payload
     }
 }

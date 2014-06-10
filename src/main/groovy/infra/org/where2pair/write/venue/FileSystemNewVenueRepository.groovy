@@ -17,7 +17,7 @@ class FileSystemNewVenueRepository implements NewVenueSavedEventSubscriber {
     void notifyNewVenueSaved(NewVenueSavedEvent newVenueSavedEvent) {
         def venueDirectory = createVenueDirectory(newVenueSavedEvent)
         def venueJsonFile = createJsonFile(venueDirectory)
-        venueJsonFile.text = newVenueSavedEvent.rawVenueJson
+        venueJsonFile.text = newVenueSavedEvent.venueJsonPayload
     }
 
     private File createVenueDirectory(NewVenueSavedEvent newVenueSavedEvent) {
@@ -40,12 +40,12 @@ class FileSystemNewVenueRepository implements NewVenueSavedEventSubscriber {
         filePaths.collect { file -> newVenueSavedEvent(file.text) }
     }
 
-    private String timestampFromFilename(File file) {
+    private static String timestampFromFilename(File file) {
         file.name.split(JOIN_CHAR)[0]
     }
 
-    private NewVenueSavedEvent newVenueSavedEvent(String json) {
-        new NewVenueSavedEvent(new NewVenue(new VenueJson(json)))
+    private static NewVenueSavedEvent newVenueSavedEvent(String json) {
+        new NewVenueSavedEvent(new NewVenue(VenueJson.parseFrom(new RawVenueJson(json))))
     }
 }
 

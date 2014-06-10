@@ -2,7 +2,7 @@ package org.where2pair.write.venue
 
 import groovy.json.JsonOutput
 
-class VenueJsonBuilder {
+class RawVenueJsonBuilder {
     private String name = randomName()
     private Map<String, String> address = [addressLine1: 'addressLine1', addressLine2: 'addressLine2', addressLine3: 'addressLine3', city: 'city',
             postcode: 'postcode', phoneNumber: '01234567890']
@@ -14,16 +14,16 @@ class VenueJsonBuilder {
 
     private Map<String, ?> invalidPropertyValues = [:]
 
-    static VenueJsonBuilder venueJson() {
-        new VenueJsonBuilder()
+    static RawVenueJsonBuilder rawVenueJson() {
+        new RawVenueJsonBuilder()
     }
 
-    VenueJson build() {
+    RawVenueJson build() {
         def jsonMap = createJsonMap()
         removeMissingFields(jsonMap)
         overridePropertiesWithInvalidValues(jsonMap)
         def jsonString = JsonOutput.toJson(jsonMap)
-        new VenueJson(jsonString)
+        new RawVenueJson(jsonString)
     }
 
     def overridePropertiesWithInvalidValues(Map<String, ?> jsonMap) {
@@ -62,22 +62,22 @@ class VenueJsonBuilder {
         (collection instanceof Map) ? property : property as Integer
     }
 
-    VenueJsonBuilder withFacilities(Map<String, String> facilities) {
+    RawVenueJsonBuilder withFacilities(Map<String, String> facilities) {
         this.facilities = facilities
         this
     }
 
-    VenueJsonBuilder withOpenHours(Map<String, List<Map<String, Integer>>> openHours) {
+    RawVenueJsonBuilder withOpenHours(Map<String, List<Map<String, Integer>>> openHours) {
         this.openHours = openHours
         this
     }
 
-    VenueJsonBuilder without(String field) {
+    RawVenueJsonBuilder without(String field) {
         this.missingFields << field
         this
     }
 
-    VenueJsonBuilder withInvalidPropertyValue(String property, value) {
+    RawVenueJsonBuilder withInvalidPropertyValue(String property, value) {
         this.invalidPropertyValues[property] = value
         this
     }
