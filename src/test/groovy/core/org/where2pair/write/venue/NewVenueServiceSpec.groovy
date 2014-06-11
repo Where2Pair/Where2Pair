@@ -23,29 +23,19 @@ class NewVenueServiceSpec extends Specification {
 
     def 'publishes new venues, assigns and returns id'() {
         given:
-        def venueJson = new VenueJson(rawVenueJson)
-        def expectedVenueId = new NewVenueId(venueJson.name,
-                venueJson.location.latitude,
-                venueJson.location.longitude,
-                venueJson.address.addressLine1)
+        def expectedSaveEvent = NewVenueSavedEvent.create(rawVenueJson)
 
         when:
         def venueId = newVenueService.save(rawVenueJson)
 
         then:
-        1 * subscriberA.notifyNewVenueSaved { NewVenueSavedEvent newVenueSavedEvent ->
-            newVenueSavedEvent.newVenue == new ValidVenueJson(venueJson) &&
-                    newVenueSavedEvent.venueId == expectedVenueId
-        }
+        1 * subscriberA.notifyNewVenueSaved(expectedSaveEvent)
 
         then:
-        1 * subscriberB.notifyNewVenueSaved { NewVenueSavedEvent newVenueSavedEvent ->
-            newVenueSavedEvent.newVenue == new ValidVenueJson(venueJson) &&
-                    newVenueSavedEvent.venueId == expectedVenueId
-        }
+        1 * subscriberB.notifyNewVenueSaved(expectedSaveEvent)
 
         and:
-        venueId == expectedVenueId
+        venueId == expectedSaveEvent.venueId
     }
 
     def 'facilities are optional'() {
