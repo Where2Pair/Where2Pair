@@ -23,7 +23,7 @@ class NewVenueServiceSpec extends Specification {
 
     def 'publishes new venues, assigns and returns id'() {
         given:
-        def venueJson = VenueJson.parseFrom(rawVenueJson)
+        def venueJson = new VenueJson(rawVenueJson)
         def expectedVenueId = new NewVenueId(venueJson.name,
                 venueJson.location.latitude,
                 venueJson.location.longitude,
@@ -34,13 +34,13 @@ class NewVenueServiceSpec extends Specification {
 
         then:
         1 * subscriberA.notifyNewVenueSaved { NewVenueSavedEvent newVenueSavedEvent ->
-            newVenueSavedEvent.newVenue == new NewVenue(venueJson) &&
+            newVenueSavedEvent.newVenue == new ValidVenueJson(venueJson) &&
                     newVenueSavedEvent.venueId == expectedVenueId
         }
 
         then:
         1 * subscriberB.notifyNewVenueSaved { NewVenueSavedEvent newVenueSavedEvent ->
-            newVenueSavedEvent.newVenue == new NewVenue(venueJson) &&
+            newVenueSavedEvent.newVenue == new ValidVenueJson(venueJson) &&
                     newVenueSavedEvent.venueId == expectedVenueId
         }
 

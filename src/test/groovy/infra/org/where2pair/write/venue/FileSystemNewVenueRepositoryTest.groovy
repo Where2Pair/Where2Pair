@@ -1,6 +1,7 @@
 package org.where2pair.write.venue
 
 import static RawVenueJsonBuilder.rawVenueJson
+import static org.where2pair.write.venue.RawVenueJsonBuilder.randomRawVenueJson
 
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
@@ -18,12 +19,12 @@ class FileSystemNewVenueRepositoryTest extends Specification {
     def setup() {
         rootFilePath = tmp.newFolder()
         venueRepository = new FileSystemNewVenueRepository(rootFilePath, timeProvider)
-        timeProvider.currentTimeMillis() >> currentTime
     }
 
     def 'saves venue json to disk'() {
         given:
-        def newVenueSavedEvent = new NewVenueSavedEvent(new NewVenue(VenueJson.parseFrom(rawVenueJson)))
+        timeProvider.currentTimeMillis() >> currentTime
+        def newVenueSavedEvent = NewVenueSavedEvent.create(rawVenueJson)
         def expectedVenueDir = new File(rootFilePath, newVenueSavedEvent.venueId.toString())
 
         when:
@@ -40,40 +41,43 @@ class FileSystemNewVenueRepositoryTest extends Specification {
 
     def 'venue submissions with the same timestamps should be saved in separate files'() {
         given:
-        def (VenueJson venueJson1, VenueJson venueJson2) = twoIdenticalVenues()
-        def newVenueSavedEvent1 = new NewVenueSavedEvent(new NewVenue(venueJson1))
-        def newVenueSavedEvent2 = new NewVenueSavedEvent(new NewVenue(venueJson2))
+        timeProvider.currentTimeMillis() >> currentTime
+        def (NewVenueSavedEvent event1, NewVenueSavedEvent event2) = twoIdenticalNewVenues()
 
         when:
-        venueRepository.notifyNewVenueSaved(newVenueSavedEvent1)
-        venueRepository.notifyNewVenueSaved(newVenueSavedEvent2)
+        venueRepository.notifyNewVenueSaved(event1)
+        venueRepository.notifyNewVenueSaved(event2)
 
         then:
         def venueSavedEvents = venueRepository.findAll()
         venueSavedEvents.size() == 2
-        venueSavedEvents.find { it.venueJson.payload == venueJson1.payload }
-        venueSavedEvents.find { it.venueJson.payload == venueJson2.payload }
+        event1 in venueSavedEvents
+        event2 in venueSavedEvents
     }
 
     def 'loads all venue json from disk, ordered descending by timestamp'() {
         given:
-        createVenueJsonFile().withId('xyz').withTimestamp(101).withJson('{"json": 1}')
-        createVenueJsonFile().withId('123').withTimestamp(102).withJson('{"json": 2}')
-        createVenueJsonFile().withId('123').withTimestamp(103).withJson('{"json": 3}')
-        createVenueJsonFile().withId('abc').withTimestamp(104).withJson('{"json": 4}')
+        def venueJson1 = randomRawVenueJson()
+        def venueJson2 = randomRawVenueJson()
+        def venueJson3 = randomRawVenueJson()
+        def venueJson4 = randomRawVenueJson()
+        createVenueJsonFile().withId('xyz').withTimestamp(101).withJson(venueJson1)
+        createVenueJsonFile().withId('123').withTimestamp(102).withJson(venueJson2)
+        createVenueJsonFile().withId('123').withTimestamp(103).withJson(venueJson3)
+        createVenueJsonFile().withId('abc').withTimestamp(104).withJson(venueJson4)
 
         when:
         def venues = venueRepository.findAll()
 
         then:
-        venues == ['{"json": 1}', '{"json": 2}', '{"json": 3}', '{"json": 4}'].collect {
-            new NewVenueSavedEvent(new NewVenue(VenueJson.parseFrom(new RawVenueJson(it))))
+        venues == [venueJson1, venueJson2, venueJson3, venueJson4].collect {
+            NewVenueSavedEvent.create(it)
         }
     }
 
-    private static List<VenueJson> twoIdenticalVenues() {
-        def rawVenueJsonBuilder = rawVenueJson()
-        [VenueJson.parseFrom(rawVenueJsonBuilder.build()), VenueJson.parseFrom(rawVenueJsonBuilder.build())]
+    private static List<NewVenueSavedEvent> twoIdenticalNewVenues() {
+        def venueJson = rawVenueJson().build()
+        [NewVenueSavedEvent.create(venueJson), NewVenueSavedEvent.create(venueJson)]
     }
 
     private VenueJsonFileBuilder createVenueJsonFile() {
@@ -94,11 +98,11 @@ class FileSystemNewVenueRepositoryTest extends Specification {
             this
         }
 
-        void withJson(String json) {
+        void withJson(RawVenueJson json) {
             def jsonFile = new File(rootFilePath, venueId + File.separator + timestamp + '_' + UUID.randomUUID())
             jsonFile.parentFile.mkdirs()
             jsonFile.createNewFile()
-            jsonFile.text = json
+            jsonFile.text = json.payload
         }
     }
 }

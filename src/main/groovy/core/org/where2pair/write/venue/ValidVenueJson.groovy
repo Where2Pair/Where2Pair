@@ -2,15 +2,15 @@ package org.where2pair.write.venue
 
 import static org.where2pair.write.venue.VenueJsonValidator.validate
 
-import groovy.transform.Immutable
+import groovy.transform.EqualsAndHashCode
 
-@Immutable
-class NewVenue {
-    VenueJson venueJson
+@EqualsAndHashCode
+class ValidVenueJson {
+    final VenueJson venueJson
 
-    static NewVenueSavedEvent publishNewVenue(VenueJson venueJson) throws InvalidVenueJsonException {
+    ValidVenueJson(VenueJson venueJson) {
         validate(venueJson)
-        new NewVenueSavedEvent(new NewVenue(venueJson))
+        this.venueJson = venueJson
     }
 
     NewVenueId getVenueId() {

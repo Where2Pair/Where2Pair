@@ -27,10 +27,13 @@ class FileSystemNewVenueRepository implements NewVenueSavedEventSubscriber {
     }
 
     private File createJsonFile(File venueDirectory) {
-        def uniqueFilename = "${timeProvider.currentTimeMillis()}" + JOIN_CHAR + randomUUID()
-        def file = new File(venueDirectory, uniqueFilename)
+        def file = new File(venueDirectory, uniqueFilenameForVenue())
         file.createNewFile()
         file
+    }
+
+    private String uniqueFilenameForVenue() {
+        "${timeProvider.currentTimeMillis()}" + JOIN_CHAR + randomUUID()
     }
 
     List<NewVenueSavedEvent> findAll() {
@@ -45,7 +48,7 @@ class FileSystemNewVenueRepository implements NewVenueSavedEventSubscriber {
     }
 
     private static NewVenueSavedEvent newVenueSavedEvent(String json) {
-        new NewVenueSavedEvent(new NewVenue(VenueJson.parseFrom(new RawVenueJson(json))))
+        NewVenueSavedEvent.create(new RawVenueJson(json))
     }
 }
 

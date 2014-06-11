@@ -18,6 +18,10 @@ class RawVenueJsonBuilder {
         new RawVenueJsonBuilder()
     }
 
+    static RawVenueJson randomRawVenueJson() {
+        new RawVenueJsonBuilder().withName(randomName()).build()
+    }
+
     RawVenueJson build() {
         def jsonMap = createJsonMap()
         removeMissingFields(jsonMap)
@@ -82,7 +86,12 @@ class RawVenueJsonBuilder {
         this
     }
 
-    private String randomName() {
+    private static String randomName() {
         UUID.randomUUID().toString()
+    }
+
+    RawVenueJsonBuilder withName(String name) {
+        this.name = name
+        this
     }
 }

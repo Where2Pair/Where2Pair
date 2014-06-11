@@ -1,16 +1,16 @@
 package org.where2pair.write.venue
 
 import groovy.json.JsonSlurper
-import groovy.transform.Immutable
+import groovy.transform.EqualsAndHashCode
 
-@Immutable
+@EqualsAndHashCode
 class VenueJson {
     Map<String, ?> jsonMap
     RawVenueJson rawVenueJson
 
-    static VenueJson parseFrom(RawVenueJson rawVenueJson) {
-        def jsonMap = parseJson(rawVenueJson)
-        new VenueJson(jsonMap, rawVenueJson)
+    VenueJson(RawVenueJson rawVenueJson) {
+        this.jsonMap = parseJson(rawVenueJson)
+        this.rawVenueJson = rawVenueJson
     }
 
     private static Map<String, ?> parseJson(RawVenueJson rawVenueJson) {
