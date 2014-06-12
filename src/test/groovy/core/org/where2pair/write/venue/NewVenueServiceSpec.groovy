@@ -187,25 +187,28 @@ class NewVenueServiceSpec extends Specification {
 
     @Unroll
     def 'random venue json does not throw unexpected exceptions'() {
-        given:
-        def mutatedJsonTester = {
-            try {
-                newVenueService.save(new RawVenueJson(mutatedVenueJson))
-            } catch (e) {
-                if (!(e instanceof InvalidVenueJsonException))
-                    return [e, mutatedVenueJson]
-            }
-            return []
-        }
-
         when:
-        def exceptionThrownProcessingMutatedJson = mutatedJsonTester.call()
+        def exceptionThrownProcessingMutatedJson = captureErrorsProcessing(mutatedVenueJson)
 
         then:
         !exceptionThrownProcessingMutatedJson
 
         where:
-        mutatedVenueJson << new JsonMutator().forStrings().mutate(rawVenueJson().build().payload, 10000)
+        mutatedVenueJson << mutatedJson(rawVenueJson().build().payload, 1000)
+    }
+
+    List captureErrorsProcessing(String json) {
+        try {
+            newVenueService.save(new RawVenueJson(json))
+        } catch (e) {
+            if (!(e instanceof InvalidVenueJsonException))
+                return [e, json]
+        }
+        return []
+    }
+
+    private static Iterable<String> mutatedJson(String validJson, int mutantCount) {
+        new JsonMutator().forStrings().mutate(validJson, mutantCount)
     }
 
     RawVenueJson invalidStatus() {
