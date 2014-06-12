@@ -7,7 +7,7 @@ import ratpack.groovy.test.LocalScriptApplicationUnderTest
 import ratpack.groovy.test.TestHttpClient
 import spock.lang.Specification
 
-class VenueFunctionalSpec extends Specification {
+class VenueFinderFunctionalSpec extends Specification {
     static final String VENUE_NAME = randomName()
 
     LocalScriptApplicationUnderTest aut = new LocalScriptApplicationUnderTest()

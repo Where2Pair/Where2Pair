@@ -1,7 +1,7 @@
 package org.where2pair.write.venue
 
-import static RawVenueJsonBuilder.rawVenueJson
 import static org.where2pair.write.venue.RawVenueJsonBuilder.randomRawVenueJson
+import static org.where2pair.write.venue.RawVenueJsonBuilder.rawVenueJson
 
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
