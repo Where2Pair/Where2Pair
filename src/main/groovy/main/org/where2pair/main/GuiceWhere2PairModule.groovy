@@ -1,6 +1,6 @@
 package org.where2pair.main
 
-import static AsyncNewVenueSavedEventSubscriber.asAsyncSubscriber
+import static org.where2pair.main.AsyncNewVenueSavedEventSubscriber.asAsyncSubscriber
 
 import com.google.inject.AbstractModule
 import com.google.inject.Provides
