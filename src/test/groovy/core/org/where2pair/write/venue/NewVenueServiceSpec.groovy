@@ -1,21 +1,29 @@
 package org.where2pair.write.venue
 
-import static groovy.json.JsonOutput.toJson
 import static RawVenueJsonBuilder.rawVenueJson
+import static groovy.json.JsonOutput.toJson
+import static org.where2pair.write.venue.VenueJsonValidator.ADDRESS_CITY_STRUCTURE_ERROR_MESSAGE
+import static org.where2pair.write.venue.VenueJsonValidator.ADDRESS_LINE_1_STRUCTURE_ERROR_MESSAGE
+import static org.where2pair.write.venue.VenueJsonValidator.ADDRESS_LINE_2_STRUCTURE_ERROR_MESSAGE
+import static org.where2pair.write.venue.VenueJsonValidator.ADDRESS_LINE_3_STRUCTURE_ERROR_MESSAGE
+import static org.where2pair.write.venue.VenueJsonValidator.ADDRESS_POSTCODE_STRUCTURE_ERROR_MESSAGE
 import static org.where2pair.write.venue.VenueJsonValidator.ADDRESS_STRUCTURE_ERROR_MESSAGE
 import static org.where2pair.write.venue.VenueJsonValidator.FACILITIES_STRUCTURE_ERROR_MESSAGE
 import static org.where2pair.write.venue.VenueJsonValidator.INCOMPLETE_OPEN_HOURS_ERROR_MESSAGE
 import static org.where2pair.write.venue.VenueJsonValidator.INVALID_FACILITY_STATUS_ERROR_MESSAGE
+import static org.where2pair.write.venue.VenueJsonValidator.LOCATION_LATITUDE_STRUCTURE_ERROR_MESSAGE
+import static org.where2pair.write.venue.VenueJsonValidator.LOCATION_LONGITUDE_STRUCTURE_ERROR_MESSAGE
 import static org.where2pair.write.venue.VenueJsonValidator.LOCATION_STRUCTURE_ERROR_MESSAGE
+import static org.where2pair.write.venue.VenueJsonValidator.NAME_STRUCTURE_ERROR_MESSAGE
 import static org.where2pair.write.venue.VenueJsonValidator.OPEN_HOURS_STRUCTURE_ERROR_MESSAGE
 import static org.where2pair.write.venue.VenueJsonValidator.UNRECOGNIZED_FACILITY_ERROR_MESSAGE
 
+import com.natpryce.snodge.JsonMutator
 import spock.lang.Specification
 import spock.lang.Unroll
 
 class NewVenueServiceSpec extends Specification {
 
-    def rawVenueJson = rawVenueJson().build()
     def subscriberA = Mock(NewVenueSavedEventSubscriber)
     def subscriberB = Mock(NewVenueSavedEventSubscriber)
     def newVenueServiceFactory = new NewVenueServiceFactory()
@@ -23,6 +31,7 @@ class NewVenueServiceSpec extends Specification {
 
     def 'publishes new venues, assigns and returns id'() {
         given:
+        def rawVenueJson = rawVenueJson().build()
         def expectedSaveEvent = NewVenueSavedEvent.create(rawVenueJson)
 
         when:
@@ -104,13 +113,21 @@ class NewVenueServiceSpec extends Specification {
         exceptionThrown.message == expectedReason
 
         where:
-        property             | value             | expectedReason
-        'address'            | ['addressLine1']  | ADDRESS_STRUCTURE_ERROR_MESSAGE
-        'location'           | 'somewhere'       | LOCATION_STRUCTURE_ERROR_MESSAGE
-        'openHours'          | 12                | OPEN_HOURS_STRUCTURE_ERROR_MESSAGE
-        'openHours.monday'   | [openHour: 12]    | OPEN_HOURS_STRUCTURE_ERROR_MESSAGE
-        'openHours.monday.0' | [12, 0, 15, 0]    | OPEN_HOURS_STRUCTURE_ERROR_MESSAGE
-        'facilities'         | ['wifi', 'power'] | FACILITIES_STRUCTURE_ERROR_MESSAGE
+        property               | value             | expectedReason
+        'name'                 | true              | NAME_STRUCTURE_ERROR_MESSAGE
+        'address'              | ['addressLine1']  | ADDRESS_STRUCTURE_ERROR_MESSAGE
+        'address.addressLine1' | 12                | ADDRESS_LINE_1_STRUCTURE_ERROR_MESSAGE
+        'address.addressLine2' | 34                | ADDRESS_LINE_2_STRUCTURE_ERROR_MESSAGE
+        'address.addressLine3' | 56                | ADDRESS_LINE_3_STRUCTURE_ERROR_MESSAGE
+        'address.city'         | 78                | ADDRESS_CITY_STRUCTURE_ERROR_MESSAGE
+        'address.postcode'     | 90                | ADDRESS_POSTCODE_STRUCTURE_ERROR_MESSAGE
+        'location'             | 'somewhere'       | LOCATION_STRUCTURE_ERROR_MESSAGE
+        'location.latitude'    | 'some lat'        | LOCATION_LATITUDE_STRUCTURE_ERROR_MESSAGE
+        'location.longitude'   | 'some long'       | LOCATION_LONGITUDE_STRUCTURE_ERROR_MESSAGE
+        'openHours'            | 12                | OPEN_HOURS_STRUCTURE_ERROR_MESSAGE
+        'openHours.monday'     | [openHour: 12]    | OPEN_HOURS_STRUCTURE_ERROR_MESSAGE
+        'openHours.monday.0'   | [12, 0, 15, 0]    | OPEN_HOURS_STRUCTURE_ERROR_MESSAGE
+        'facilities'           | ['wifi', 'power'] | FACILITIES_STRUCTURE_ERROR_MESSAGE
     }
 
     def 'rejects venue json if there are no open hours for Monday-Sunday'() {
@@ -168,6 +185,29 @@ class NewVenueServiceSpec extends Specification {
         invalidStatus()        | INVALID_FACILITY_STATUS_ERROR_MESSAGE
     }
 
+    @Unroll
+    def 'random venue json does not throw unexpected exceptions'() {
+        given:
+        def mutatedJsonTester = {
+            try {
+                newVenueService.save(new RawVenueJson(mutatedVenueJson))
+            } catch (e) {
+                if (!(e instanceof InvalidVenueJsonException))
+                    return [e, mutatedVenueJson]
+            }
+            return []
+        }
+
+        when:
+        def exceptionThrownProcessingMutatedJson = mutatedJsonTester.call()
+
+        then:
+        !exceptionThrownProcessingMutatedJson
+
+        where:
+        mutatedVenueJson << new JsonMutator().forStrings().mutate(rawVenueJson().build().payload, 10000)
+    }
+
     RawVenueJson invalidStatus() {
         rawVenueJson().withFacilities([wifi: 'Yeah']).build()
     }
@@ -222,22 +262,22 @@ class NewVenueServiceSpec extends Specification {
 
     RawVenueJson getOpenHoursWithOpenHourAsNonInteger() {
         rawVenueJson().withOpenHours([monday: [[openHour  : 'not an integer',
-                                             openMinute: 0, closeHour: 18, closeMinute: 30]]]).build()
+                                                openMinute: 0, closeHour: 18, closeMinute: 30]]]).build()
     }
 
     RawVenueJson getOpenHoursWithOpenMinuteAsNonInteger() {
         rawVenueJson().withOpenHours([monday: [[openHour  : 12,
-                                             openMinute: 'not an integer', closeHour: 18, closeMinute: 30]]]).build()
+                                                openMinute: 'not an integer', closeHour: 18, closeMinute: 30]]]).build()
     }
 
     RawVenueJson getOpenHoursWithCloseHourAsNonInteger() {
         rawVenueJson().withOpenHours([monday: [[openHour  : 12,
-                                             openMinute: 0, closeHour: 'not an integer', closeMinute: 30]]]).build()
+                                                openMinute: 0, closeHour: 'not an integer', closeMinute: 30]]]).build()
     }
 
     RawVenueJson getOpenHoursWithCloseMinuteAsNonInteger() {
         rawVenueJson().withOpenHours([monday: [[openHour  : 12,
-                                             openMinute: 0, closeHour: 18, closeMinute: 'not an integer']]]).build()
+                                                openMinute: 0, closeHour: 18, closeMinute: 'not an integer']]]).build()
     }
 }
 

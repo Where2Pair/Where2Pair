@@ -22,10 +22,18 @@ class VenueJsonValidator {
             { it.openHours }: 'Venue \'openHours\' must be provided'
     ]
 
+    static final NAME_STRUCTURE_ERROR_MESSAGE = "Expected name to be a string"
     static final ADDRESS_STRUCTURE_ERROR_MESSAGE = "Expected address to be a map e.g. ['addressLine1': " +
             "'9 Appold Street', city: 'London'...]"
+    static final ADDRESS_LINE_1_STRUCTURE_ERROR_MESSAGE = "Expected addressLine1 to be a string"
+    static final ADDRESS_LINE_2_STRUCTURE_ERROR_MESSAGE = "Expected addressLine2 to be a string"
+    static final ADDRESS_LINE_3_STRUCTURE_ERROR_MESSAGE = "Expected addressLine3 to be a string"
+    static final ADDRESS_CITY_STRUCTURE_ERROR_MESSAGE = "Expected city to be a string"
+    static final ADDRESS_POSTCODE_STRUCTURE_ERROR_MESSAGE = "Expected postcode to be a string"
     static final LOCATION_STRUCTURE_ERROR_MESSAGE = "Expected location to be a map e.g. ['latitude': " +
             "1.0, 'longitude': 0.1]"
+    static final LOCATION_LATITUDE_STRUCTURE_ERROR_MESSAGE = "Expected latitude to be a float"
+    static final LOCATION_LONGITUDE_STRUCTURE_ERROR_MESSAGE = "Expected longitude to be a float"
     static final OPEN_HOURS_STRUCTURE_ERROR_MESSAGE = "Expected openHours to map day to a list of open periods " +
             "e.g. ['monday': [['openHour': 12, 'openMinute': 0, 'closeHour': 18, 'closeMinute': 30]],\n'tuesday': " +
             "[['openHour': 8, 'openMinute': 0, 'closeHour': 11, 'closeMinute': 0]],\n...\n]"
@@ -34,8 +42,17 @@ class VenueJsonValidator {
 
     private static final EXPECTED_STRUCTURE_CHECKS = [
             {
+                it.name instanceof String
+            }: NAME_STRUCTURE_ERROR_MESSAGE,
+            {
                 it.address instanceof Map
             }: ADDRESS_STRUCTURE_ERROR_MESSAGE,
+            {
+                it.address.addressLine2 instanceof String
+            }: ADDRESS_LINE_2_STRUCTURE_ERROR_MESSAGE,
+            {
+                it.address.addressLine3 instanceof String
+            }: ADDRESS_LINE_3_STRUCTURE_ERROR_MESSAGE,
             {
                 it.location instanceof Map
             }: LOCATION_STRUCTURE_ERROR_MESSAGE,
@@ -49,19 +66,24 @@ class VenueJsonValidator {
                 }
             }: OPEN_HOURS_STRUCTURE_ERROR_MESSAGE,
             {
-                !it.facilities  || it.facilities instanceof Map
+                it.facilities == null || it.facilities instanceof Map
             }: FACILITIES_STRUCTURE_ERROR_MESSAGE
     ]
 
     private static final LOCATION_CHECKS = [
             { it.location.latitude }: 'Venue \'location.latitude\' must be provided',
-            { it.location.longitude }: 'Venue \'location.longitude\' must be provided'
+            { it.location.longitude }: 'Venue \'location.longitude\' must be provided',
+            { isDouble(it.location.latitude) }: LOCATION_LATITUDE_STRUCTURE_ERROR_MESSAGE,
+            { isDouble(it.location.longitude) }: LOCATION_LONGITUDE_STRUCTURE_ERROR_MESSAGE
     ]
 
     private static final ADDRESS_CHECKS = [
             { it.address.addressLine1 }: 'Venue \'address.addressLine1\' must be provided',
             { it.address.city }: 'Venue \'address.city\' must be provided',
-            { it.address.postcode }: 'Venue \'address.postcode\' must be provided'
+            { it.address.postcode }: 'Venue \'address.postcode\' must be provided',
+            { it.address.addressLine1 instanceof String }: ADDRESS_LINE_1_STRUCTURE_ERROR_MESSAGE,
+            { it.address.city instanceof String }: ADDRESS_CITY_STRUCTURE_ERROR_MESSAGE,
+            { it.address.postcode instanceof String }: ADDRESS_POSTCODE_STRUCTURE_ERROR_MESSAGE
     ]
 
     static final INCOMPLETE_OPEN_HOURS_ERROR_MESSAGE = 'Daily venue \'openHours\' must contain \'openHour\',' +
@@ -176,14 +198,18 @@ class VenueJsonValidator {
             }: 'Daily venue \'openHours\' must close after opening time'
     ]
     static final UNRECOGNIZED_FACILITY_ERROR_MESSAGE = "Supported facilities are: ${Facility.asStrings()}"
-    static final INVALID_FACILITY_STATUS_ERROR_MESSAGE = "The status of a facility can be either 'Y', 'N' or 'UNKNOWN"
+    static final INVALID_FACILITY_STATUS_ERROR_MESSAGE = "The status of a facility can be either 'Y', 'N' or 'UNKNOWN'"
 
     private static final FACILITIES_CHECKS = [
             {
-                it.facilities.every { it.key.toLowerCase() in Facility.asStrings() }
+                it.facilities.every {
+                    it.key instanceof String &&
+                    it.key.toLowerCase() in Facility.asStrings() }
             }: UNRECOGNIZED_FACILITY_ERROR_MESSAGE,
             {
-                it.facilities.every { it.value.toUpperCase() in FacilityAvailability.asStrings() }
+                it.facilities.every {
+                    it.value instanceof String &&
+                    it.value.toUpperCase() in FacilityAvailability.asStrings() }
             }: INVALID_FACILITY_STATUS_ERROR_MESSAGE
     ]
 
@@ -201,6 +227,18 @@ class VenueJsonValidator {
 
         try {
             Integer.parseInt(property)
+        } catch (any) {
+            return false
+        }
+        return true
+    }
+
+    private static boolean isDouble(property) {
+        if (property instanceof Double)
+            return true
+
+        try {
+            property as Double
         } catch (any) {
             return false
         }
