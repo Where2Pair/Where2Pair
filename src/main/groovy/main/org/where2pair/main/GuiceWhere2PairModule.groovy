@@ -19,10 +19,12 @@ import org.where2pair.write.venue.NewVenueServiceFactory
 
 class GuiceWhere2PairModule extends AbstractModule {
 
+    static final PERSISTED_JSON_FILE_PATH = System.getProperty('persisted.json.file.path')
+
     @Provides
     @Singleton
     NewVenueController createNewVenueController(VenueCachePopulator venueCachePopulator) {
-        def rootFilePath = File.createTempDir()
+        def rootFilePath = new File(PERSISTED_JSON_FILE_PATH)
         def timeProvider = new CurrentTimeProvider()
         def venueRepository = new FileSystemNewVenueRepository(rootFilePath, timeProvider)
 

@@ -37,22 +37,26 @@ class VenueFinderFunctionalSpec extends Specification {
         request.contentType('application/json').body(venueJson)
         post('venue')
 
-        assert response.statusCode == 200
-
-        String savedVenueId = parsePropertyFromResponse('venueId', response.asString())
+        def initialResponseAsString = response.asString()
+        def initialResponseStatusCode = response.statusCode
+        assert initialResponseStatusCode == 200, "Response code: $initialResponseStatusCode, body: $initialResponseAsString"
+        def savedVenueId = parsePropertyFromResponse('venueId', initialResponseAsString)
 
         Thread.sleep(500)
-
         resetRequest()
         get("venue/$savedVenueId")
-        response.asString()
+
+        def secondResponseAsString = response.asString()
+        def secondResponseStatusCode = response.statusCode
+        assert secondResponseStatusCode == 200, "Response code: $secondResponseStatusCode, body: $secondResponseAsString"
+        secondResponseAsString
     }
 
     def cleanup() {
         aut.stop()
     }
 
-    private String parsePropertyFromResponse(String property, String response) {
+    private static String parsePropertyFromResponse(String property, String response) {
         new JsonSlurper().parseText(response)[property]
     }
 
