@@ -23,7 +23,6 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 class NewVenueServiceSpec extends Specification {
-
     def subscriberA = Mock(NewVenueSavedEventSubscriber)
     def subscriberB = Mock(NewVenueSavedEventSubscriber)
     def newVenueServiceFactory = new NewVenueServiceFactory()
