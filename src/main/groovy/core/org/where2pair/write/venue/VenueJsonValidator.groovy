@@ -25,11 +25,12 @@ class VenueJsonValidator {
     static final NAME_STRUCTURE_ERROR_MESSAGE = "Expected name to be a string"
     static final ADDRESS_STRUCTURE_ERROR_MESSAGE = "Expected address to be a map e.g. ['addressLine1': " +
             "'9 Appold Street', city: 'London'...]"
-    static final ADDRESS_LINE_1_STRUCTURE_ERROR_MESSAGE = "Expected addressLine1 to be a string"
-    static final ADDRESS_LINE_2_STRUCTURE_ERROR_MESSAGE = "Expected addressLine2 to be a string"
-    static final ADDRESS_LINE_3_STRUCTURE_ERROR_MESSAGE = "Expected addressLine3 to be a string"
-    static final ADDRESS_CITY_STRUCTURE_ERROR_MESSAGE = "Expected city to be a string"
-    static final ADDRESS_POSTCODE_STRUCTURE_ERROR_MESSAGE = "Expected postcode to be a string"
+    static final ADDRESS_LINE_1_STRUCTURE_ERROR_MESSAGE = "Expected 'addressLine1' to be a string"
+    static final ADDRESS_LINE_2_STRUCTURE_ERROR_MESSAGE = "Expected 'addressLine2' to be a string"
+    static final ADDRESS_LINE_3_STRUCTURE_ERROR_MESSAGE = "Expected 'addressLine3' to be a string"
+    static final ADDRESS_CITY_STRUCTURE_ERROR_MESSAGE = "Expected 'city' to be a string"
+    static final ADDRESS_POSTCODE_STRUCTURE_ERROR_MESSAGE = "Expected 'postcode' to be a string"
+    static final ADDRESS_PHONE_NUMBER_STRUCTURE_ERROR_MESSAGE = "Expected 'phoneNumber' to be a string"
     static final LOCATION_STRUCTURE_ERROR_MESSAGE = "Expected location to be a map e.g. ['latitude': " +
             "1.0, 'longitude': 0.1]"
     static final LOCATION_LATITUDE_STRUCTURE_ERROR_MESSAGE = "Expected latitude to be a float"
@@ -47,12 +48,6 @@ class VenueJsonValidator {
             {
                 it.address instanceof Map
             }: ADDRESS_STRUCTURE_ERROR_MESSAGE,
-            {
-                it.address.addressLine2 instanceof String
-            }: ADDRESS_LINE_2_STRUCTURE_ERROR_MESSAGE,
-            {
-                it.address.addressLine3 instanceof String
-            }: ADDRESS_LINE_3_STRUCTURE_ERROR_MESSAGE,
             {
                 it.location instanceof Map
             }: LOCATION_STRUCTURE_ERROR_MESSAGE,
@@ -83,8 +78,15 @@ class VenueJsonValidator {
             { it.address.postcode }: 'Venue \'address.postcode\' must be provided',
             { it.address.addressLine1 instanceof String }: ADDRESS_LINE_1_STRUCTURE_ERROR_MESSAGE,
             { it.address.city instanceof String }: ADDRESS_CITY_STRUCTURE_ERROR_MESSAGE,
-            { it.address.postcode instanceof String }: ADDRESS_POSTCODE_STRUCTURE_ERROR_MESSAGE
+            { it.address.postcode instanceof String }: ADDRESS_POSTCODE_STRUCTURE_ERROR_MESSAGE,
+            { optionalString(it.address.addressLine2) }: ADDRESS_LINE_2_STRUCTURE_ERROR_MESSAGE,
+            { optionalString(it.address.addressLine3) }: ADDRESS_LINE_3_STRUCTURE_ERROR_MESSAGE,
+            { optionalString(it.address.phoneNumber) }: ADDRESS_PHONE_NUMBER_STRUCTURE_ERROR_MESSAGE
     ]
+
+    private static boolean optionalString(property) {
+        !property || property instanceof String
+    }
 
     static final INCOMPLETE_OPEN_HOURS_ERROR_MESSAGE = 'Daily venue \'openHours\' must contain \'openHour\',' +
             ' \'openMinute\', \'closeHour\' and \'closeHour\''
@@ -254,7 +256,7 @@ class VenueJsonValidator {
     }
 
     private static final ALL_VALIDATION_CHECKS =
-            REQUIRED_FIELD_CHECKS +
+                    REQUIRED_FIELD_CHECKS +
                     EXPECTED_STRUCTURE_CHECKS +
                     LOCATION_CHECKS +
                     ADDRESS_CHECKS +

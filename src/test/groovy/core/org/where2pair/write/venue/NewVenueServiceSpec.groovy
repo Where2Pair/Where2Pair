@@ -1,12 +1,13 @@
 package org.where2pair.write.venue
 
-import static RawVenueJsonBuilder.rawVenueJson
 import static groovy.json.JsonOutput.toJson
+import static org.where2pair.write.venue.RawVenueJsonBuilder.rawVenueJson
 import static org.where2pair.write.venue.VenueJsonValidator.ADDRESS_CITY_STRUCTURE_ERROR_MESSAGE
 import static org.where2pair.write.venue.VenueJsonValidator.ADDRESS_LINE_1_STRUCTURE_ERROR_MESSAGE
 import static org.where2pair.write.venue.VenueJsonValidator.ADDRESS_LINE_2_STRUCTURE_ERROR_MESSAGE
 import static org.where2pair.write.venue.VenueJsonValidator.ADDRESS_LINE_3_STRUCTURE_ERROR_MESSAGE
 import static org.where2pair.write.venue.VenueJsonValidator.ADDRESS_POSTCODE_STRUCTURE_ERROR_MESSAGE
+import static org.where2pair.write.venue.VenueJsonValidator.ADDRESS_PHONE_NUMBER_STRUCTURE_ERROR_MESSAGE
 import static org.where2pair.write.venue.VenueJsonValidator.ADDRESS_STRUCTURE_ERROR_MESSAGE
 import static org.where2pair.write.venue.VenueJsonValidator.FACILITIES_STRUCTURE_ERROR_MESSAGE
 import static org.where2pair.write.venue.VenueJsonValidator.INCOMPLETE_OPEN_HOURS_ERROR_MESSAGE
@@ -45,17 +46,22 @@ class NewVenueServiceSpec extends Specification {
         venueId == expectedSaveEvent.venueId
     }
 
-    def 'facilities are optional'() {
+    @Unroll
+    def 'permits optional fields to be missing (#optionalField)'() {
         given:
-        def venueWithoutFacilities = rawVenueJson().without('facilities').build()
+        def venueWithoutFacilities = rawVenueJson().without(optionalField).build()
 
         when:
         newVenueService.save(venueWithoutFacilities)
 
         then:
         noExceptionThrown()
+
+        where:
+        optionalField << ['address.addressLine2', 'address.addressLine3', 'address.phoneNumber', 'facilities']
     }
 
+    @Unroll
     def 'rejects venue json that is not a map'() {
         given:
         def invalidJson = toJson(invalidVenueJson)
@@ -119,6 +125,7 @@ class NewVenueServiceSpec extends Specification {
         'address.addressLine3' | 56                | ADDRESS_LINE_3_STRUCTURE_ERROR_MESSAGE
         'address.city'         | 78                | ADDRESS_CITY_STRUCTURE_ERROR_MESSAGE
         'address.postcode'     | 90                | ADDRESS_POSTCODE_STRUCTURE_ERROR_MESSAGE
+        'address.phoneNumber'  | 1234567890        | ADDRESS_PHONE_NUMBER_STRUCTURE_ERROR_MESSAGE
         'location'             | 'somewhere'       | LOCATION_STRUCTURE_ERROR_MESSAGE
         'location.latitude'    | 'some lat'        | LOCATION_LATITUDE_STRUCTURE_ERROR_MESSAGE
         'location.longitude'   | 'some long'       | LOCATION_LONGITUDE_STRUCTURE_ERROR_MESSAGE
