@@ -1,6 +1,6 @@
 ## Where2Pair ##
 
-[![Build Status](https://where2pair.ci.cloudbees.com/job/Server%20master/badge/icon)](https://where2pair.ci.cloudbees.com/job/Server%20master/)
+[![Build Status](https://where2pair.ci.cloudbees.com/job/Server%20master%20builds/badge/icon)](https://where2pair.ci.cloudbees.com/job/Server%20master/)
 
 A simple venue-finding service for London.
 
