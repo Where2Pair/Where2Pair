@@ -95,7 +95,7 @@ test {
 
 task functionalTest(type: Test) {
     include '**/*FunctionalSpec.*'
-    systemProperties 'persisted.json.file.path': temporaryDirPath()
+    environment 'PERSISTED_JSON_FILE_PATH': temporaryDirPath()
 }
 
 private String temporaryDirPath() {
