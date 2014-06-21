@@ -75,6 +75,24 @@ class FileSystemNewVenueRepositoryTest extends Specification {
         }
     }
 
+    def 'creates root directory if it does not already exist'() {
+        given:
+        rootFilePath.deleteDir()
+        def newVenueSavedEvent = NewVenueSavedEvent.create(rawVenueJson)
+
+        when:
+        def venues = venueRepository.findAll()
+
+        then:
+        venues.size() == 0
+
+        when:
+        venueRepository.notifyNewVenueSaved(newVenueSavedEvent)
+
+        then:
+        venueRepository.findAll().size() == 1
+    }
+
     private static List<NewVenueSavedEvent> twoIdenticalNewVenues() {
         def venueJson = rawVenueJson().build()
         [NewVenueSavedEvent.create(venueJson), NewVenueSavedEvent.create(venueJson)]

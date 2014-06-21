@@ -98,6 +98,10 @@ task functionalTest(type: Test) {
     environment 'PERSISTED_JSON_FILE_PATH': temporaryDirPath()
 }
 
+run {
+    environment 'PERSISTED_JSON_FILE_PATH': temporaryDirPath()
+}
+
 private String temporaryDirPath() {
     java.nio.file.Files.createTempDirectory(null, [] as java.nio.file.attribute.FileAttribute[]).toString()
 }

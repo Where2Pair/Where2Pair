@@ -28,8 +28,13 @@ class FileSystemNewVenueRepository implements NewVenueSavedEventSubscriber {
 
     private File createJsonFile(File venueDirectory) {
         def file = new File(venueDirectory, uniqueFilenameForVenue())
+        ensureParentDirExists(file)
         file.createNewFile()
         file
+    }
+
+    private boolean ensureParentDirExists(File file) {
+        file.parentFile?.mkdirs()
     }
 
     private String uniqueFilenameForVenue() {
@@ -38,9 +43,12 @@ class FileSystemNewVenueRepository implements NewVenueSavedEventSubscriber {
 
     List<NewVenueSavedEvent> findAll() {
         List<File> filePaths = []
+
+        if (!rootFilePath.exists()) return filePaths
+
         rootFilePath.eachFileRecurse(FILES) { filePaths << it }
         filePaths.sort { timestampFromFilename(it) }
-        filePaths.collect { file -> newVenueSavedEvent(file.text) }
+        return filePaths.collect { file -> newVenueSavedEvent(file.text) }
     }
 
     private static String timestampFromFilename(File file) {
