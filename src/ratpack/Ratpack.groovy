@@ -5,11 +5,13 @@ import org.where2pair.main.GuiceWhere2PairModule
 import org.where2pair.read.venue.ShowVenueController
 import org.where2pair.read.venue.find.FindVenueController
 import org.where2pair.write.venue.NewVenueController
+import ratpack.codahale.metrics.CodaHaleMetricsModule
 import ratpack.http.Response
 import ratpack.util.MultiValueMap
 
 ratpack {
     bindings {
+        add new CodaHaleMetricsModule().jmx()
         add new GuiceWhere2PairModule()
     }
 

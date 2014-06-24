@@ -82,6 +82,7 @@ dependencies {
     compile 'joda-time:joda-time:1.6.1'
     compile 'org.codehaus.gpars:gpars:1.1.0'
     compile 'org.codehaus.groovy:groovy-all:2.3.2'
+    compile ratpack.dependency('codahale-metrics')
 
     // SpringLoaded enables runtime hot reloading.
     // It is not part of the app runtime and is not shipped in the distribution.
