@@ -18,7 +18,7 @@ ratpack {
     handlers {
         get {
             response.contentType 'text/html'
-            response.send getLandingPage(bindAddress.host, bindAddress.port)
+            response.send landingPage
         }
         prefix('venues') {
             get('nearest') { FindVenueController findVenueController ->
@@ -54,21 +54,21 @@ def squashLocationQueryParamValuesIntoList(MultiValueMap<String, String> queryPa
     }
 }
 
-String getLandingPage(String host, int port) {
+String getLandingPage() {
     """
     |<h2>Welcome to Where2Pair!</h2>
     |
     |<h4>Find venues sample request (GET):</h4>
     |
-    |<i>http://$host:$port/venues/nearest?location=1.0,0.1&openDay=monday&openFrom=12.30&openUntil=18.30&withFacilities=wifi</i>
+    |<i>/venues/nearest?location=1.0,0.1&openDay=monday&openFrom=12.30&openUntil=18.30&withFacilities=wifi</i>
     |
     |<h4>Show venue sample request (GET):</h4>
     |
-    |<i>http://$host:$port/venue/<b>:venueId</b></i>
+    |<i>/venue/<b>:venueId</b></i>
     |
     |<h4>Upload venue sample request (POST):</h4>
     |
-    |<i>http://$host:$port/venue</i>
+    |<i>/venue</i>
     |
     |<p>Sample venue json request body:</p>
     |
@@ -102,5 +102,7 @@ String getLandingPage(String host, int port) {
     |        "power": "UNKNOWN"
     |    }
     |}</i>
+    |<p>Env variables:</p>
+    |${System.getenv()}
     |""".stripMargin()
 }
