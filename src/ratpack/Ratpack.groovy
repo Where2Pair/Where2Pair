@@ -102,7 +102,5 @@ String getLandingPage() {
     |        "power": "UNKNOWN"
     |    }
     |}</i>
-    |<p>Env variables:</p>
-    |${System.getenv()}
     |""".stripMargin()
 }
