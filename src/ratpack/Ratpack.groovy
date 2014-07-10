@@ -42,6 +42,7 @@ ratpack {
 
 def renderResult(Response response, JsonResponse jsonResponse) {
     response.status(jsonResponse.statusCode.value)
+    response.contentType('application/json')
     response.send(jsonResponse.responseBody)
 }
 
