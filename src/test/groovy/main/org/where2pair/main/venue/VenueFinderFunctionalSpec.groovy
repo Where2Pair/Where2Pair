@@ -2,7 +2,9 @@ package org.where2pair.main.venue
 
 import static ratpack.groovy.test.TestHttpClients.testHttpClient
 
+import com.jayway.restassured.response.Response
 import groovy.json.JsonSlurper
+import groovy.transform.TupleConstructor
 import ratpack.groovy.test.LocalScriptApplicationUnderTest
 import ratpack.groovy.test.TestHttpClient
 import spock.lang.Specification
@@ -37,23 +39,29 @@ class VenueFinderFunctionalSpec extends Specification {
         request.contentType('application/json').body(venueJson)
         post('venue')
 
-        def initialResponseAsString = response.asString()
-        def initialResponseStatusCode = response.statusCode
-        assert initialResponseStatusCode == 200, "Response code: $initialResponseStatusCode, body: $initialResponseAsString"
-        def savedVenueId = parsePropertyFromResponse('venueId', initialResponseAsString)
+        def responseParams = extractResponseParams(response)
+        ensureContentTypeAndStatusCode(responseParams)
+        def savedVenueId = parsePropertyFromResponse('venueId', responseParams.body)
 
         Thread.sleep(500)
         resetRequest()
         get("venue/$savedVenueId")
 
-        def secondResponseAsString = response.asString()
-        def secondResponseStatusCode = response.statusCode
-        assert secondResponseStatusCode == 200, "Response code: $secondResponseStatusCode, body: $secondResponseAsString"
-        secondResponseAsString
+        def secondResponseParams = extractResponseParams(response)
+        ensureContentTypeAndStatusCode(secondResponseParams)
+        secondResponseParams.body
+    }
+
+    private void ensureContentTypeAndStatusCode(ResponseParams responseParams) {
+        assert responseParams.statusCode == 200 && responseParams.contentType == 'application/json', "Response code: $responseParams.statusCode, body: $responseParams.body, contentType: $responseParams.contentType"
     }
 
     def cleanup() {
         aut.stop()
+    }
+
+    private static ResponseParams extractResponseParams(Response response) {
+        new ResponseParams(response.asString(), response.contentType, response.statusCode)
     }
 
     private static String parsePropertyFromResponse(String property, String response) {
@@ -62,6 +70,13 @@ class VenueFinderFunctionalSpec extends Specification {
 
     private static UUID randomName() {
         UUID.randomUUID()
+    }
+
+    @TupleConstructor
+    private static class ResponseParams {
+        String body
+        String contentType
+        int statusCode
     }
 }
 
