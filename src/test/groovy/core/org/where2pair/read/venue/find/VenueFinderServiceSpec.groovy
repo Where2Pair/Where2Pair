@@ -1,39 +1,43 @@
-package org.where2pair.read.venue
+package org.where2pair.read.venue.find
 
-import static OpenPeriodBuilder.on
-import static VenueBuilder.aVenue
+import static CoordinatesBuilder.coordinates
 import static VenueDetailsBuilder.venueDetails
 import static java.lang.Integer.parseInt
-import static CoordinatesBuilder.coordinates
-import static CoordinatesBuilder.someCoordinates
 import static org.where2pair.common.venue.Facility.WIFI
 import static org.where2pair.read.venue.DayOfWeek.FRIDAY
 import static org.where2pair.read.venue.DayOfWeek.MONDAY
 import static org.where2pair.read.venue.DayOfWeek.SATURDAY
 import static org.where2pair.read.venue.DayOfWeek.SUNDAY
 import static org.where2pair.read.venue.DayOfWeek.parseDayOfWeek
+import static org.where2pair.read.venue.VenueBuilder.aVenue
 
 import org.where2pair.common.venue.SimpleTime
-import org.where2pair.read.venue.find.FacilitiesCriteria
-import org.where2pair.read.venue.find.LocationsCriteria
-import org.where2pair.read.venue.find.OpenTimesCriteria
-import org.where2pair.read.venue.find.VenueFinderService
+import org.where2pair.read.venue.Coordinates
+import org.where2pair.read.venue.CoordinatesBuilder
+import org.where2pair.read.venue.DayOfWeek
+import org.where2pair.read.venue.OpenPeriodBuilder
+import org.where2pair.read.venue.TimeProvider
+import org.where2pair.read.venue.Venue
+import org.where2pair.read.venue.VenueBuilder
+import org.where2pair.read.venue.VenueDetailsBuilder
+import org.where2pair.read.venue.VenueRepository
+import org.where2pair.read.venue.VenueWithDistances
 import org.where2pair.read.venue.opentimes.OpenTimesCriteriaFactory
 import spock.lang.Specification
 import spock.lang.Unroll
 
 import java.util.regex.Matcher
 
-class VenueServiceSpec extends Specification {
+class VenueFinderServiceSpec extends Specification {
 
     static final OPEN_ANY_TIME = openAnyTimeCriteria()
     static final ANY_FACILITIES = new FacilitiesCriteria(requestedFacilities: [])
-    static final SINGLE_LOCATION = LocationsCriteria.distanceInMilesTo(someCoordinates())
+    static final SINGLE_LOCATION = LocationsCriteria.distanceInMilesTo(CoordinatesBuilder.someCoordinates())
     static final TODAY = SATURDAY
     static final TOMORROW = SUNDAY
 
     def venueRepository = Mock(VenueRepository)
-    def venueService = new VenueFinderService(venueRepository: venueRepository)
+    def venueFinderService = new VenueFinderService(venueRepository: venueRepository)
 
     @Unroll
     def 'finds at most 50 venues'() {
@@ -41,7 +45,7 @@ class VenueServiceSpec extends Specification {
         venueRepository.findAll() >> [aVenue().build()] * numberOfVenues
 
         when:
-        List<VenueWithDistances> venues = venueService.find(OPEN_ANY_TIME, ANY_FACILITIES, SINGLE_LOCATION)
+        List<VenueWithDistances> venues = venueFinderService.find(OPEN_ANY_TIME, ANY_FACILITIES, SINGLE_LOCATION)
 
         then:
         venues.size() == expectedVenueCount
@@ -61,7 +65,7 @@ class VenueServiceSpec extends Specification {
         venueRepository.findAll() >> [venueWithOpenPeriod]
 
         when:
-        List<VenueWithDistances> openVenues = venueService.find(openTimesCriteria, ANY_FACILITIES, SINGLE_LOCATION)
+        List<VenueWithDistances> openVenues = venueFinderService.find(openTimesCriteria, ANY_FACILITIES, SINGLE_LOCATION)
 
         then:
         (openVenues.size() == 1) == expectedOpen
@@ -89,12 +93,12 @@ class VenueServiceSpec extends Specification {
     def 'finds only venues with requested facilities'() {
         given:
         def facilitiesCriteria = new FacilitiesCriteria([WIFI] as HashSet)
-        def venueWithWifi = aVenue().with(venueDetails().withFacilities(WIFI)).build()
+        def venueWithWifi = aVenue().with(VenueDetailsBuilder.venueDetails().withFacilities(WIFI)).build()
         def venueWithoutWifi = aVenue().with(venueDetails().withNoFacilities()).build()
         venueRepository.findAll() >> ten(venueWithWifi) + ten(venueWithoutWifi) + five(venueWithWifi)
 
         when:
-        List<VenueWithDistances> venues = venueService.find(OPEN_ANY_TIME, facilitiesCriteria, SINGLE_LOCATION)
+        List<VenueWithDistances> venues = venueFinderService.find(OPEN_ANY_TIME, facilitiesCriteria, SINGLE_LOCATION)
 
         then:
         venues.size() == 15
@@ -107,7 +111,7 @@ class VenueServiceSpec extends Specification {
         venueRepository.findAll() >> jumbledVenues
 
         when:
-        List<VenueWithDistances> venues = venueService.find(OPEN_ANY_TIME, ANY_FACILITIES, SINGLE_LOCATION)
+        List<VenueWithDistances> venues = venueFinderService.find(OPEN_ANY_TIME, ANY_FACILITIES, SINGLE_LOCATION)
 
         then:
         venues.venue == expectedVenueOrdering[0..49]
@@ -145,7 +149,7 @@ class VenueServiceSpec extends Specification {
 
     private static Venue parseVenue(String openFrom, String openUntil, DayOfWeek openDay) {
         def (SimpleTime openFromTime, SimpleTime openUntilTime) = parseSimpleTimes(openFrom, openUntil)
-        aVenue().with(venueDetails().withOpenPeriod(on(openDay).from(openFromTime).until(openUntilTime))).build()
+        aVenue().with(venueDetails().withOpenPeriod(OpenPeriodBuilder.on(openDay).from(openFromTime).until(openUntilTime))).build()
     }
 
     private static List<SimpleTime> parseSimpleTimes(startTime, endTime) {
