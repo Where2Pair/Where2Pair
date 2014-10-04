@@ -1,15 +1,15 @@
 package org.where2pair.read.venue.find
 
-import static CoordinatesBuilder.coordinates
-import static VenueDetailsBuilder.venueDetails
 import static java.lang.Integer.parseInt
 import static org.where2pair.common.venue.Facility.WIFI
+import static org.where2pair.read.venue.CoordinatesBuilder.coordinates
 import static org.where2pair.read.venue.DayOfWeek.FRIDAY
 import static org.where2pair.read.venue.DayOfWeek.MONDAY
 import static org.where2pair.read.venue.DayOfWeek.SATURDAY
 import static org.where2pair.read.venue.DayOfWeek.SUNDAY
 import static org.where2pair.read.venue.DayOfWeek.parseDayOfWeek
 import static org.where2pair.read.venue.VenueBuilder.aVenue
+import static org.where2pair.read.venue.VenueDetailsBuilder.venueDetails
 
 import org.where2pair.common.venue.SimpleTime
 import org.where2pair.read.venue.Coordinates
@@ -18,8 +18,6 @@ import org.where2pair.read.venue.DayOfWeek
 import org.where2pair.read.venue.OpenPeriodBuilder
 import org.where2pair.read.venue.TimeProvider
 import org.where2pair.read.venue.Venue
-import org.where2pair.read.venue.VenueBuilder
-import org.where2pair.read.venue.VenueDetailsBuilder
 import org.where2pair.read.venue.VenueRepository
 import org.where2pair.read.venue.VenueWithDistances
 import org.where2pair.read.venue.opentimes.OpenTimesCriteriaFactory
@@ -93,7 +91,7 @@ class VenueFinderServiceSpec extends Specification {
     def 'finds only venues with requested facilities'() {
         given:
         def facilitiesCriteria = new FacilitiesCriteria([WIFI] as HashSet)
-        def venueWithWifi = aVenue().with(VenueDetailsBuilder.venueDetails().withFacilities(WIFI)).build()
+        def venueWithWifi = aVenue().with(venueDetails().withFacilities(WIFI)).build()
         def venueWithoutWifi = aVenue().with(venueDetails().withNoFacilities()).build()
         venueRepository.findAll() >> ten(venueWithWifi) + ten(venueWithoutWifi) + five(venueWithWifi)
 
