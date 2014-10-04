@@ -7,8 +7,8 @@ import spock.lang.Specification
 class VenueFinderFunctionalSpec extends Specification {
     static final String VENUE_NAME = randomName()
 
-    def aut = new LocalScriptApplicationUnderTest()
-    def restClient = new RESTClient(aut.address)
+    def where2pairApp = new LocalScriptApplicationUnderTest()
+    def restClient = new RESTClient(where2pairApp.address)
 
     def 'store and retrieve venue though the REST api'() {
         given:
@@ -48,7 +48,7 @@ class VenueFinderFunctionalSpec extends Specification {
     }
 
     private static void ensureContentTypeAndStatusCode(response) {
-        assert response.status == 200 && response.contentType == 'application/json', "Response code: $response.status, body: $response.data.toString(), contentType: $response.contentType"
+        assert response.status == 200 && response.contentType == 'application/json', "Response code: $response.status, body: $response.data, contentType: $response.contentType"
     }
 
     private static UUID randomName() {
@@ -56,7 +56,7 @@ class VenueFinderFunctionalSpec extends Specification {
     }
 
     def cleanup() {
-        aut.stop()
+        where2pairApp.stop()
     }
 }
 
