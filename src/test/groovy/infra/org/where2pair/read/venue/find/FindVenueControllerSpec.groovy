@@ -1,4 +1,4 @@
-package org.where2pair.read.venue
+package org.where2pair.read.venue.find
 
 import static groovy.json.JsonOutput.toJson
 import static org.where2pair.common.venue.Facility.POWER
@@ -13,11 +13,7 @@ import static org.where2pair.read.venue.VenueWithDistancesBuilder.aVenue
 
 import org.where2pair.common.venue.Facility
 import org.where2pair.common.venue.SimpleTime
-import org.where2pair.read.venue.find.FacilitiesCriteria
-import org.where2pair.read.venue.find.FindVenueController
-import org.where2pair.read.venue.find.LocationsCriteria
-import org.where2pair.read.venue.find.OpenTimesCriteria
-import org.where2pair.read.venue.find.VenueFinderService
+import org.where2pair.read.venue.Coordinates
 import org.where2pair.read.venue.mappingtojson.VenuesWithDistancesToJsonMapper
 import org.where2pair.read.venue.opentimes.OpenTimesCriteriaFactory
 import spock.lang.Specification

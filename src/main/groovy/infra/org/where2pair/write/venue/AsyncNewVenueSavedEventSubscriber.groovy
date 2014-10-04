@@ -1,10 +1,8 @@
-package org.where2pair.main
+package org.where2pair.write.venue
 
 import static java.util.concurrent.Executors.newCachedThreadPool
 
 import groovyx.gpars.GParsExecutorsPool
-import org.where2pair.write.venue.NewVenueSavedEvent
-import org.where2pair.write.venue.NewVenueSavedEventSubscriber
 
 import java.util.concurrent.ExecutorService
 

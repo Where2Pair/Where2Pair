@@ -1,11 +1,12 @@
 package org.where2pair.main
 
 import static com.google.common.base.Preconditions.checkState
-import static org.where2pair.main.AsyncNewVenueSavedEventSubscriber.asAsyncSubscriber
+import static org.where2pair.write.venue.AsyncNewVenueSavedEventSubscriber.asAsyncSubscriber
 
 import com.google.inject.AbstractModule
 import com.google.inject.Provides
 import com.google.inject.Singleton
+import org.where2pair.read.venue.HashMapVenueCache
 import org.where2pair.read.venue.ShowVenueController
 import org.where2pair.read.venue.TimeProvider
 import org.where2pair.read.venue.find.FindVenueController
@@ -29,7 +30,7 @@ class GuiceWhere2PairModule extends AbstractModule {
         List<NewVenueSavedEvent> venues = venueRepository.findAll()
         venues.each { venueCachePopulator.notifyNewVenueSaved(it) }
 
-        def newVenueService = new NewVenueServiceFactory().createServiceWithEventSubscribers(
+        def newVenueService = NewVenueServiceFactory.createServiceWithEventSubscribers(
                 asAsyncSubscriber(venueRepository),
                 asAsyncSubscriber(venueCachePopulator))
 

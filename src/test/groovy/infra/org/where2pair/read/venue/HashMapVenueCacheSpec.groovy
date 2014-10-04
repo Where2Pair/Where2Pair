@@ -1,10 +1,8 @@
-package org.where2pair.main.venue
+package org.where2pair.read.venue
 
 import static org.where2pair.read.venue.VenueBuilder.aVenue
 import static org.where2pair.read.venue.VenueIdBuilder.aRandomVenueId
 
-import org.where2pair.main.HashMapVenueCache
-import org.where2pair.read.venue.Venue
 import spock.lang.Specification
 
 class HashMapVenueCacheSpec extends Specification {

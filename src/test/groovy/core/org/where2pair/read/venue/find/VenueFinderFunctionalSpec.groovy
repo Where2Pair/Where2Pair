@@ -1,4 +1,4 @@
-package org.where2pair.main.venue
+package org.where2pair.read.venue.find
 
 import groovyx.net.http.RESTClient
 import ratpack.groovy.test.LocalScriptApplicationUnderTest

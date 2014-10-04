@@ -2,6 +2,7 @@ package org.where2pair.main
 
 import groovy.json.JsonSlurper
 import groovy.transform.TupleConstructor
+import org.where2pair.read.venue.HashMapVenueCache
 import org.where2pair.read.venue.Venue
 import org.where2pair.read.venue.VenueId
 import org.where2pair.read.venue.mappingfromjson.JsonToVenueDetailsMapper

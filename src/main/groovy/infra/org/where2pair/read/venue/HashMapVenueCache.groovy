@@ -1,8 +1,4 @@
-package org.where2pair.main
-
-import org.where2pair.read.venue.Venue
-import org.where2pair.read.venue.VenueId
-import org.where2pair.read.venue.VenueRepository
+package org.where2pair.read.venue
 
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap

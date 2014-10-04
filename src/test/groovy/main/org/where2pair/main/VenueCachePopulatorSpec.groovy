@@ -3,6 +3,7 @@ package org.where2pair.main
 import static org.where2pair.read.venue.VenueBuilder.aVenue
 import static org.where2pair.write.venue.RawVenueJsonBuilder.rawVenueJson
 
+import org.where2pair.read.venue.HashMapVenueCache
 import org.where2pair.write.venue.NewVenueSavedEvent
 import spock.lang.Specification
 
