@@ -16,6 +16,11 @@ ratpack {
     }
 
     handlers {
+        handler {
+            response.headers.add 'Access-Control-Allow-Origin', '*'
+            response.headers.add 'Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE'
+            next()
+        }
         get {
             response.contentType 'text/html'
             response.send landingPage
