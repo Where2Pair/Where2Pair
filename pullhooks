@@ -1,0 +1,8 @@
+{
+  "name": "web",
+  "active": true,
+  "events": ["pull_request"],
+  "config": {
+    "url": "https://where2pair.ci.cloudbees.com/github-pull-request-hook/"
+  }
+}
